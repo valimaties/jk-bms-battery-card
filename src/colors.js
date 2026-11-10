@@ -50,7 +50,7 @@ export const absColor = (v) =>
   );
 export const heatHex = (t) => hsl2hex(150 - 150 * clamp(t, 0, 1), 40, 56);
 
-// Pack drawing: 4, 8 or 16 EVE 314Ah cells in two rows, drawn in perspective (vanishing point at the middle of each row): blue body, black lid with a blue vent,
+// Pack drawing: 8 or 16 EVE 314Ah cells in two rows, drawn in perspective (vanishing point at the middle of each row): blue body, black lid with a blue vent,
 // silver tab and two studs (one near the front edge, one near the back edge). The studs alternate cell to cell, so the studs that face each other sit at the same
 // height and a flexible copper busbar joins them. Series: row 1 runs left->right, a rigid busbar goes around the right side, row 2 runs right->left.
 // The JK-BMS photo (rotated 180deg) is on the negative side; 70 mm2 cables join its terminals to cell 1 and to the pack minus; the pack plus leaves from the last cell.
