@@ -1,6 +1,6 @@
 (() => {
   // src/version.js
-  var VERSION = true ? "1.0.0" : "dev";
+  var VERSION = true ? "1.0.1" : "dev";
 
   // src/state.js
   var ST = { lang: "en", editing: 0, langList: null };
@@ -5482,5 +5482,9 @@
     description: "JK-BMS battery bank: 3D scene, per-battery view, cells with voltage and resistance",
     preview: false
   });
-  console.info(`%c JK-BMS-BATTERY %c v${VERSION} `, "background:#0ea5e9;color:#fff", "background:#111;color:#8fb4c9");
+  console.info(
+    `%c JK-BMS-BATTERY %c v${VERSION} \xB7 ${Object.keys(I18N).length} languages bundled `,
+    "background:#0ea5e9;color:#fff",
+    "background:#111;color:#8fb4c9"
+  );
 })();
