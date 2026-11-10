@@ -54,8 +54,8 @@ batteries:
   - name: Battery 1
     entity_base: jk_bms_bms0     # sensor.jk_bms_bms0_cell_voltage_1 -> base = jk_bms_bms0
     role: master                 # optional: master | slave
-    cells: 16                    # 4, 8 or 16 cells in this battery
-    temps: 4                     # temperature sensors of this battery (0-5)
+    cells: 16                    # 8 or 16 cells in this battery
+    temps: 4                     # temperature sensors of this battery (0-4)
   - name: Battery 2
     entity_base: jk_bms_bms1
     role: slave
