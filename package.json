@@ -1,6 +1,6 @@
 {
   "name": "jk-bms-battery-card",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "private": true,
   "description": "Home Assistant card for JK-BMS battery packs (ESPHome syssi/esphome-jk-bms), with the real pack drawn cell by cell",
   "author": "valimaties",
