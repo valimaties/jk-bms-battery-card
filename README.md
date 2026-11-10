@@ -25,7 +25,7 @@ Balancing: the highest cell gives to the lowest one and the two are joined by a 
 - **Master / slave groups** (declared in the card, the integration sees every BMS separately): one card, a selector chooses the pack, the screen shows the group totals.
 - **Safe switches**: charging / discharging / balancing / heating ask for confirmation.
 - **Every value opens its entity** (more-info).
-- **Languages**: English, Français, Deutsch, Italiano, Español, Română (files in `translations/`, easy to extend).
+- **Languages**: English, Français, Deutsch, Italiano, Español, Română (bundled in the card, easy to extend).
 - **Light rendering** for phones and tablets (automatic, or forced from the editor).
 - Visual editor (battery detection, group roles, language, performance).
 - **Victron SmartShunt / MultiPlus data is optional** (a line with the SmartShunt, MultiPlus and history values under the batteries). Leave `victron` out and nothing Victron-related is shown. **Tested only with Venus OS** (entities from a Venus OS / GX device, for example through the Victron MQTT integration); other setups may use different entity names, which you can map one by one in the editor.
@@ -40,9 +40,9 @@ Balancing: the highest cell gives to the lowest one and the two are joined by a 
 
 ### Manual
 
-The repository always contains the built card in the **`dist/`** folder (`main` and `dev`). Copy `jk-bms-battery-card.js` **and the `translations/` folder** from `dist/` (or from the latest release) to `/config/www/community/jk-bms-battery-card/`, add the resource `/local/community/jk-bms-battery-card/jk-bms-battery-card.js` (JavaScript module) and reload the browser.
+The repository always contains the built card in the **`dist/`** folder (`main` and `dev`). Copy the single file `jk-bms-battery-card.js` from `dist/` (or from the latest release) to `/config/www/community/jk-bms-battery-card/`, add the resource `/local/community/jk-bms-battery-card/jk-bms-battery-card.js` (JavaScript module) and reload the browser.
 
-> The `translations/` folder must stay next to the `.js` file. Without it the card still works, in English.
+> Everything is in that one file, translations included: there is nothing else to copy.
 
 ## Usage
 
@@ -78,7 +78,7 @@ batteries:
 | `glare` | `true` | Light reflection on the BMS screen |
 | `language` | `auto` | `auto` (Home Assistant language) or `en` `fr` `de` `it` `es` `ro` |
 | `performance` | `auto` | `auto` (light on touch / weak devices), `full`, `lite` |
-| `translations_path` | next to the card | URL of a folder containing `translations/` |
+| `translations_path` | next to the card | Optional: URL of a folder with `translations/<code>.json` for a language that is not bundled |
 | `victron` | – | Optional SmartShunt / MultiPlus entities, see below |
 
 The language chosen on the BMS screen is remembered in that browser and wins over the configuration.
@@ -103,7 +103,7 @@ victron:
 
 ## Translations
 
-`translations/<code>.json`, one file per language; English is built into the card and is the fallback. To add a language copy `translations/en.json` to `translations/<code>.json`, translate the values (keep the keys and the `{name}`-style placeholders), set `"_name"` and add the language to `translations/index.json`. Pull requests are welcome. The texts drawn on the BMS screen are translated too (`scr_*` keys).
+`translations/<code>.json`, one file per language, all bundled into the card by the build; English is the fallback. To add a language copy `translations/en.json` to `translations/<code>.json`, translate the values (keep the keys and the `{name}`-style placeholders), set `"_name"` and add the language to the list at the top of `src/i18n.js`. Pull requests are welcome. The texts drawn on the BMS screen are translated too (`scr_*` keys).
 
 ## Performance
 
@@ -115,12 +115,12 @@ The source is split into modules in `src/` (styles, translations, Victron discov
 
 ```bash
 npm install
-npm run build        # dist/jk-bms-battery-card.js + dist/translations/ (dist/ is committed: always rebuild before committing)
+npm run build        # dist/jk-bms-battery-card.js (dist/ is committed: always rebuild before committing)
 npm run watch        # rebuild on every change
 npm run deploy -- "\\homeassistant.local\config"   # build + copy to a Home Assistant /config (Samba share) for testing
 ```
 
-Releases: publish a GitHub release (tag `v1.2.3`); the workflow builds with that version and attaches `jk-bms-battery-card.zip` (card + `translations/`), which HACS installs. Translation files live in `translations/` and are copied to `dist/` by the build.
+Releases: publish a GitHub release (tag `v1.2.3`); the workflow builds with that version and attaches `jk-bms-battery-card.js`. Translation files live in `translations/` and are bundled into the card by the build.
 
 ## Credits
 
