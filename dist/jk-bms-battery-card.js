@@ -3510,11 +3510,12 @@
     }
     /* ------------------------------------------------------------ data */
     _nOf(b) {
-      return [4, 8, 16].includes(+b.cells) ? +b.cells : +b.cells > 0 ? +b.cells : +this._cfg.cells || 16;
+      const n = +b.cells || +this._cfg.cells || 16;
+      return n <= 8 ? 8 : 16;
     }
     _tOf(b) {
       const t = b.temps ?? this._cfg.temps;
-      return t === void 0 || t === null || isNaN(+t) ? 4 : Math.max(0, Math.min(5, +t));
+      return t === void 0 || t === null || isNaN(+t) ? 4 : Math.max(0, Math.min(4, +t));
     }
     _night() {
       const s = this._hass && this._hass.states["sun.sun"];
