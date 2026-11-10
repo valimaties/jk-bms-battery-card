@@ -1,0 +1,5 @@
+node_modules/
+.claude/
+HA_Scripts/
+dev/
+docs/DEV-NOTES.ro.md

@@ -1,0 +1,35 @@
+{
+  "name": "jk-bms-battery-card",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Home Assistant card for JK-BMS battery packs (ESPHome syssi/esphome-jk-bms), with the real pack drawn cell by cell",
+  "author": "valimaties",
+  "license": "MIT",
+  "homepage": "https://github.com/valimaties/jk-bms-battery-card",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/valimaties/jk-bms-battery-card.git"
+  },
+  "bugs": {
+    "url": "https://github.com/valimaties/jk-bms-battery-card/issues"
+  },
+  "keywords": [
+    "home-assistant",
+    "lovelace",
+    "hacs",
+    "jk-bms",
+    "battery",
+    "bms",
+    "esphome"
+  ],
+  "scripts": {
+    "build": "node build.mjs",
+    "watch": "node build.mjs --watch",
+    "icons": "node brand/render.mjs",
+    "deploy": "node deploy.mjs"
+  },
+  "devDependencies": {
+    "@resvg/resvg-js": "^2.6.2",
+    "esbuild": "0.25.5"
+  }
+}
