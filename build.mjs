@@ -1,6 +1,6 @@
-// Bundles src/ into dist/jk-bms-battery-card.js (one file, what Home Assistant loads) and copies translations/ next to it.
+// Bundles src/ (translations included) into dist/jk-bms-battery-card.js: one file, what Home Assistant loads.
 import { build, context } from "esbuild";
-import { cpSync, mkdirSync, readFileSync } from "node:fs";
+import { readFileSync } from "node:fs";
 
 const version = process.env.CARD_VERSION || JSON.parse(readFileSync("package.json", "utf8")).version;
 const options = {
@@ -15,17 +15,11 @@ const options = {
   logLevel: "info",
 };
 
-const copyTranslations = () => {
-  mkdirSync("dist", { recursive: true });
-  cpSync("translations", "dist/translations", { recursive: true });
-};
 
 if (process.argv.includes("--watch")) {
   const ctx = await context(options);
   await ctx.watch();
-  copyTranslations();
   console.log("watching src/ ...");
 } else {
   await build(options);
-  copyTranslations();
 }

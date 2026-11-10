@@ -1,4 +1,4 @@
-// Builds the card and copies it (plus translations/) into a Home Assistant config folder for testing.
+// Builds the card and copies it into a Home Assistant config folder for testing.
 // Usage: npm run deploy -- "\homeassistant.local\config"   (or set HA_CONFIG, e.g. a Samba share or a mounted /config)
 import { execSync } from "node:child_process";
 import { cpSync, existsSync, mkdirSync, rmSync } from "node:fs";
@@ -17,8 +17,7 @@ if (!existsSync(config)) {
 execSync("node build.mjs", { stdio: "inherit" });
 const target = join(config, "www", "community", "jk-bms-battery-card");
 mkdirSync(target, { recursive: true });
-rmSync(join(target, "translations"), { recursive: true, force: true });
+rmSync(join(target, "translations"), { recursive: true, force: true }); // left over from older versions
 cpSync("dist/jk-bms-battery-card.js", join(target, "jk-bms-battery-card.js"));
-cpSync("dist/translations", join(target, "translations"), { recursive: true });
 console.log(`Copied to ${target}`);
 console.log("Resource URL: /local/community/jk-bms-battery-card/jk-bms-battery-card.js?v=" + Date.now());

@@ -1,8 +1,7 @@
 name: Release
 
-# Publishing a GitHub release builds the card and attaches it to the release:
+# Publishing a GitHub release builds the card and attaches it to the release (all translations are bundled in the file):
 #   - jk-bms-battery-card.js  (what the Home Assistant Marketplace installs for a dashboard card, see hacs.json)
-#   - jk-bms-battery-card.zip (card + translations folder, for a manual install)
 
 on:
   release:
@@ -12,7 +11,7 @@ permissions:
   contents: write
 
 jobs:
-  zip:
+  attach:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -25,11 +24,8 @@ jobs:
         env:
           RELEASE_TAG: ${{ github.event.release.tag_name }}
         run: CARD_VERSION="${RELEASE_TAG#v}" npm run build
-      - name: Build the archive
-        working-directory: dist
-        run: zip -r ../jk-bms-battery-card.zip jk-bms-battery-card.js translations
       - name: Attach it to the release
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           RELEASE_TAG: ${{ github.event.release.tag_name }}
-        run: gh release upload "$RELEASE_TAG" jk-bms-battery-card.zip dist/jk-bms-battery-card.js --clobber
+        run: gh release upload "$RELEASE_TAG" dist/jk-bms-battery-card.js --clobber
