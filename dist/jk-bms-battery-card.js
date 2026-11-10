@@ -4644,11 +4644,11 @@
       </label>
       </div>
       <div class="fg"><label class="fld"><span>${tt("lbl_cells")}</span><select class="b-cells">${[
-          .../* @__PURE__ */ new Set([4, 8, 16, +(b.cells ?? this._config.cells ?? 16)])
+          .../* @__PURE__ */ new Set([8, 16])
         ].sort((x, y) => x - y).map((v) => `<option value="${v}">${v}</option>`).join("")}</select>
         </label>
         <label class="fld"><span>${tt("lbl_temps")}</span>
-          <select class="b-temps">${[0, 1, 2, 3, 4, 5].map((v) => `<option value="${v}">${v}</option>`).join("")}</select>
+          <select class="b-temps">${[0, 1, 2, 3, 4].map((v) => `<option value="${v}">${v}</option>`).join("")}</select>
         </label>
         </div>
       <div class="fg"><label class="fld"><span>${tt("ed_cell1")}</span><select class="lay">${[
@@ -4675,7 +4675,7 @@
         ds.value = b.entities && b.entities.display_always_on || (this._hass && this._hass.states[defId] ? defId : "");
         {
           const bc = row.querySelector(".b-cells"), bt = row.querySelector(".b-temps");
-          bc.value = String(b.cells ?? this._config.cells ?? 16);
+          bc.value = +(b.cells ?? this._config.cells ?? 16) <= 8 ? "8" : "16";
           bt.value = String(b.temps ?? this._config.temps ?? 4);
           bc.onchange = (e) => {
             b.cells = +e.target.value;
