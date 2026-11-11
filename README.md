@@ -1,5 +1,6 @@
 # JK-BMS Battery Card
 <p align="center"><img src="brand/logo.png" alt="JK-BMS Battery Card" width="300"></p>
+<p align="center"><a href="https://buymeacoffee.com/valimaties"><img src="https://img.shields.io/badge/Buy%20me%20a%20coffee-ffdd00?style=for-the-badge&logo=buymeacoffee&logoColor=black" alt="Buy me a coffee"></a></p>
 
 A Home Assistant dashboard card for **JK-BMS** battery packs (ESPHome, [syssi/esphome-jk-bms](https://github.com/syssi/esphome-jk-bms)): one calm card per battery with the real pack drawn cell by cell, live current flow, balancing, a replica of the JK touch screen and optional Victron SmartShunt / MultiPlus data. No dependencies.
 
@@ -121,6 +122,10 @@ npm run deploy -- "\\homeassistant.local\config"   # build + copy to a Home Assi
 ```
 
 Releases: publish a GitHub release (tag `v1.2.3`); the workflow builds with that version and attaches `jk-bms-battery-card.js`. Translation files live in `translations/` and are bundled into the card by the build.
+
+## Support
+
+The card is free and distributed as is. If it is useful to you and you want to say thanks, you can [buy me a coffee](https://buymeacoffee.com/valimaties). It is entirely optional and does not change anything about support or the license.
 
 ## Credits
 
