@@ -92,6 +92,52 @@
     lbl_title: "Titel",
     lbl_cells: "Zellen / Batterie",
     lbl_temps: "Temperatursensoren",
+    ed_heating: "Heizung-Schaltfl\xE4che anzeigen (ausblenden, wenn dieses BMS keine Heizmatten hat)",
+    ed_rows: "Anordnung der Zellen",
+    ed_rows_2: "2 Reihen mit je 4",
+    ed_rows_1: "1 Reihe mit 8",
+    ed_sensors: "Sensoren (manuell, f\xFCr eigene Entit\xE4tsnamen)",
+    ed_sensors_hint: "Jedes Feld zeigt bereits die unter dem Standardnamen gefundene Entit\xE4t. \xC4ndern Sie sie nur, wenn Ihre Sensoren eigene Namen haben.",
+    ed_loading: "Entit\xE4tsauswahl wird geladen\u2026",
+    eg_main: "Hauptwerte",
+    eg_cellsum: "Zellstatistik",
+    eg_temps: "Temperaturen",
+    eg_cellv: "Zellspannungen",
+    eg_cellr: "Zellwiderst\xE4nde",
+    eg_switches: "Schalter",
+    eg_other: "Sonstiges",
+    ek_cell_voltage: "Spannung Zelle {n}",
+    ek_cell_resistance: "Widerstand Zelle {n}",
+    ek_temperature_sensor: "Temperatursensor {n}",
+    ek_total_voltage: "Gesamtspannung",
+    ek_current: "Strom",
+    ek_power: "Leistung",
+    ek_state_of_charge: "Ladezustand",
+    ek_state_of_health: "Gesundheitszustand",
+    ek_capacity_remaining: "Restkapazit\xE4t",
+    ek_total_battery_capacity: "Gesamtkapazit\xE4t der Batterie",
+    ek_charging_cycles: "Ladezyklen",
+    ek_max_cell_voltage: "Max. Zellspannung",
+    ek_min_cell_voltage: "Min. Zellspannung",
+    ek_max_voltage_cell: "Zelle mit max. Spannung (Nummer)",
+    ek_min_voltage_cell: "Zelle mit min. Spannung (Nummer)",
+    ek_delta_cell_voltage: "Zellspannungsdifferenz",
+    ek_average_cell_voltage: "Mittlere Zellspannung",
+    ek_balancer_bitmask: "Balancer-Bitmaske",
+    ek_power_tube_temperature: "MOS-Temperatur",
+    ek_charging: "Laden",
+    ek_discharging: "Entladen",
+    ek_balancer: "Balancing",
+    ek_heating: "Heizung",
+    ek_balance_starting_voltage: "Balancing-Startspannung",
+    ek_balance_trigger_voltage: "Balancing-Ausl\xF6sespannung",
+    ek_online_status: "Online-Status",
+    ek_errors: "Fehler",
+    ek_hardware_version: "Hardware-Version",
+    ek_software_version: "Software-Version",
+    ek_total_runtime_formatted: "Gesamtlaufzeit",
+    ek_charge_status: "Ladestatus",
+    ek_operation_status: "Betriebsstatus",
     lbl_glare: "Lichtreflexion auf dem BMS-Display",
     ed_advanced: "Erweiterte Einstellungen",
     lbl_language: "Sprache",
@@ -218,6 +264,52 @@
     lbl_title: "Title",
     lbl_cells: "Cells / battery",
     lbl_temps: "Temperature sensors",
+    ed_heating: "Show the Heating button (hide it if this BMS has no heating plates)",
+    ed_rows: "Cell layout",
+    ed_rows_2: "2 rows of 4",
+    ed_rows_1: "1 row of 8",
+    ed_sensors: "Sensors (manual, for custom entity names)",
+    ed_sensors_hint: "Each field already shows the entity found under the standard name. Change it only if your sensors have custom names.",
+    ed_loading: "Loading the entity pickers\u2026",
+    eg_main: "Main values",
+    eg_cellsum: "Cell statistics",
+    eg_temps: "Temperatures",
+    eg_cellv: "Cell voltages",
+    eg_cellr: "Cell resistances",
+    eg_switches: "Switches",
+    eg_other: "Other",
+    ek_cell_voltage: "Cell {n} voltage",
+    ek_cell_resistance: "Cell {n} resistance",
+    ek_temperature_sensor: "Temperature sensor {n}",
+    ek_total_voltage: "Total voltage",
+    ek_current: "Current",
+    ek_power: "Power",
+    ek_state_of_charge: "State of charge",
+    ek_state_of_health: "State of health",
+    ek_capacity_remaining: "Remaining capacity",
+    ek_total_battery_capacity: "Total battery capacity",
+    ek_charging_cycles: "Charging cycles",
+    ek_max_cell_voltage: "Max cell voltage",
+    ek_min_cell_voltage: "Min cell voltage",
+    ek_max_voltage_cell: "Max voltage cell (number)",
+    ek_min_voltage_cell: "Min voltage cell (number)",
+    ek_delta_cell_voltage: "Cell voltage delta",
+    ek_average_cell_voltage: "Average cell voltage",
+    ek_balancer_bitmask: "Balancer bitmask",
+    ek_power_tube_temperature: "MOS temperature",
+    ek_charging: "Charging",
+    ek_discharging: "Discharging",
+    ek_balancer: "Balancer",
+    ek_heating: "Heating",
+    ek_balance_starting_voltage: "Balance starting voltage",
+    ek_balance_trigger_voltage: "Balance trigger voltage",
+    ek_online_status: "Online status",
+    ek_errors: "Errors",
+    ek_hardware_version: "Hardware version",
+    ek_software_version: "Software version",
+    ek_total_runtime_formatted: "Total runtime",
+    ek_charge_status: "Charge status",
+    ek_operation_status: "Operation status",
     lbl_glare: "Light reflection on the BMS screen",
     ed_advanced: "Advanced settings",
     lbl_language: "Language",
@@ -344,6 +436,52 @@
     lbl_title: "T\xEDtulo",
     lbl_cells: "Celdas / bater\xEDa",
     lbl_temps: "Sensores de temperatura",
+    ed_heating: "Mostrar el bot\xF3n Calefacci\xF3n (oc\xFAltalo si este BMS no tiene placas calefactoras)",
+    ed_rows: "Disposici\xF3n de las celdas",
+    ed_rows_2: "2 filas de 4",
+    ed_rows_1: "1 fila de 8",
+    ed_sensors: "Sensores (manual, para nombres personalizados)",
+    ed_sensors_hint: "Cada campo ya muestra la entidad encontrada con el nombre est\xE1ndar. C\xE1mbiala solo si tus sensores tienen nombres personalizados.",
+    ed_loading: "Cargando los selectores de entidades\u2026",
+    eg_main: "Valores principales",
+    eg_cellsum: "Estad\xEDsticas de celdas",
+    eg_temps: "Temperaturas",
+    eg_cellv: "Tensiones de las celdas",
+    eg_cellr: "Resistencias de las celdas",
+    eg_switches: "Interruptores",
+    eg_other: "Otros",
+    ek_cell_voltage: "Tensi\xF3n celda {n}",
+    ek_cell_resistance: "Resistencia celda {n}",
+    ek_temperature_sensor: "Sensor de temperatura {n}",
+    ek_total_voltage: "Tensi\xF3n total",
+    ek_current: "Corriente",
+    ek_power: "Potencia",
+    ek_state_of_charge: "Estado de carga",
+    ek_state_of_health: "Estado de salud",
+    ek_capacity_remaining: "Capacidad restante",
+    ek_total_battery_capacity: "Capacidad total de la bater\xEDa",
+    ek_charging_cycles: "Ciclos de carga",
+    ek_max_cell_voltage: "Tensi\xF3n m\xE1x. de celda",
+    ek_min_cell_voltage: "Tensi\xF3n m\xEDn. de celda",
+    ek_max_voltage_cell: "Celda con tensi\xF3n m\xE1x. (n\xFAmero)",
+    ek_min_voltage_cell: "Celda con tensi\xF3n m\xEDn. (n\xFAmero)",
+    ek_delta_cell_voltage: "Diferencia de tensi\xF3n de celdas",
+    ek_average_cell_voltage: "Tensi\xF3n media de celdas",
+    ek_balancer_bitmask: "M\xE1scara de balanceo",
+    ek_power_tube_temperature: "Temperatura MOS",
+    ek_charging: "Carga",
+    ek_discharging: "Descarga",
+    ek_balancer: "Balanceo",
+    ek_heating: "Calefacci\xF3n",
+    ek_balance_starting_voltage: "Tensi\xF3n de inicio de balanceo",
+    ek_balance_trigger_voltage: "Tensi\xF3n de activaci\xF3n de balanceo",
+    ek_online_status: "Estado en l\xEDnea",
+    ek_errors: "Errores",
+    ek_hardware_version: "Versi\xF3n de hardware",
+    ek_software_version: "Versi\xF3n de software",
+    ek_total_runtime_formatted: "Tiempo total de funcionamiento",
+    ek_charge_status: "Estado de carga (estado)",
+    ek_operation_status: "Estado de funcionamiento",
     lbl_glare: "Reflejo de luz en la pantalla BMS",
     ed_advanced: "Ajustes avanzados",
     lbl_language: "Idioma",
@@ -470,6 +608,52 @@
     lbl_title: "Titre",
     lbl_cells: "Cellules / batterie",
     lbl_temps: "Capteurs de temp\xE9rature",
+    ed_heating: "Afficher le bouton Chauffage (\xE0 masquer si ce BMS n'a pas de plaques chauffantes)",
+    ed_rows: "Disposition des cellules",
+    ed_rows_2: "2 rang\xE9es de 4",
+    ed_rows_1: "1 rang\xE9e de 8",
+    ed_sensors: "Capteurs (manuel, pour des noms personnalis\xE9s)",
+    ed_sensors_hint: "Chaque champ affiche d\xE9j\xE0 l'entit\xE9 trouv\xE9e avec le nom standard. Ne la changez que si vos capteurs ont des noms personnalis\xE9s.",
+    ed_loading: "Chargement des s\xE9lecteurs d'entit\xE9s\u2026",
+    eg_main: "Valeurs principales",
+    eg_cellsum: "Statistiques des cellules",
+    eg_temps: "Temp\xE9ratures",
+    eg_cellv: "Tensions des cellules",
+    eg_cellr: "R\xE9sistances des cellules",
+    eg_switches: "Interrupteurs",
+    eg_other: "Autres",
+    ek_cell_voltage: "Tension cellule {n}",
+    ek_cell_resistance: "R\xE9sistance cellule {n}",
+    ek_temperature_sensor: "Capteur de temp\xE9rature {n}",
+    ek_total_voltage: "Tension totale",
+    ek_current: "Courant",
+    ek_power: "Puissance",
+    ek_state_of_charge: "\xC9tat de charge",
+    ek_state_of_health: "\xC9tat de sant\xE9",
+    ek_capacity_remaining: "Capacit\xE9 restante",
+    ek_total_battery_capacity: "Capacit\xE9 totale de la batterie",
+    ek_charging_cycles: "Cycles de charge",
+    ek_max_cell_voltage: "Tension max. cellule",
+    ek_min_cell_voltage: "Tension min. cellule",
+    ek_max_voltage_cell: "Cellule de tension max. (num\xE9ro)",
+    ek_min_voltage_cell: "Cellule de tension min. (num\xE9ro)",
+    ek_delta_cell_voltage: "\xC9cart de tension des cellules",
+    ek_average_cell_voltage: "Tension moyenne des cellules",
+    ek_balancer_bitmask: "Masque d'\xE9quilibrage",
+    ek_power_tube_temperature: "Temp\xE9rature MOS",
+    ek_charging: "Charge",
+    ek_discharging: "D\xE9charge",
+    ek_balancer: "\xC9quilibrage",
+    ek_heating: "Chauffage",
+    ek_balance_starting_voltage: "Tension de d\xE9but d'\xE9quilibrage",
+    ek_balance_trigger_voltage: "Tension de d\xE9clenchement d'\xE9quilibrage",
+    ek_online_status: "\xC9tat en ligne",
+    ek_errors: "Erreurs",
+    ek_hardware_version: "Version mat\xE9rielle",
+    ek_software_version: "Version logicielle",
+    ek_total_runtime_formatted: "Dur\xE9e de fonctionnement totale",
+    ek_charge_status: "\xC9tat de charge (statut)",
+    ek_operation_status: "\xC9tat de fonctionnement",
     lbl_glare: "Reflet de lumi\xE8re sur l'\xE9cran BMS",
     ed_advanced: "R\xE9glages avanc\xE9s",
     lbl_language: "Langue",
@@ -596,6 +780,52 @@
     lbl_title: "Titolo",
     lbl_cells: "Celle / batteria",
     lbl_temps: "Sensori di temperatura",
+    ed_heating: "Mostra il pulsante Riscaldamento (nascondilo se questo BMS non ha piastre riscaldanti)",
+    ed_rows: "Disposizione delle celle",
+    ed_rows_2: "2 file da 4",
+    ed_rows_1: "1 fila da 8",
+    ed_sensors: "Sensori (manuale, per nomi personalizzati)",
+    ed_sensors_hint: "Ogni campo mostra gi\xE0 l'entit\xE0 trovata con il nome standard. Cambiala solo se i tuoi sensori hanno nomi personalizzati.",
+    ed_loading: "Caricamento dei selettori di entit\xE0\u2026",
+    eg_main: "Valori principali",
+    eg_cellsum: "Statistiche celle",
+    eg_temps: "Temperature",
+    eg_cellv: "Tensioni delle celle",
+    eg_cellr: "Resistenze delle celle",
+    eg_switches: "Interruttori",
+    eg_other: "Altro",
+    ek_cell_voltage: "Tensione cella {n}",
+    ek_cell_resistance: "Resistenza cella {n}",
+    ek_temperature_sensor: "Sensore di temperatura {n}",
+    ek_total_voltage: "Tensione totale",
+    ek_current: "Corrente",
+    ek_power: "Potenza",
+    ek_state_of_charge: "Stato di carica",
+    ek_state_of_health: "Stato di salute",
+    ek_capacity_remaining: "Capacit\xE0 residua",
+    ek_total_battery_capacity: "Capacit\xE0 totale della batteria",
+    ek_charging_cycles: "Cicli di carica",
+    ek_max_cell_voltage: "Tensione max cella",
+    ek_min_cell_voltage: "Tensione min cella",
+    ek_max_voltage_cell: "Cella con tensione max (numero)",
+    ek_min_voltage_cell: "Cella con tensione min (numero)",
+    ek_delta_cell_voltage: "Differenza di tensione delle celle",
+    ek_average_cell_voltage: "Tensione media delle celle",
+    ek_balancer_bitmask: "Maschera bilanciamento",
+    ek_power_tube_temperature: "Temperatura MOS",
+    ek_charging: "Carica",
+    ek_discharging: "Scarica",
+    ek_balancer: "Bilanciamento",
+    ek_heating: "Riscaldamento",
+    ek_balance_starting_voltage: "Tensione di avvio bilanciamento",
+    ek_balance_trigger_voltage: "Tensione di attivazione bilanciamento",
+    ek_online_status: "Stato online",
+    ek_errors: "Errori",
+    ek_hardware_version: "Versione hardware",
+    ek_software_version: "Versione software",
+    ek_total_runtime_formatted: "Tempo di funzionamento totale",
+    ek_charge_status: "Stato di carica (stato)",
+    ek_operation_status: "Stato di funzionamento",
     lbl_glare: "Riflesso di luce sullo schermo BMS",
     ed_advanced: "Impostazioni avanzate",
     lbl_language: "Lingua",
@@ -722,6 +952,52 @@
     lbl_title: "Titlu",
     lbl_cells: "Celule / baterie",
     lbl_temps: "Senzori temperatur\u0103",
+    ed_heating: "Afi\u0219eaz\u0103 butonul \xCEnc\u0103lzire (ascunde-l dac\u0103 acest BMS nu are pl\u0103ci de \xEEnc\u0103lzire)",
+    ed_rows: "Aranjarea celulelor",
+    ed_rows_2: "2 r\xE2nduri de 4",
+    ed_rows_1: "1 r\xE2nd de 8",
+    ed_sensors: "Senzori (manual, pentru denumiri personalizate)",
+    ed_sensors_hint: "Fiecare c\xE2mp arat\u0103 deja entitatea g\u0103sit\u0103 cu denumirea standard. Schimb-o doar dac\u0103 senzorii t\u0103i au denumiri personalizate.",
+    ed_loading: "Se \xEEncarc\u0103 selectoarele de entit\u0103\u021Bi\u2026",
+    eg_main: "Valori principale",
+    eg_cellsum: "Statistici celule",
+    eg_temps: "Temperaturi",
+    eg_cellv: "Tensiunile celulelor",
+    eg_cellr: "Rezisten\u021Bele celulelor",
+    eg_switches: "Switch-uri",
+    eg_other: "Altele",
+    ek_cell_voltage: "Tensiune celula {n}",
+    ek_cell_resistance: "Rezisten\u021B\u0103 celula {n}",
+    ek_temperature_sensor: "Senzor temperatur\u0103 {n}",
+    ek_total_voltage: "Tensiune total\u0103",
+    ek_current: "Curent",
+    ek_power: "Putere",
+    ek_state_of_charge: "Stare de \xEEnc\u0103rcare (SoC)",
+    ek_state_of_health: "Stare de s\u0103n\u0103tate (SoH)",
+    ek_capacity_remaining: "Capacitate r\u0103mas\u0103",
+    ek_total_battery_capacity: "Capacitate total\u0103 baterie",
+    ek_charging_cycles: "Cicluri de \xEEnc\u0103rcare",
+    ek_max_cell_voltage: "Tensiune maxim\u0103 celul\u0103",
+    ek_min_cell_voltage: "Tensiune minim\u0103 celul\u0103",
+    ek_max_voltage_cell: "Celula cu tensiune maxim\u0103 (num\u0103r)",
+    ek_min_voltage_cell: "Celula cu tensiune minim\u0103 (num\u0103r)",
+    ek_delta_cell_voltage: "Diferen\u021B\u0103 tensiune celule",
+    ek_average_cell_voltage: "Tensiune medie celul\u0103",
+    ek_balancer_bitmask: "Masc\u0103 balansare",
+    ek_power_tube_temperature: "Temperatur\u0103 MOS",
+    ek_charging: "\xCEnc\u0103rcare",
+    ek_discharging: "Desc\u0103rcare",
+    ek_balancer: "Balansare",
+    ek_heating: "\xCEnc\u0103lzire",
+    ek_balance_starting_voltage: "Tensiune de pornire balansare",
+    ek_balance_trigger_voltage: "Tensiune de declan\u0219are balansare",
+    ek_online_status: "Stare online",
+    ek_errors: "Erori",
+    ek_hardware_version: "Versiune hardware",
+    ek_software_version: "Versiune software",
+    ek_total_runtime_formatted: "Timp total de func\u021Bionare",
+    ek_charge_status: "Stare \xEEnc\u0103rcare",
+    ek_operation_status: "Stare func\u021Bionare",
     lbl_glare: "Reflexia de lumin\u0103 pe ecranul BMS",
     ed_advanced: "Set\u0103ri avansate",
     lbl_language: "Limb\u0103",
@@ -831,9 +1107,9 @@
   </div>
   </div>`;
   }
-  function packSvg(n, id, np = 1, layout = "top-left") {
-    const { W, H, wh } = PK, per = Math.ceil(n / 2), xl = 236, xr = 834, slot = (xr - xl) / Math.max(8, per), xe = xl + per * slot, cw = slot * 0.9, ch = 165, dep = 40, f = 0.94, vx = (xl + xe) / 2, rowY = [58, 314];
-    const startRow = /^bottom/.test(layout) ? 1 : 0, fromLeft = !/right$/.test(layout);
+  function packSvg(n, id, np = 1, layout = "top-left", rows = 2) {
+    const { W, H, wh } = PK, per = rows === 1 ? n : Math.ceil(n / 2), xl = 236, xr = 834, slot = (xr - xl) / Math.max(8, per), xe = xl + per * slot, cw = slot * 0.9, ch = 165, dep = 40, f = 0.94, vx = (xl + xe) / 2, rowY = rows === 1 ? [H / 2 - (ch + 33 - dep) / 2] : [58, 314];
+    const startRow = rows === 1 ? 0 : /^bottom/.test(layout) ? 1 : 0, fromLeft = rows === 1 || !/right$/.test(layout);
     const kOf = (row, j) => row === startRow ? fromLeft ? j : per - 1 - j : per + (fromLeft ? per - 1 - j : j);
     const cxOf = (j) => xl + (j + 0.5) * slot, x0Of = (j) => cxOf(j) - cw / 2, bk = (x) => vx + (x - vx) * f, mirrored = (j) => j % 2 === 1;
     const lid = (row, j, u, v) => {
@@ -852,7 +1128,7 @@
     <circle cx="${px}" cy="${py - 8.5}" r="2.2" fill="${plus ? "#b5594f" : "#6b727c"}"/>`;
     };
     let cells = "", shd = "", cables = "", under = "", marks = "";
-    for (let row = 0; row < 2; row++) {
+    for (let row = 0; row < rows; row++) {
       const order = Array.from({ length: per }, (_, j) => j).sort(
         (a, b) => Math.abs(b + 0.5 - per / 2) - Math.abs(a + 0.5 - per / 2)
       );
@@ -935,12 +1211,12 @@
     <circle cx="${e[0]}" cy="${e[1]}" r="1.6" fill="#2b2f36"/>`
     ).join("")}`;
     const BLK = "#1b1e23", RED = "#a8453c";
-    for (let row = 0; row < 2; row++) for (let j = 0; j < per - 1; j++) cables += bar(row, j, mirrored(j) ? FRONT : BACK);
+    for (let row = 0; row < rows; row++) for (let j = 0; j < per - 1; j++) cables += bar(row, j, mirrored(j) ? FRONT : BACK);
     const PERS = [0.93, -0.07, 0.075, 1];
     const bs = 0.75, K = bs / (270 / 490), bcx = 112, bcy = H / 2, bt = (px, py) => [bcx - (px - 80) * bs, bcy - (py - 245) * bs];
     const cellSide = [bt(17.5, 191.5), bt(17.5, 225)], outSide = [bt(123.5, 185), bt(123.5, 224)], led = [bt(35, 147.5), bt(70, 147.5), bt(105, 147.5)], hb = bt(120, 22);
-    const first = stud(0, 0, "L"), s1 = stud(0, per - 1, "R"), s2 = stud(1, per - 1, "R"), last = stud(1, 0, "L"), mPost = [14, bcy + 40 * bs], pPost = [14, bcy + 210 * bs], xf = xe + 14;
-    {
+    const first = stud(0, 0, "L"), s1 = stud(0, per - 1, "R"), s2 = rows === 1 ? s1 : stud(1, per - 1, "R"), last = rows === 1 ? stud(0, per - 1, "R") : stud(1, 0, "L"), mPost = [14, bcy + 40 * bs], pPost = [14, bcy + 210 * bs], xf = xe + 14;
+    if (rows === 2) {
       const w = 8.8, h = w / 2, y1 = s1[1] - 2, y2 = s2[1] - 2, x1 = s1[0], x2 = s2[0], X = xf, ro = 5.5, ri = 1.3, f2 = (n2) => n2.toFixed(1), P2 = (a) => a.map((p) => f2(p[0]) + "," + f2(p[1])).join(" ");
       const sv = mirrored(per - 1) ? FRONT : BACK, ul = lid(0, per - 1, 0.16, sv + 0.11)[0], ll = lid(0, per - 1, 0.16, sv - 0.11)[0], a1 = ul, a2 = ul, body = `M${f2(ul)} ${f2(y1 - h)} H${f2(X + h - ro)} Q${f2(X + h)} ${f2(y1 - h)} ${f2(X + h)} ${f2(y1 - h + ro)} V${f2(y2 + h - ro)} Q${f2(X + h)} ${f2(y2 + h)} ${f2(X + h - ro)} ${f2(y2 + h)} H${f2(ll)} L${f2(ul)} ${f2(y2 - h)} H${f2(X - h + ri)} Q${f2(X - h)} ${f2(y2 - h)} ${f2(X - h)} ${f2(y2 - h - ri)} V${f2(y1 + h + ri)} Q${f2(X - h)} ${f2(y1 + h)} ${f2(X - h + ri)} ${f2(y1 + h)} H${f2(ll)}Z`, d = `M${f2(x1)} ${f2(y1)} H${X} V${f2(y2)} H${f2(x2)}`;
       const hs = `M${f2(x1 + 22)} ${f2(y1)} H${X} V${f2(y2)} H${f2(x2 + 22)}`;
@@ -970,16 +1246,19 @@
         <path d="M${f2(ul + 3)} ${f2(y1 - h + 1.5)} H${f2(X + h - ro - 1)} Q${f2(X + h - 1.5)} ${f2(y1 - h + 1.5)} ${f2(X + h - 1.5)} ${f2(y1 - h + ro)} V${f2(y2 + h - ro)}" fill="none" stroke="#ffc08a" stroke-opacity=".65" stroke-width="1"/>
       </g>` + dark(y1, 1) + dark(y2, -1) + crease(y1, 1) + crease(y2, -1) + `<path class="fl" d="${d}" fill="none" stroke="var(--txt)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="2 9"/>` + hexAt(x1, y1) + hexAt(x2, y2);
     }
-    under += cable(`M${last[0]} ${last[1]} C${last[0] - 50} ${last[1]} 70 ${pPost[1]} ${pPost[0]} ${pPost[1]}`, RED, [
-      last
-    ]);
-    cables += cellSide.map(
-      (t, i) => cable(
-        `M${t[0]} ${t[1]} C${t[0] + 44} ${t[1]} ${first[0] - 56} ${first[1] + 58 * K - i * 6 * K} ${first[0] - 22} ${first[1] + 6 * K - i * 3 * K} L${first[0]} ${first[1] - i * 3 + 0}`,
-        BLK,
-        [t]
-      )
-    ).join("");
+    if (rows === 1) {
+      const yb = rowY[0] + ch + 52;
+      const xo = xf + 2;
+      under += cable(
+        // a soft, slightly slack cable (not a rigid bar): it arcs out and down at the end of the row, sags a little under the cells and swings into the post
+        `M${last[0]} ${last[1]} C${last[0] + 30} ${last[1] - 14} ${xo} ${last[1] - 4} ${xo} ${last[1] + 42} C${xo} ${yb - 64} ${xo - 20} ${yb + 6} ${xo - 78} ${yb + 10} C600 ${yb + 30} 390 ${yb - 16} 200 ${yb + 2} C120 ${yb + 10} 66 ${pPost[1] - 30} ${pPost[0]} ${pPost[1]}`,
+        RED,
+        [last]
+      );
+    } else
+      under += cable(`M${last[0]} ${last[1]} C${last[0] - 50} ${last[1]} 70 ${pPost[1]} ${pPost[0]} ${pPost[1]}`, RED, [
+        last
+      ]);
     cables += cellSide.map(
       (t, i) => cable(
         `M${t[0]} ${t[1]} C${t[0] + 44} ${t[1]} ${first[0] - 56} ${first[1] + 58 * K - i * 6 * K} ${first[0] - 22} ${first[1] + 6 * K - i * 3 * K} L${first[0]} ${first[1] - i * 3 + 0}`,
@@ -1690,16 +1969,23 @@
     font-weight: 400;
     letter-spacing: 1px;
   }
+  /* switch buttons: one grid, so all of them always have the same width and the same layout; the number of columns follows the width of the battery card (see the container queries below) */
   .ctrl {
-    display: flex;
+    display: grid;
+    grid-template-columns: repeat(var(--n, 3), minmax(0, 1fr));
     gap: 8px;
-    flex-wrap: wrap;
+  }
+  .ctrl .confirm {
+    grid-column: 1 / -1;
   }
   .sw {
-    flex: 1;
-    min-width: 92px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
     cursor: pointer;
-    text-align: center;
+    text-align: left;
+    line-height: 1.2;
     padding: 9px;
     border-radius: 12px;
     border: 1px solid var(--line);
@@ -1710,12 +1996,20 @@
   }
   .sw::before {
     content: "";
-    display: inline-block;
+    flex: none;
     width: 8px;
     height: 8px;
     border-radius: 50%;
-    margin-right: 7px;
+    margin-right: 1px;
     background: #555;
+  }
+  .sw .ic {
+    flex: none;
+    font-style: normal;
+  }
+  .sw .tx {
+    min-width: 0;
+    overflow-wrap: anywhere;
   }
   .sw.on {
     border-color: var(--grn);
@@ -2194,8 +2488,7 @@
   }
   .facts .tmp b {
     display: grid;
-    grid-auto-flow: column;
-    grid-auto-columns: 1fr;
+    grid-template-columns: repeat(auto-fit, minmax(54px, 1fr));
     gap: 6px;
     text-align: center;
   }
@@ -2962,6 +3255,25 @@
   }
   .bc .ctrl {
     margin-top: 2px;
+  }
+  /* 4 buttons: 4 in a row, then 2 + 2, then one under the other; 3 buttons: 3 in a row, then 2 + the last one full width, then one under the other */
+  @container bc (max-width: 520px) {
+    .ctrl[style*="--n: 4"] {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  @container bc (max-width: 400px) {
+    .ctrl[style*="--n: 3"] {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .ctrl[style*="--n: 3"] .sw:last-child {
+      grid-column: 1 / -1;
+    }
+  }
+  @container bc (max-width: 250px) {
+    .ctrl {
+      grid-template-columns: minmax(0, 1fr) !important;
+    }
   }
   /* ---- weakest / strongest cell, balancing bolts, inline confirmation */
   .pk2 .mk {
@@ -4054,6 +4366,7 @@
     </div>
     <div class="facts" data-k="facts">
     </div>
+    <div class="facts tmpw" data-k="tmpw"></div>
     <div class="ctrl" data-k="ctrl"></div><div class="err" data-k="err"></div><div class="bc-foot" data-k="bcfoot">\u2013</div></div>`;
       root.innerHTML = `<style>${CSS}</style><ha-card>
     <div class="hdr"><div class="logo"><b>${c.title || tt("title_default")}</b></div></div>
@@ -4141,6 +4454,10 @@
     _nOf(b) {
       const n = +b.cells || +this._cfg.cells || 16;
       return n <= 8 ? 8 : 16;
+    }
+    // 8 cells can be drawn in two rows of 4 (default) or in one row of 8 (rows: 1)
+    _rowsOf(b) {
+      return this._nOf(b) === 8 && +b.rows === 1 ? 1 : 2;
     }
     _tOf(b) {
       const t = b.temps ?? this._cfg.temps;
@@ -4243,14 +4560,14 @@
           grp
         ) : b, dmG = (G0.mx - G0.mn) * 1e3;
         const card = r.querySelectorAll(".bc")[i], q = (k) => card.querySelector(`[data-k="${k}"]`) || (this._pp && this._pp.strip ? this._pp.strip.querySelector(`[data-k="${k}"]`) : null), dmv = (b.mx - b.mn) * 1e3, tv = b.temps.filter((x) => !isNaN(x));
-        const bcfg = this._cfg.batteries[ci], n = this._nOf(bcfg), lay = bcfg.layout || (ci === 1 ? "bottom-left" : "top-left"), M = (el, key, dom) => {
+        const bcfg = this._cfg.batteries[ci], n = this._nOf(bcfg), lay = bcfg.layout || (ci === 1 ? "bottom-left" : "top-left"), rw = this._rowsOf(bcfg), M = (el, key, dom) => {
           if (el && !el.dataset.m) el.dataset.m = this._id(bcfg, key, dom);
         };
         {
-          const s0 = q("bccells") || (this._pp && this._pp.i === i ? this._pp.strip : null), sg0 = n + "/" + (grp ? grp.order.length : 1) + "/" + lay;
+          const s0 = q("bccells") || (this._pp && this._pp.i === i ? this._pp.strip : null), sg0 = n + "/" + (grp ? grp.order.length : 1) + "/" + lay + "/" + rw;
           if (s0 && s0._n !== sg0) {
             s0._n = sg0;
-            s0.innerHTML = packSvg(n, i, grp ? grp.order.length : 1, lay) + packOverlay(!!grp, bcfg.name || bcfg.entity_base);
+            s0.innerHTML = packSvg(n, i, grp ? grp.order.length : 1, lay, rw) + packOverlay(!!grp, bcfg.name || bcfg.entity_base);
             this._elInit(s0);
             s0.addEventListener("click", (e) => {
               if (e.target.closest(".dsp")) {
@@ -4297,10 +4614,10 @@
         setH(q("bcd"), fmt(dmv, 0) + "<small>mV</small>");
         q("bcd").style.color = dmv < 15 ? "var(--grn)" : dmv < 45 ? "var(--gold)" : "var(--red)";
         const strip = q("bccells") || (this._pp && this._pp.i === i ? this._pp.strip : null), st = b.state === "offline" ? "idle" : b.state;
-        const sig = n + "/" + (grp ? grp.order.length : 1) + "/" + lay;
+        const sig = n + "/" + (grp ? grp.order.length : 1) + "/" + lay + "/" + rw;
         if (strip._n !== sig) {
           strip._n = sig;
-          strip.innerHTML = packSvg(n, i, grp ? grp.order.length : 1, lay) + packOverlay(!!grp, bcfg.name || bcfg.entity_base);
+          strip.innerHTML = packSvg(n, i, grp ? grp.order.length : 1, lay, rw) + packOverlay(!!grp, bcfg.name || bcfg.entity_base);
           this._elInit(strip);
           strip.addEventListener("click", (e) => {
             if (e.target.closest(".dsp")) {
@@ -4425,12 +4742,7 @@
             "Max",
             `<i>${E("#" + ((imx >= 0 ? imx : b.cells.indexOf(vmax)) + 1), "max_voltage_cell")}</i> \xB7 ${fmt(vmax, 3)} V`,
             "max_cell_voltage"
-          ) + `<div class="tmp"><span>${tt("temperature")}</span><b>${[
-            ...b.temps.map(
-              (t, i2) => E(`<small>T${i2 + 1}</small>${isNaN(t) ? "\u2013" : fmt(t, 1) + " \xB0C"}`, `temperature_sensor_${i2 + 1}`)
-            ),
-            E(`<small>MOS</small>${fmt(b.mos, 0)} \xB0C`, "power_tube_temperature")
-          ].join("")}</b></div>` + row(
+          ) + row(
             tt("cycles_soh"),
             `${E(fmt(b.cyc, 0), "charging_cycles")} \xB7 ${E(fmt(b.soh, 0) + "%", "state_of_health")}`,
             "charging_cycles"
@@ -4448,6 +4760,15 @@
             `${tt("bms_hw")} \xB7 ${tt("bms_sw")} \xB7 ${tt("bms_time")}`,
             `${E(b.hw || "\u2013", "hardware_version")} \xB7 ${E(b.swv || "\u2013", "software_version")} \xB7 ${E(b.rt || "\u2013", "total_runtime_formatted")}`
           )
+        );
+        setH(
+          q("tmpw"),
+          `<div class="tmp"><span>${tt("temperature")}</span><b>${[
+            ...b.temps.map(
+              (t, i2) => E(`<small>T${i2 + 1}</small>${isNaN(t) ? "\u2013" : fmt(t, 1) + " \xB0C"}`, `temperature_sensor_${i2 + 1}`)
+            ),
+            E(`<small>MOS</small>${fmt(b.mos, 0)} \xB0C`, "power_tube_temperature")
+          ].join("")}</b></div>`
         );
         const ct = q("ctrl");
         if (!ct.children.length || ct._ci !== ci) {
@@ -4492,7 +4813,7 @@
       svg.querySelectorAll(".fl").forEach((path) => {
         const len = path.getTotalLength();
         if (!len) return;
-        const cnt = clamp(Math.round(len / 14), 2, 6), stepL = 3, np = Math.ceil(len / stepL) + 2, pts = new Float32Array(np * 2);
+        const cnt = clamp(Math.round(len / 17), 2, 60), stepL = 3, np = Math.ceil(len / stepL) + 2, pts = new Float32Array(np * 2);
         for (let k = 0; k < np; k++) {
           const pt = path.getPointAtLength(Math.min(len, k * stepL));
           pts[k * 2] = pt.x;
@@ -4876,15 +5197,16 @@
     _ctrlButtons(ct, i) {
       ST.lang = this._lang || ST.lang;
       const base = this._cfg.batteries[i], list = [
-        ["charging", "\u26A1 " + tt("sw_charge"), tt("sw_charge_n")],
-        ["discharging", "\u{1F50C} " + tt("sw_discharge"), tt("sw_discharge_n")],
-        ["balancer", "\u2696 " + tt("sw_balance"), tt("sw_balance_n")]
+        ["charging", "\u26A1", tt("sw_charge"), tt("sw_charge_n")],
+        ["discharging", "\u{1F50C}", tt("sw_discharge"), tt("sw_discharge_n")],
+        ["balancer", "\u2696", tt("sw_balance"), tt("sw_balance_n")]
       ];
-      if (this._hass && this._hass.states[this._id(base, "heating", "switch")])
-        list.push(["heating", "\u{1F525} " + tt("sw_heat"), tt("sw_heat_n")]);
+      if (base.heating !== false && this._hass && this._hass.states[this._id(base, "heating", "switch")])
+        list.push(["heating", "\u{1F525}", tt("sw_heat"), tt("sw_heat_n")]);
       ct.innerHTML = "";
-      list.forEach(([k, l, nm]) => {
-        const e = html(`<div class="sw" data-sw="${k}">${l}</div>`);
+      ct.style.setProperty("--n", list.length);
+      list.forEach(([k, ic, l, nm]) => {
+        const e = html(`<div class="sw" data-sw="${k}"><i class="ic">${ic}</i><span class="tx">${l}</span></div>`);
         e.onclick = () => this._askSwitch(ct, i, k, nm);
         ct.appendChild(e);
       });
@@ -5120,6 +5442,36 @@
     language: tt("lbl_language")
   })[n] || (String(n).startsWith("v_") ? "Victron \u2013 " + tt("vt_" + n.slice(2)) : n);
   var VIC_KEYS = [...VIC_EXTRA, ...VIC_TILES].map((t) => t.k);
+  var NUMD = ["sensor", "number"];
+  var BAT_DOM = {
+    total_battery_capacity: "number",
+    balance_starting_voltage: "number",
+    balance_trigger_voltage: "number",
+    online_status: "binary_sensor",
+    charging: "switch",
+    discharging: "switch",
+    balancer: "switch",
+    heating: "switch"
+  };
+  var batDom = (k) => BAT_DOM[k] || "sensor";
+  var batSel = (k) => ({ entity: { domain: BAT_DOM[k] ? [BAT_DOM[k]] : NUMD } });
+  var batGroups = (n, t) => [
+    ["eg_main", ["total_voltage", "current", "power", "state_of_charge", "state_of_health", "capacity_remaining", "total_battery_capacity", "charging_cycles"]],
+    ["eg_cellsum", ["max_cell_voltage", "min_cell_voltage", "max_voltage_cell", "min_voltage_cell", "delta_cell_voltage", "average_cell_voltage", "balancer_bitmask"]],
+    ["eg_temps", [...Array.from({ length: t }, (_, i) => "temperature_sensor_" + (i + 1)), "power_tube_temperature"]],
+    ["eg_cellv", Array.from({ length: n }, (_, i) => "cell_voltage_" + (i + 1))],
+    ["eg_cellr", Array.from({ length: n }, (_, i) => "cell_resistance_" + (i + 1))],
+    ["eg_switches", ["charging", "discharging", "balancer", "heating"]],
+    ["eg_other", ["balance_starting_voltage", "balance_trigger_voltage", "online_status", "errors", "hardware_version", "software_version", "total_runtime_formatted", "charge_status", "operation_status"]]
+  ];
+  var batLabel = (k) => {
+    const m = /^(cell_voltage|cell_resistance|temperature_sensor)_(\d+)$/.exec(k);
+    if (m) return tt("ek_" + m[1], { n: m[2] });
+    const tr = tt("ek_" + k);
+    if (tr !== "ek_" + k) return tr;
+    const s = k.replace(/_/g, " ");
+    return s.charAt(0).toUpperCase() + s.slice(1);
+  };
   var stable = (o) => JSON.stringify(
     o,
     (k, v) => v && typeof v === "object" && !Array.isArray(v) ? Object.fromEntries(
@@ -5166,6 +5518,7 @@
         this._ft = t;
         if (this._form) this._form.hass = h;
         if (this._vform) this._vform.hass = h;
+        (this._sf || []).forEach((f) => f.hass = h);
       }
       if (first && this._config) this._render();
     }
@@ -5190,10 +5543,13 @@
       const sync = () => {
         const o = sel.options[sel.selectedIndex];
         b.textContent = o ? o.text : "";
+        b.disabled = sel.disabled;
+        b.style.opacity = sel.disabled ? 0.5 : "";
       };
       sel._sync = sync;
       b.onclick = (e) => {
         e.stopPropagation();
+        if (sel.disabled) return;
         const open = l.hidden;
         root.querySelectorAll(".ddl").forEach((x) => {
           x.hidden = true;
@@ -5229,6 +5585,108 @@
         this.dispatchEvent(new CustomEvent("config-changed", { detail: { config: cfg }, bubbles: true, composed: true }));
       }, 150);
     }
+    // the manual sensors of one battery: a collapsed section with collapsed groups. Home Assistant's entity pickers (ha-form) are heavy: dozens of them at
+    // once take 20-30 s, so the pickers of a group are only created when that group is opened. Without ha-form (or when it draws nothing) plain inputs with a list of entities are used
+    _sensorsUI(b, i) {
+      const d = document.createElement("details");
+      d.className = "bsd";
+      d.innerHTML = `<summary>${tt("ed_sensors")}</summary><div class="hint">${tt("ed_sensors_hint")}</div><div class="bsf"></div>`;
+      const dflt = (k) => `${batDom(k)}.${b.entity_base}_${k}`, cur = (k) => b.entities && b.entities[k] || (this._hass && this._hass.states[dflt(k)] ? dflt(k) : ""), sleep = (ms) => new Promise((r) => setTimeout(r, ms)), slot = () => d.querySelector(".bsf");
+      const dims = () => {
+        const n = +(b.cells ?? this._config.cells ?? 16) <= 8 ? 8 : 16, t = +(b.temps ?? this._config.temps ?? 4);
+        return batGroups(n, t).filter((g) => g[1].length);
+      };
+      const commit = (v) => {
+        const ent = {};
+        Object.entries(v || {}).forEach(([k, x]) => {
+          if (x && x !== dflt(k)) ent[k] = x;
+        });
+        const old = { ...b.entities || {} };
+        if (old.display_always_on) ent.display_always_on = old.display_always_on;
+        if (stable(old) === stable(ent)) return false;
+        if (Object.keys(ent).length) b.entities = ent;
+        else delete b.entities;
+        this._emit();
+        return true;
+      };
+      let all = {};
+      const plainFields = (box, keys) => {
+        const ids = this._hass ? Object.keys(this._hass.states) : [], list = (k) => batDom(k) === "switch" ? "s" : batDom(k) === "binary_sensor" ? "b" : "n", dl = (id, pre) => `<datalist id="${id}">${ids.filter((x) => pre.some((p) => x.startsWith(p))).map((x) => `<option value="${x}">`).join("")}</datalist>`;
+        box.innerHTML = dl(`bl${i}n`, ["sensor.", "number."]) + dl(`bl${i}s`, ["switch."]) + dl(`bl${i}b`, ["binary_sensor."]) + keys.map((k) => `<label class="fld"><span>${batLabel(k)}</span><input class="bsi" data-k="${k}" list="bl${i}${list(k)}" placeholder="${dflt(k)}"></label>`).join("");
+        box.querySelectorAll(".bsi").forEach((inp) => {
+          inp.value = all[inp.dataset.k] || "";
+          inp.onchange = () => {
+            all[inp.dataset.k] = inp.value.trim();
+            commit(all);
+          };
+        });
+      };
+      const build = (usePlain) => {
+        all = Object.fromEntries(dims().flatMap((g) => g[1]).map((k) => [k, cur(k)]));
+        slot().innerHTML = "";
+        dims().forEach(([t, keys]) => {
+          const g = document.createElement("details");
+          g.innerHTML = `<summary>${tt(t)} <small>(${keys.length})</small></summary><div class="gb"></div>`;
+          const gb = g.querySelector(".gb");
+          let built = false;
+          g.addEventListener("toggle", async () => {
+            if (!g.open || built) return;
+            built = true;
+            if (usePlain) return plainFields(gb, keys);
+            const wait = document.createElement("div");
+            wait.className = "hint";
+            wait.textContent = tt("ed_loading");
+            gb.appendChild(wait);
+            await sleep(40);
+            const f = document.createElement("ha-form");
+            try {
+              this._sf.add(f);
+              f.hass = this._hass;
+              f.computeLabel = (s) => batLabel(s.name);
+              f.schema = keys.map((k) => ({ name: k, selector: batSel(k) }));
+              f.data = Object.fromEntries(keys.map((k) => [k, all[k]]));
+              f.addEventListener("value-changed", (e) => {
+                e.stopPropagation();
+                const v = e.detail.value || {};
+                f.data = v;
+                Object.assign(all, v);
+                commit(all);
+              });
+              gb.appendChild(f);
+              await Promise.race([f.updateComplete, sleep(4e3)]);
+              await sleep(400);
+            } catch (e) {
+            }
+            wait.remove();
+            if (d.isConnected && !(f.shadowRoot && f.shadowRoot.childElementCount)) {
+              this._sf.delete(f);
+              plainFields(gb, keys);
+            }
+          });
+          slot().appendChild(g);
+        });
+      };
+      let mode = null;
+      d._rebuild = () => {
+        if (mode !== null) build(mode === "plain");
+      };
+      d.addEventListener("toggle", async () => {
+        if (!d.open || mode !== null) return;
+        mode = "pending";
+        try {
+          if (!customElements.get("ha-form") && window.loadCardHelpers) {
+            const h = await Promise.race([window.loadCardHelpers(), sleep(3e3)]);
+            if (h && h.createCardElement) await Promise.race([h.createCardElement({ type: "entities", entities: [] }), sleep(3e3)]);
+          }
+          if (customElements.get("ha-form")) await Promise.race([customElements.whenDefined("ha-form"), sleep(1e3)]);
+        } catch (e) {
+        }
+        if (!d.isConnected) return;
+        mode = customElements.get("ha-form") ? "ha" : "plain";
+        build(mode === "plain");
+      });
+      return d;
+    }
     async _render() {
       if (!this._config) return;
       const root = this.shadowRoot || this.attachShadow({ mode: "open" }), token = this._tok = (this._tok || 0) + 1, tok2 = token;
@@ -5254,6 +5712,7 @@
       </div>
     </details>`;
       this._vform = null;
+      this._sf = /* @__PURE__ */ new Set();
       const detected = this._hass ? discoverBatteries(this._hass) : [];
       root.querySelector("#dh").textContent = this._hass ? tt("ed_found", { n: detected.length }) : "";
       const bats = root.querySelector("#bats");
@@ -5280,7 +5739,11 @@
         <label class="fld"><span>${tt("lbl_temps")}</span>
           <select class="b-temps">${[0, 1, 2, 3, 4].map((v) => `<option value="${v}">${v}</option>`).join("")}</select>
         </label>
+        <label class="fld b-rowsw"><span>${tt("ed_rows")}</span>
+          <select class="b-rows"><option value="2">${tt("ed_rows_2")}</option><option value="1">${tt("ed_rows_1")}</option></select>
+        </label>
         </div>
+      <label class="chk"><input class="b-heat" type="checkbox"> ${tt("ed_heating")}</label>
       <div class="fg"><label class="fld"><span>${tt("ed_cell1")}</span><select class="lay">${[
           ["top-left", tt("pos_tl")],
           ["top-right", tt("pos_tr")],
@@ -5298,21 +5761,46 @@
           </label>
         </div>`;
         const nm = row.querySelector(".nm"), sel = row.querySelector(".sel"), lay = row.querySelector(".lay"), role = row.querySelector(".role"), ds = row.querySelector(".ds");
+        const sd = this._sensorsUI(b, i);
+        row.appendChild(sd);
         nm.value = b.name || "";
         sel.value = b.entity_base || "";
         lay.value = b.layout || (i === 1 ? "bottom-left" : "top-left");
         role.value = b.role === "master" ? "master" : b.slave ? "slave:" + b.slave : b.role === "slave" ? "slave:" + (pos > 0 ? pos : 1) : "";
         ds.value = b.entities && b.entities.display_always_on || (this._hass && this._hass.states[defId] ? defId : "");
         {
-          const bc = row.querySelector(".b-cells"), bt = row.querySelector(".b-temps");
+          const bc = row.querySelector(".b-cells"), bt = row.querySelector(".b-temps"), bh = row.querySelector(".b-heat"), br = row.querySelector(".b-rows"), showRows = () => {
+            const eight = +(b.cells ?? this._config.cells ?? 16) <= 8;
+            row.querySelector(".b-rowsw").style.display = eight ? "" : "none";
+            lay.disabled = eight && b.rows === 1;
+            if (lay._sync) lay._sync();
+          };
+          br.value = b.rows === 1 ? "1" : "2";
+          br.onchange = (e) => {
+            if (+e.target.value === 1) b.rows = 1;
+            else delete b.rows;
+            showRows();
+            this._emit();
+          };
+          showRows();
+          bh.checked = b.heating !== false;
+          bh.onchange = (e) => {
+            if (e.target.checked) delete b.heating;
+            else b.heating = false;
+            this._emit();
+          };
           bc.value = +(b.cells ?? this._config.cells ?? 16) <= 8 ? "8" : "16";
           bt.value = String(b.temps ?? this._config.temps ?? 4);
           bc.onchange = (e) => {
             b.cells = +e.target.value;
+            if (b.cells > 8) delete b.rows;
+            showRows();
+            sd._rebuild();
             this._emit();
           };
           bt.onchange = (e) => {
             b.temps = +e.target.value;
+            sd._rebuild();
             this._emit();
           };
         }
