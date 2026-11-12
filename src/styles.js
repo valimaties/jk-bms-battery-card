@@ -558,16 +558,23 @@ export const CSS = `
     font-weight: 400;
     letter-spacing: 1px;
   }
+  /* switch buttons: one grid, so all of them always have the same width and the same layout; the number of columns follows the width of the battery card (see the container queries below) */
   .ctrl {
-    display: flex;
+    display: grid;
+    grid-template-columns: repeat(var(--n, 3), minmax(0, 1fr));
     gap: 8px;
-    flex-wrap: wrap;
+  }
+  .ctrl .confirm {
+    grid-column: 1 / -1;
   }
   .sw {
-    flex: 1;
-    min-width: 92px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
     cursor: pointer;
-    text-align: center;
+    text-align: left;
+    line-height: 1.2;
     padding: 9px;
     border-radius: 12px;
     border: 1px solid var(--line);
@@ -578,12 +585,20 @@ export const CSS = `
   }
   .sw::before {
     content: "";
-    display: inline-block;
+    flex: none;
     width: 8px;
     height: 8px;
     border-radius: 50%;
-    margin-right: 7px;
+    margin-right: 1px;
     background: #555;
+  }
+  .sw .ic {
+    flex: none;
+    font-style: normal;
+  }
+  .sw .tx {
+    min-width: 0;
+    overflow-wrap: anywhere;
   }
   .sw.on {
     border-color: var(--grn);
@@ -1062,8 +1077,7 @@ export const CSS = `
   }
   .facts .tmp b {
     display: grid;
-    grid-auto-flow: column;
-    grid-auto-columns: 1fr;
+    grid-template-columns: repeat(auto-fit, minmax(54px, 1fr));
     gap: 6px;
     text-align: center;
   }
@@ -1830,6 +1844,25 @@ export const CSS = `
   }
   .bc .ctrl {
     margin-top: 2px;
+  }
+  /* 4 buttons: 4 in a row, then 2 + 2, then one under the other; 3 buttons: 3 in a row, then 2 + the last one full width, then one under the other */
+  @container bc (max-width: 520px) {
+    .ctrl[style*="--n: 4"] {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  @container bc (max-width: 400px) {
+    .ctrl[style*="--n: 3"] {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .ctrl[style*="--n: 3"] .sw:last-child {
+      grid-column: 1 / -1;
+    }
+  }
+  @container bc (max-width: 250px) {
+    .ctrl {
+      grid-template-columns: minmax(0, 1fr) !important;
+    }
   }
   /* ---- weakest / strongest cell, balancing bolts, inline confirmation */
   .pk2 .mk {

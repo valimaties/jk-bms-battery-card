@@ -281,6 +281,7 @@ export class JkBatteryCard extends HTMLElement {
     </div>
     <div class="facts" data-k="facts">
     </div>
+    <div class="facts tmpw" data-k="tmpw"></div>
     <div class="ctrl" data-k="ctrl"></div><div class="err" data-k="err"></div><div class="bc-foot" data-k="bcfoot">–</div></div>`;
     root.innerHTML = `<style>${CSS}</style><ha-card>
     <div class="hdr"><div class="logo"><b>${c.title || tt("title_default")}</b></div></div>
@@ -399,6 +400,10 @@ export class JkBatteryCard extends HTMLElement {
   _nOf(b) {
     const n = +b.cells || +this._cfg.cells || 16;
     return n <= 8 ? 8 : 16;   // only 8 or 16 cells are supported (same as the editor)
+  }
+  // 8 cells can be drawn in two rows of 4 (default) or in one row of 8 (rows: 1)
+  _rowsOf(b) {
+    return this._nOf(b) === 8 && +b.rows === 1 ? 1 : 2;
   }
   _tOf(b) {
     const t = b.temps ?? this._cfg.temps;
@@ -538,16 +543,17 @@ export class JkBatteryCard extends HTMLElement {
       const bcfg = this._cfg.batteries[ci],
         n = this._nOf(bcfg),
         lay = bcfg.layout || (ci === 1 ? "bottom-left" : "top-left"),
+        rw = this._rowsOf(bcfg),
         M = (el, key, dom) => {
           if (el && !el.dataset.m) el.dataset.m = this._id(bcfg, key, dom);
         };
       {
         const s0 = q("bccells") || (this._pp && this._pp.i === i ? this._pp.strip : null),
-          sg0 = n + "/" + (grp ? grp.order.length : 1) + "/" + lay;
+          sg0 = n + "/" + (grp ? grp.order.length : 1) + "/" + lay + "/" + rw;
         if (s0 && s0._n !== sg0) {
           s0._n = sg0;
           s0.innerHTML =
-            packSvg(n, i, grp ? grp.order.length : 1, lay) + packOverlay(!!grp, bcfg.name || bcfg.entity_base);
+            packSvg(n, i, grp ? grp.order.length : 1, lay, rw) + packOverlay(!!grp, bcfg.name || bcfg.entity_base);
           this._elInit(s0);
           s0.addEventListener("click", (e) => {
             if (e.target.closest(".dsp")) {
@@ -602,11 +608,11 @@ export class JkBatteryCard extends HTMLElement {
       q("bcd").style.color = dmv < 15 ? "var(--grn)" : dmv < 45 ? "var(--gold)" : "var(--red)";
       const strip = q("bccells") || (this._pp && this._pp.i === i ? this._pp.strip : null),
         st = b.state === "offline" ? "idle" : b.state;
-      const sig = n + "/" + (grp ? grp.order.length : 1) + "/" + lay;
+      const sig = n + "/" + (grp ? grp.order.length : 1) + "/" + lay + "/" + rw;
       if (strip._n !== sig) {
         strip._n = sig;
         strip.innerHTML =
-          packSvg(n, i, grp ? grp.order.length : 1, lay) + packOverlay(!!grp, bcfg.name || bcfg.entity_base);
+          packSvg(n, i, grp ? grp.order.length : 1, lay, rw) + packOverlay(!!grp, bcfg.name || bcfg.entity_base);
         this._elInit(strip);
         strip.addEventListener("click", (e) => {
           if (e.target.closest(".dsp")) {
@@ -792,12 +798,6 @@ export class JkBatteryCard extends HTMLElement {
             `<i>${E("#" + ((imx >= 0 ? imx : b.cells.indexOf(vmax)) + 1), "max_voltage_cell")}</i> · ${fmt(vmax, 3)} V`,
             "max_cell_voltage",
           ) +
-          `<div class="tmp"><span>${tt("temperature")}</span><b>${[
-            ...b.temps.map((t, i) =>
-              E(`<small>T${i + 1}</small>${isNaN(t) ? "–" : fmt(t, 1) + " °C"}`, `temperature_sensor_${i + 1}`),
-            ),
-            E(`<small>MOS</small>${fmt(b.mos, 0)} °C`, "power_tube_temperature"),
-          ].join("")}</b></div>` +
           row(
             tt("cycles_soh"),
             `${E(fmt(b.cyc, 0), "charging_cycles")} · ${E(fmt(b.soh, 0) + "%", "state_of_health")}`,
@@ -827,6 +827,15 @@ export class JkBatteryCard extends HTMLElement {
             `${tt("bms_hw")} · ${tt("bms_sw")} · ${tt("bms_time")}`,
             `${E(b.hw || "–", "hardware_version")} · ${E(b.swv || "–", "software_version")} · ${E(b.rt || "–", "total_runtime_formatted")}`,
           ),
+      );
+      setH(
+        q("tmpw"),
+        `<div class="tmp"><span>${tt("temperature")}</span><b>${[
+            ...b.temps.map((t, i) =>
+              E(`<small>T${i + 1}</small>${isNaN(t) ? "–" : fmt(t, 1) + " °C"}`, `temperature_sensor_${i + 1}`),
+            ),
+            E(`<small>MOS</small>${fmt(b.mos, 0)} °C`, "power_tube_temperature"),
+        ].join("")}</b></div>`,
       );
       const ct = q("ctrl");
       if (!ct.children.length || ct._ci !== ci) {
@@ -881,7 +890,7 @@ export class JkBatteryCard extends HTMLElement {
     svg.querySelectorAll(".fl").forEach((path) => {
       const len = path.getTotalLength();
       if (!len) return;
-      const cnt = clamp(Math.round(len / 14), 2, 6),
+      const cnt = clamp(Math.round(len / 17), 2, 60), // about one electron per 17 units of cable, whatever its length (a long cable used to get the same 6 as a short one)
         stepL = 3,
         np = Math.ceil(len / stepL) + 2,
         pts = new Float32Array(np * 2);
@@ -1326,15 +1335,17 @@ export class JkBatteryCard extends HTMLElement {
     ST.lang = this._lang || ST.lang;
     const base = this._cfg.batteries[i],
       list = [
-        ["charging", "⚡ " + tt("sw_charge"), tt("sw_charge_n")],
-        ["discharging", "🔌 " + tt("sw_discharge"), tt("sw_discharge_n")],
-        ["balancer", "⚖ " + tt("sw_balance"), tt("sw_balance_n")],
+        ["charging", "⚡", tt("sw_charge"), tt("sw_charge_n")],
+        ["discharging", "🔌", tt("sw_discharge"), tt("sw_discharge_n")],
+        ["balancer", "⚖", tt("sw_balance"), tt("sw_balance_n")],
       ];
-    if (this._hass && this._hass.states[this._id(base, "heating", "switch")])
-      list.push(["heating", "🔥 " + tt("sw_heat"), tt("sw_heat_n")]);
+    // the Heating button is shown when the BMS has the switch, unless it is switched off in the editor (heating: false)
+    if (base.heating !== false && this._hass && this._hass.states[this._id(base, "heating", "switch")])
+      list.push(["heating", "🔥", tt("sw_heat"), tt("sw_heat_n")]);
     ct.innerHTML = "";
-    list.forEach(([k, l, nm]) => {
-      const e = html(`<div class="sw" data-sw="${k}">${l}</div>`);
+    ct.style.setProperty("--n", list.length);
+    list.forEach(([k, ic, l, nm]) => {
+      const e = html(`<div class="sw" data-sw="${k}"><i class="ic">${ic}</i><span class="tx">${l}</span></div>`);
       e.onclick = () => this._askSwitch(ct, i, k, nm);
       ct.appendChild(e);
     });

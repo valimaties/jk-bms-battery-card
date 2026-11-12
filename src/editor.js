@@ -16,6 +16,38 @@ export const lab = (n) =>
   })[n] || (String(n).startsWith("v_") ? "Victron – " + tt("vt_" + n.slice(2)) : n);
 export const VIC_KEYS = [...VIC_EXTRA, ...VIC_TILES].map((t) => t.k);
 
+/* ---- manual sensors of one battery: `entities: { <key>: <entity id> }` overrides the standard name `<domain>.<entity_base>_<key>` */
+const NUMD = ["sensor", "number"];
+const BAT_DOM = {
+  total_battery_capacity: "number",
+  balance_starting_voltage: "number",
+  balance_trigger_voltage: "number",
+  online_status: "binary_sensor",
+  charging: "switch",
+  discharging: "switch",
+  balancer: "switch",
+  heating: "switch",
+};
+const batDom = (k) => BAT_DOM[k] || "sensor";
+const batSel = (k) => ({ entity: { domain: BAT_DOM[k] ? [BAT_DOM[k]] : NUMD } });
+export const batGroups = (n, t) => [
+  ["eg_main", ["total_voltage", "current", "power", "state_of_charge", "state_of_health", "capacity_remaining", "total_battery_capacity", "charging_cycles"]],
+  ["eg_cellsum", ["max_cell_voltage", "min_cell_voltage", "max_voltage_cell", "min_voltage_cell", "delta_cell_voltage", "average_cell_voltage", "balancer_bitmask"]],
+  ["eg_temps", [...Array.from({ length: t }, (_, i) => "temperature_sensor_" + (i + 1)), "power_tube_temperature"]],
+  ["eg_cellv", Array.from({ length: n }, (_, i) => "cell_voltage_" + (i + 1))],
+  ["eg_cellr", Array.from({ length: n }, (_, i) => "cell_resistance_" + (i + 1))],
+  ["eg_switches", ["charging", "discharging", "balancer", "heating"]],
+  ["eg_other", ["balance_starting_voltage", "balance_trigger_voltage", "online_status", "errors", "hardware_version", "software_version", "total_runtime_formatted", "charge_status", "operation_status"]],
+];
+const batLabel = (k) => {
+  const m = /^(cell_voltage|cell_resistance|temperature_sensor)_(\d+)$/.exec(k);
+  if (m) return tt("ek_" + m[1], { n: m[2] });
+  const tr = tt("ek_" + k);
+  if (tr !== "ek_" + k) return tr;
+  const s = k.replace(/_/g, " ");
+  return s.charAt(0).toUpperCase() + s.slice(1);
+};
+
 export const stable = (o) =>
   JSON.stringify(o, (k, v) =>
     v && typeof v === "object" && !Array.isArray(v)
@@ -65,6 +97,7 @@ export class JkBatteryCardEditor extends HTMLElement {
       this._ft = t;
       if (this._form) this._form.hass = h;
       if (this._vform) this._vform.hass = h;
+      (this._sf || []).forEach((f) => (f.hass = h));
     }
     if (first && this._config) this._render();
   } // every state change of HA used to re-render ~30 entity pickers: that froze the editor
@@ -90,10 +123,13 @@ export class JkBatteryCardEditor extends HTMLElement {
     const sync = () => {
       const o = sel.options[sel.selectedIndex];
       b.textContent = o ? o.text : "";
+      b.disabled = sel.disabled;
+      b.style.opacity = sel.disabled ? 0.5 : "";
     };
     sel._sync = sync;
     b.onclick = (e) => {
       e.stopPropagation();
+      if (sel.disabled) return;
       const open = l.hidden;
       root.querySelectorAll(".ddl").forEach((x) => {
         x.hidden = true;
@@ -131,6 +167,60 @@ export class JkBatteryCardEditor extends HTMLElement {
     }, 150);
   }
 
+  // the manual sensors of one battery: a collapsed section, the entity pickers are only created when it is opened
+  _sensorsUI(b, i, token) {
+    const d = document.createElement("details");
+    d.className = "bsd";
+    d.innerHTML = `<summary>${tt("ed_sensors")}</summary><div class="hint">${tt("ed_sensors_hint")}</div><div class="bsf"></div>`;
+    const dflt = (k) => `${batDom(k)}.${b.entity_base}_${k}`,
+      cur = (k) => (b.entities && b.entities[k]) || (this._hass && this._hass.states[dflt(k)] ? dflt(k) : "");
+    let form = null;
+    d._rebuild = () => {
+      if (!form) return;
+      const n = +(b.cells ?? this._config.cells ?? 16) <= 8 ? 8 : 16,
+        t = +(b.temps ?? this._config.temps ?? 4),
+        groups = batGroups(n, t).filter((g) => g[1].length);
+      form.schema = groups.map(([title, keys]) => ({
+        type: "expandable",
+        title: tt(title),
+        schema: keys.map((k) => ({ name: k, selector: batSel(k) })),
+      }));
+      form.data = Object.fromEntries(groups.flatMap((g) => g[1]).map((k) => [k, cur(k)]));
+    };
+    d.addEventListener("toggle", async () => {
+      if (!d.open || form) return;
+      try {
+        if (!customElements.get("ha-form") && window.loadCardHelpers) {
+          const h = await window.loadCardHelpers();
+          await h.createCardElement({ type: "entities", entities: [] });
+        }
+      } catch (e) {}
+      if (token !== this._tok || form) return;
+      form = document.createElement("ha-form");
+      this._sf.add(form);
+      form.hass = this._hass;
+      form.computeLabel = (s) => batLabel(s.name);
+      d._rebuild();
+      form.addEventListener("value-changed", (e) => {
+        e.stopPropagation();
+        const v = e.detail.value || {},
+          ent = {};
+        Object.entries(v).forEach(([k, x]) => {
+          if (x && x !== dflt(k)) ent[k] = x;
+        });
+        const old = { ...(b.entities || {}) };
+        if (old.display_always_on) ent.display_always_on = old.display_always_on; // that one has its own field
+        if (stable(old) === stable(ent)) return;
+        form.data = v;
+        if (Object.keys(ent).length) b.entities = ent;
+        else delete b.entities;
+        this._emit();
+      });
+      d.querySelector(".bsf").appendChild(form);
+    });
+    return d;
+  }
+
   async _render() {
     if (!this._config) return;
     const root = this.shadowRoot || this.attachShadow({ mode: "open" }),
@@ -158,6 +248,7 @@ export class JkBatteryCardEditor extends HTMLElement {
       </div>
     </details>`;
     this._vform = null;
+    this._sf = new Set();
     const detected = this._hass ? discoverBatteries(this._hass) : [];
     root.querySelector("#dh").textContent = this._hass ? tt("ed_found", { n: detected.length }) : "";
     const bats = root.querySelector("#bats");
@@ -199,7 +290,11 @@ export class JkBatteryCardEditor extends HTMLElement {
         <label class="fld"><span>${tt("lbl_temps")}</span>
           <select class="b-temps">${[0, 1, 2, 3, 4].map((v) => `<option value="${v}">${v}</option>`).join("")}</select>
         </label>
+        <label class="fld b-rowsw"><span>${tt("ed_rows")}</span>
+          <select class="b-rows"><option value="2">${tt("ed_rows_2")}</option><option value="1">${tt("ed_rows_1")}</option></select>
+        </label>
         </div>
+      <label class="chk"><input class="b-heat" type="checkbox"> ${tt("ed_heating")}</label>
       <div class="fg"><label class="fld"><span>${tt("ed_cell1")}</span><select class="lay">${[
         ["top-left", tt("pos_tl")],
         ["top-right", tt("pos_tr")],
@@ -223,6 +318,8 @@ export class JkBatteryCardEditor extends HTMLElement {
         lay = row.querySelector(".lay"),
         role = row.querySelector(".role"),
         ds = row.querySelector(".ds");
+      const sd = this._sensorsUI(b, i, token);
+      row.appendChild(sd);
       nm.value = b.name || "";
       sel.value = b.entity_base || "";
       lay.value = b.layout || (i === 1 ? "bottom-left" : "top-left");
@@ -237,15 +334,41 @@ export class JkBatteryCardEditor extends HTMLElement {
       ds.value = (b.entities && b.entities.display_always_on) || (this._hass && this._hass.states[defId] ? defId : "");
       {
         const bc = row.querySelector(".b-cells"),
-          bt = row.querySelector(".b-temps");
+          bt = row.querySelector(".b-temps"),
+          bh = row.querySelector(".b-heat"),
+          br = row.querySelector(".b-rows"),
+          showRows = () => {
+            const eight = +(b.cells ?? this._config.cells ?? 16) <= 8;
+            row.querySelector(".b-rowsw").style.display = eight ? "" : "none";
+            lay.disabled = eight && b.rows === 1; // one row: cell 1 is always next to the BMS
+            if (lay._sync) lay._sync();
+          };
+        br.value = b.rows === 1 ? "1" : "2";
+        br.onchange = (e) => {
+          if (+e.target.value === 1) b.rows = 1;
+          else delete b.rows;
+          showRows();
+          this._emit();
+        };
+        showRows();
+        bh.checked = b.heating !== false;
+        bh.onchange = (e) => {
+          if (e.target.checked) delete b.heating;
+          else b.heating = false;
+          this._emit();
+        };
         bc.value = +(b.cells ?? this._config.cells ?? 16) <= 8 ? "8" : "16";
         bt.value = String(b.temps ?? this._config.temps ?? 4);
         bc.onchange = (e) => {
           b.cells = +e.target.value;
+          if (b.cells > 8) delete b.rows; // one row is only for 8 cells
+          showRows();
+          sd._rebuild();
           this._emit();
         };
         bt.onchange = (e) => {
           b.temps = +e.target.value;
+          sd._rebuild();
           this._emit();
         };
       }

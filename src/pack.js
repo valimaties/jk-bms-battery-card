@@ -26,9 +26,9 @@ export function packOverlay(grouped, name) {
   </div>
   </div>`;
 }
-export function packSvg(n, id, np = 1, layout = "top-left") {
+export function packSvg(n, id, np = 1, layout = "top-left", rows = 2) {
   const { W, H, wh } = PK,
-    per = Math.ceil(n / 2),
+    per = rows === 1 ? n : Math.ceil(n / 2), // rows = 1: all the cells in one row (8 cells), centred on the BMS
     xl = 236,
     xr = 834,
     slot = (xr - xl) / Math.max(8, per),
@@ -38,9 +38,9 @@ export function packSvg(n, id, np = 1, layout = "top-left") {
     dep = 40,
     f = 0.94,
     vx = (xl + xe) / 2,
-    rowY = [58, 314];
-  const startRow = /^bottom/.test(layout) ? 1 : 0,
-    fromLeft = !/right$/.test(layout);
+    rowY = rows === 1 ? [H / 2 - (ch + 33 - dep) / 2] : [58, 314];
+  const startRow = rows === 1 ? 0 : /^bottom/.test(layout) ? 1 : 0,
+    fromLeft = rows === 1 || !/right$/.test(layout);
   const kOf = (row, j) => (row === startRow ? (fromLeft ? j : per - 1 - j) : per + (fromLeft ? per - 1 - j : j));
   const cxOf = (j) => xl + (j + 0.5) * slot,
     x0Of = (j) => cxOf(j) - cw / 2,
@@ -70,7 +70,7 @@ export function packSvg(n, id, np = 1, layout = "top-left") {
     cables = "",
     under = "",
     marks = "";
-  for (let row = 0; row < 2; row++) {
+  for (let row = 0; row < rows; row++) {
     const order = Array.from({ length: per }, (_, j) => j).sort(
       (a, b) => Math.abs(b + 0.5 - per / 2) - Math.abs(a + 0.5 - per / 2),
     );
@@ -201,7 +201,7 @@ export function packSvg(n, id, np = 1, layout = "top-left") {
       .join("")}`;
   const BLK = "#1b1e23",
     RED = "#a8453c";
-  for (let row = 0; row < 2; row++) for (let j = 0; j < per - 1; j++) cables += bar(row, j, mirrored(j) ? FRONT : BACK);
+  for (let row = 0; row < rows; row++) for (let j = 0; j < per - 1; j++) cables += bar(row, j, mirrored(j) ? FRONT : BACK);
   const PERS = [0.93, -0.07, 0.075, 1]; // matrix(a b c d): width foreshortening, slope of the horizontal edges, lean of the vertical edges
   const bs = 0.75,
     K = bs / (270 / 490),
@@ -214,13 +214,13 @@ export function packSvg(n, id, np = 1, layout = "top-left") {
     hb = bt(120, 22);
   const first = stud(0, 0, "L"),
     s1 = stud(0, per - 1, "R"),
-    s2 = stud(1, per - 1, "R"),
-    last = stud(1, 0, "L"),
+    s2 = rows === 1 ? s1 : stud(1, per - 1, "R"),
+    last = rows === 1 ? stud(0, per - 1, "R") : stud(1, 0, "L"),
     mPost = [14, bcy + 40 * bs],
     pPost = [14, bcy + 210 * bs],
     xf = xe + 14;
   // row 1 -> row 2 around the right side: a rigid tinned-copper busbar in the shape of a reversed C (the strip is twisted by 90 deg at both bends), orange heat-shrink on the vertical run, a nut on each stud
-  {
+  if (rows === 2) {
     const w = 8.8,
       h = w / 2,
       y1 = s1[1] - 2,
@@ -282,18 +282,20 @@ export function packSvg(n, id, np = 1, layout = "top-left") {
       hexAt(x1, y1) +
       hexAt(x2, y2);
   }
-  under += cable(`M${last[0]} ${last[1]} C${last[0] - 50} ${last[1]} 70 ${pPost[1]} ${pPost[0]} ${pPost[1]}`, RED, [
-    last,
-  ]);
-  cables += cellSide
-    .map((t, i) =>
-      cable(
-        `M${t[0]} ${t[1]} C${t[0] + 44} ${t[1]} ${first[0] - 56} ${first[1] + 58 * K - i * 6 * K} ${first[0] - 22} ${first[1] + 6 * K - i * 3 * K} L${first[0]} ${first[1] - i * 3 + 0}`,
-        BLK,
-        [t],
-      ),
-    )
-    .join("");
+  if (rows === 1) {
+    // one row: the red cable leaves the plus stud of the last cell, runs round the right end and under the row, behind the BMS, to the plus post
+    const yb = rowY[0] + ch + 52;
+    const xo = xf + 2;
+    under += cable(
+      // a soft, slightly slack cable (not a rigid bar): it arcs out and down at the end of the row, sags a little under the cells and swings into the post
+      `M${last[0]} ${last[1]} C${last[0] + 30} ${last[1] - 14} ${xo} ${last[1] - 4} ${xo} ${last[1] + 42} C${xo} ${yb - 64} ${xo - 20} ${yb + 6} ${xo - 78} ${yb + 10} C600 ${yb + 30} 390 ${yb - 16} 200 ${yb + 2} C120 ${yb + 10} 66 ${pPost[1] - 30} ${pPost[0]} ${pPost[1]}`,
+      RED,
+      [last],
+    );
+  } else
+    under += cable(`M${last[0]} ${last[1]} C${last[0] - 50} ${last[1]} 70 ${pPost[1]} ${pPost[0]} ${pPost[1]}`, RED, [
+      last,
+    ]);
   cables +=
     cellSide
       .map((t, i) =>
