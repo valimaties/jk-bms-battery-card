@@ -98,6 +98,7 @@
     ed_rows_1: "1 Reihe mit 8",
     ed_sensors: "Sensoren (manuell, f\xFCr eigene Entit\xE4tsnamen)",
     ed_sensors_hint: "Jedes Feld zeigt bereits die unter dem Standardnamen gefundene Entit\xE4t. \xC4ndern Sie sie nur, wenn Ihre Sensoren eigene Namen haben.",
+    ed_loading: "Entit\xE4tsauswahl wird geladen\u2026",
     eg_main: "Hauptwerte",
     eg_cellsum: "Zellstatistik",
     eg_temps: "Temperaturen",
@@ -269,6 +270,7 @@
     ed_rows_1: "1 row of 8",
     ed_sensors: "Sensors (manual, for custom entity names)",
     ed_sensors_hint: "Each field already shows the entity found under the standard name. Change it only if your sensors have custom names.",
+    ed_loading: "Loading the entity pickers\u2026",
     eg_main: "Main values",
     eg_cellsum: "Cell statistics",
     eg_temps: "Temperatures",
@@ -440,6 +442,7 @@
     ed_rows_1: "1 fila de 8",
     ed_sensors: "Sensores (manual, para nombres personalizados)",
     ed_sensors_hint: "Cada campo ya muestra la entidad encontrada con el nombre est\xE1ndar. C\xE1mbiala solo si tus sensores tienen nombres personalizados.",
+    ed_loading: "Cargando los selectores de entidades\u2026",
     eg_main: "Valores principales",
     eg_cellsum: "Estad\xEDsticas de celdas",
     eg_temps: "Temperaturas",
@@ -611,6 +614,7 @@
     ed_rows_1: "1 rang\xE9e de 8",
     ed_sensors: "Capteurs (manuel, pour des noms personnalis\xE9s)",
     ed_sensors_hint: "Chaque champ affiche d\xE9j\xE0 l'entit\xE9 trouv\xE9e avec le nom standard. Ne la changez que si vos capteurs ont des noms personnalis\xE9s.",
+    ed_loading: "Chargement des s\xE9lecteurs d'entit\xE9s\u2026",
     eg_main: "Valeurs principales",
     eg_cellsum: "Statistiques des cellules",
     eg_temps: "Temp\xE9ratures",
@@ -782,6 +786,7 @@
     ed_rows_1: "1 fila da 8",
     ed_sensors: "Sensori (manuale, per nomi personalizzati)",
     ed_sensors_hint: "Ogni campo mostra gi\xE0 l'entit\xE0 trovata con il nome standard. Cambiala solo se i tuoi sensori hanno nomi personalizzati.",
+    ed_loading: "Caricamento dei selettori di entit\xE0\u2026",
     eg_main: "Valori principali",
     eg_cellsum: "Statistiche celle",
     eg_temps: "Temperature",
@@ -953,6 +958,7 @@
     ed_rows_1: "1 r\xE2nd de 8",
     ed_sensors: "Senzori (manual, pentru denumiri personalizate)",
     ed_sensors_hint: "Fiecare c\xE2mp arat\u0103 deja entitatea g\u0103sit\u0103 cu denumirea standard. Schimb-o doar dac\u0103 senzorii t\u0103i au denumiri personalizate.",
+    ed_loading: "Se \xEEncarc\u0103 selectoarele de entit\u0103\u021Bi\u2026",
     eg_main: "Valori principale",
     eg_cellsum: "Statistici celule",
     eg_temps: "Temperaturi",
@@ -5579,8 +5585,8 @@
         this.dispatchEvent(new CustomEvent("config-changed", { detail: { config: cfg }, bubbles: true, composed: true }));
       }, 150);
     }
-    // the manual sensors of one battery: a collapsed section, the pickers are only created when it is opened.
-    // Home Assistant's own ha-form (entity pickers) is used when it can be loaded; otherwise (or when it renders nothing) plain inputs with a list of the entities are shown
+    // the manual sensors of one battery: a collapsed section with collapsed groups. Home Assistant's entity pickers (ha-form) are heavy: dozens of them at
+    // once take 20-30 s, so the pickers of a group are only created when that group is opened. Without ha-form (or when it draws nothing) plain inputs with a list of entities are used
     _sensorsUI(b, i) {
       const d = document.createElement("details");
       d.className = "bsd";
@@ -5603,37 +5609,70 @@
         this._emit();
         return true;
       };
-      let form = null, plain = false;
-      const mkPlain = () => {
-        plain = true;
-        form = null;
-        const ids = this._hass ? Object.keys(this._hass.states) : [], dl = (id, pre) => `<datalist id="${id}">${ids.filter((x) => pre.some((p) => x.startsWith(p))).map((x) => `<option value="${x}">`).join("")}</datalist>`, list = (k) => batDom(k) === "switch" ? "s" : batDom(k) === "binary_sensor" ? "b" : "n";
-        slot().innerHTML = dl(`bl${i}n`, ["sensor.", "number."]) + dl(`bl${i}s`, ["switch."]) + dl(`bl${i}b`, ["binary_sensor."]) + dims().map(
-          ([t, keys], gi) => `<details${gi === 0 ? " open" : ""}><summary>${tt(t)}</summary>${keys.map((k) => `<label class="fld"><span>${batLabel(k)}</span><input class="bsi" data-k="${k}" list="bl${i}${list(k)}" placeholder="${dflt(k)}"></label>`).join("")}</details>`
-        ).join("");
-        slot().querySelectorAll(".bsi").forEach((inp) => {
-          inp.value = cur(inp.dataset.k);
+      let all = {};
+      const plainFields = (box, keys) => {
+        const ids = this._hass ? Object.keys(this._hass.states) : [], list = (k) => batDom(k) === "switch" ? "s" : batDom(k) === "binary_sensor" ? "b" : "n", dl = (id, pre) => `<datalist id="${id}">${ids.filter((x) => pre.some((p) => x.startsWith(p))).map((x) => `<option value="${x}">`).join("")}</datalist>`;
+        box.innerHTML = dl(`bl${i}n`, ["sensor.", "number."]) + dl(`bl${i}s`, ["switch."]) + dl(`bl${i}b`, ["binary_sensor."]) + keys.map((k) => `<label class="fld"><span>${batLabel(k)}</span><input class="bsi" data-k="${k}" list="bl${i}${list(k)}" placeholder="${dflt(k)}"></label>`).join("");
+        box.querySelectorAll(".bsi").forEach((inp) => {
+          inp.value = all[inp.dataset.k] || "";
           inp.onchange = () => {
-            const v = {};
-            slot().querySelectorAll(".bsi").forEach((x) => v[x.dataset.k] = x.value.trim());
-            commit(v);
+            all[inp.dataset.k] = inp.value.trim();
+            commit(all);
           };
         });
       };
+      const build = (usePlain) => {
+        all = Object.fromEntries(dims().flatMap((g) => g[1]).map((k) => [k, cur(k)]));
+        slot().innerHTML = "";
+        dims().forEach(([t, keys]) => {
+          const g = document.createElement("details");
+          g.innerHTML = `<summary>${tt(t)} <small>(${keys.length})</small></summary><div class="gb"></div>`;
+          const gb = g.querySelector(".gb");
+          let built = false;
+          g.addEventListener("toggle", async () => {
+            if (!g.open || built) return;
+            built = true;
+            if (usePlain) return plainFields(gb, keys);
+            const wait = document.createElement("div");
+            wait.className = "hint";
+            wait.textContent = tt("ed_loading");
+            gb.appendChild(wait);
+            await sleep(40);
+            const f = document.createElement("ha-form");
+            try {
+              this._sf.add(f);
+              f.hass = this._hass;
+              f.computeLabel = (s) => batLabel(s.name);
+              f.schema = keys.map((k) => ({ name: k, selector: batSel(k) }));
+              f.data = Object.fromEntries(keys.map((k) => [k, all[k]]));
+              f.addEventListener("value-changed", (e) => {
+                e.stopPropagation();
+                const v = e.detail.value || {};
+                f.data = v;
+                Object.assign(all, v);
+                commit(all);
+              });
+              gb.appendChild(f);
+              await Promise.race([f.updateComplete, sleep(4e3)]);
+              await sleep(400);
+            } catch (e) {
+            }
+            wait.remove();
+            if (d.isConnected && !(f.shadowRoot && f.shadowRoot.childElementCount)) {
+              this._sf.delete(f);
+              plainFields(gb, keys);
+            }
+          });
+          slot().appendChild(g);
+        });
+      };
+      let mode = null;
       d._rebuild = () => {
-        if (plain) mkPlain();
-        else if (form) {
-          const groups = dims();
-          form.schema = groups.map(([title2, keys]) => ({
-            type: "expandable",
-            title: tt(title2),
-            schema: keys.map((k) => ({ name: k, selector: batSel(k) }))
-          }));
-          form.data = Object.fromEntries(groups.flatMap((g) => g[1]).map((k) => [k, cur(k)]));
-        }
+        if (mode !== null) build(mode === "plain");
       };
       d.addEventListener("toggle", async () => {
-        if (!d.open || form || plain) return;
+        if (!d.open || mode !== null) return;
+        mode = "pending";
         try {
           if (!customElements.get("ha-form") && window.loadCardHelpers) {
             const h = await Promise.race([window.loadCardHelpers(), sleep(3e3)]);
@@ -5642,30 +5681,9 @@
           if (customElements.get("ha-form")) await Promise.race([customElements.whenDefined("ha-form"), sleep(1e3)]);
         } catch (e) {
         }
-        if (!d.isConnected || form || plain) return;
-        if (!customElements.get("ha-form")) return mkPlain();
-        try {
-          form = document.createElement("ha-form");
-          this._sf.add(form);
-          form.hass = this._hass;
-          form.computeLabel = (s) => batLabel(s.name);
-          d._rebuild();
-          form.addEventListener("value-changed", (e) => {
-            e.stopPropagation();
-            const v = e.detail.value || {};
-            form.data = v;
-            commit(v);
-          });
-          slot().appendChild(form);
-        } catch (e) {
-          return mkPlain();
-        }
-        await sleep(2e3);
-        if (form && d.isConnected && !(form.shadowRoot && form.shadowRoot.childElementCount)) {
-          this._sf.delete(form);
-          form.remove();
-          mkPlain();
-        }
+        if (!d.isConnected) return;
+        mode = customElements.get("ha-form") ? "ha" : "plain";
+        build(mode === "plain");
       });
       return d;
     }

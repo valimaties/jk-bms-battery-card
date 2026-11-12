@@ -90,6 +90,7 @@
   "ed_rows_1": "1 rând de 8",
   "ed_sensors": "Senzori (manual, pentru denumiri personalizate)",
   "ed_sensors_hint": "Fiecare câmp arată deja entitatea găsită cu denumirea standard. Schimb-o doar dacă senzorii tăi au denumiri personalizate.",
+  "ed_loading": "Se încarcă selectoarele de entități…",
   "eg_main": "Valori principale",
   "eg_cellsum": "Statistici celule",
   "eg_temps": "Temperaturi",

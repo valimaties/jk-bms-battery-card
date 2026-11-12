@@ -167,8 +167,8 @@ export class JkBatteryCardEditor extends HTMLElement {
     }, 150);
   }
 
-  // the manual sensors of one battery: a collapsed section, the pickers are only created when it is opened.
-  // Home Assistant's own ha-form (entity pickers) is used when it can be loaded; otherwise (or when it renders nothing) plain inputs with a list of the entities are shown
+  // the manual sensors of one battery: a collapsed section with collapsed groups. Home Assistant's entity pickers (ha-form) are heavy: dozens of them at
+  // once take 20-30 s, so the pickers of a group are only created when that group is opened. Without ha-form (or when it draws nothing) plain inputs with a list of entities are used
   _sensorsUI(b, i) {
     const d = document.createElement("details");
     d.className = "bsd";
@@ -196,47 +196,75 @@ export class JkBatteryCardEditor extends HTMLElement {
       this._emit();
       return true;
     };
-    let form = null,
-      plain = false;
-    const mkPlain = () => {
-      plain = true;
-      form = null;
+    let all = {}; // the value of every field, the groups edit their own part
+    const plainFields = (box, keys) => {
       const ids = this._hass ? Object.keys(this._hass.states) : [],
-        dl = (id, pre) => `<datalist id="${id}">${ids.filter((x) => pre.some((p) => x.startsWith(p))).map((x) => `<option value="${x}">`).join("")}</datalist>`,
-        list = (k) => (batDom(k) === "switch" ? "s" : batDom(k) === "binary_sensor" ? "b" : "n");
-      slot().innerHTML =
+        list = (k) => (batDom(k) === "switch" ? "s" : batDom(k) === "binary_sensor" ? "b" : "n"),
+        dl = (id, pre) => `<datalist id="${id}">${ids.filter((x) => pre.some((p) => x.startsWith(p))).map((x) => `<option value="${x}">`).join("")}</datalist>`;
+      box.innerHTML =
         dl(`bl${i}n`, ["sensor.", "number."]) +
         dl(`bl${i}s`, ["switch."]) +
         dl(`bl${i}b`, ["binary_sensor."]) +
-        dims()
-          .map(
-            ([t, keys], gi) =>
-              `<details${gi === 0 ? " open" : ""}><summary>${tt(t)}</summary>${keys.map((k) => `<label class="fld"><span>${batLabel(k)}</span><input class="bsi" data-k="${k}" list="bl${i}${list(k)}" placeholder="${dflt(k)}"></label>`).join("")}</details>`,
-          )
-          .join("");
-      slot().querySelectorAll(".bsi").forEach((inp) => {
-        inp.value = cur(inp.dataset.k);
+        keys.map((k) => `<label class="fld"><span>${batLabel(k)}</span><input class="bsi" data-k="${k}" list="bl${i}${list(k)}" placeholder="${dflt(k)}"></label>`).join("");
+      box.querySelectorAll(".bsi").forEach((inp) => {
+        inp.value = all[inp.dataset.k] || "";
         inp.onchange = () => {
-          const v = {};
-          slot().querySelectorAll(".bsi").forEach((x) => (v[x.dataset.k] = x.value.trim()));
-          commit(v);
+          all[inp.dataset.k] = inp.value.trim();
+          commit(all);
         };
       });
     };
+    const build = (usePlain) => {
+      all = Object.fromEntries(dims().flatMap((g) => g[1]).map((k) => [k, cur(k)]));
+      slot().innerHTML = "";
+      dims().forEach(([t, keys]) => {
+        const g = document.createElement("details");
+        g.innerHTML = `<summary>${tt(t)} <small>(${keys.length})</small></summary><div class="gb"></div>`;
+        const gb = g.querySelector(".gb");
+        let built = false;
+        g.addEventListener("toggle", async () => {
+          if (!g.open || built) return;
+          built = true;
+          if (usePlain) return plainFields(gb, keys);
+          const wait = document.createElement("div");
+          wait.className = "hint";
+          wait.textContent = tt("ed_loading");
+          gb.appendChild(wait);
+          await sleep(40); // let the loading text paint before the heavy part starts
+          const f = document.createElement("ha-form");
+          try {
+            this._sf.add(f);
+            f.hass = this._hass;
+            f.computeLabel = (s) => batLabel(s.name);
+            f.schema = keys.map((k) => ({ name: k, selector: batSel(k) }));
+            f.data = Object.fromEntries(keys.map((k) => [k, all[k]]));
+            f.addEventListener("value-changed", (e) => {
+              e.stopPropagation();
+              const v = e.detail.value || {};
+              f.data = v;
+              Object.assign(all, v);
+              commit(all);
+            });
+            gb.appendChild(f);
+            await Promise.race([f.updateComplete, sleep(4000)]);
+            await sleep(400);
+          } catch (e) {}
+          wait.remove();
+          if (d.isConnected && !(f.shadowRoot && f.shadowRoot.childElementCount)) {
+            this._sf.delete(f);
+            plainFields(gb, keys); // ha-form is there but draws nothing
+          }
+        });
+        slot().appendChild(g);
+      });
+    };
+    let mode = null;
     d._rebuild = () => {
-      if (plain) mkPlain();
-      else if (form) {
-        const groups = dims();
-        form.schema = groups.map(([title, keys]) => ({
-          type: "expandable",
-          title: tt(title),
-          schema: keys.map((k) => ({ name: k, selector: batSel(k) })),
-        }));
-        form.data = Object.fromEntries(groups.flatMap((g) => g[1]).map((k) => [k, cur(k)]));
-      }
+      if (mode !== null) build(mode === "plain");
     };
     d.addEventListener("toggle", async () => {
-      if (!d.open || form || plain) return;
+      if (!d.open || mode !== null) return;
+      mode = "pending";
       try {
         if (!customElements.get("ha-form") && window.loadCardHelpers) {
           const h = await Promise.race([window.loadCardHelpers(), sleep(3000)]);
@@ -244,30 +272,9 @@ export class JkBatteryCardEditor extends HTMLElement {
         }
         if (customElements.get("ha-form")) await Promise.race([customElements.whenDefined("ha-form"), sleep(1000)]);
       } catch (e) {}
-      if (!d.isConnected || form || plain) return; // the editor was drawn again meanwhile: this section is gone
-      if (!customElements.get("ha-form")) return mkPlain();
-      try {
-        form = document.createElement("ha-form");
-        this._sf.add(form);
-        form.hass = this._hass;
-        form.computeLabel = (s) => batLabel(s.name);
-        d._rebuild();
-        form.addEventListener("value-changed", (e) => {
-          e.stopPropagation();
-          const v = e.detail.value || {};
-          form.data = v;
-          commit(v);
-        });
-        slot().appendChild(form);
-      } catch (e) {
-        return mkPlain();
-      }
-      await sleep(2000);
-      if (form && d.isConnected && !(form.shadowRoot && form.shadowRoot.childElementCount)) {
-        this._sf.delete(form);
-        form.remove();
-        mkPlain(); // ha-form is there but draws nothing: plain inputs instead
-      }
+      if (!d.isConnected) return; // the editor was drawn again meanwhile: this section is gone
+      mode = customElements.get("ha-form") ? "ha" : "plain";
+      build(mode === "plain");
     });
     return d;
   }

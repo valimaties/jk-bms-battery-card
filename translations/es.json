@@ -90,6 +90,7 @@
   "ed_rows_1": "1 fila de 8",
   "ed_sensors": "Sensores (manual, para nombres personalizados)",
   "ed_sensors_hint": "Cada campo ya muestra la entidad encontrada con el nombre estándar. Cámbiala solo si tus sensores tienen nombres personalizados.",
+  "ed_loading": "Cargando los selectores de entidades…",
   "eg_main": "Valores principales",
   "eg_cellsum": "Estadísticas de celdas",
   "eg_temps": "Temperaturas",

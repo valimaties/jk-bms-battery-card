@@ -90,6 +90,7 @@
   "ed_rows_1": "1 Reihe mit 8",
   "ed_sensors": "Sensoren (manuell, für eigene Entitätsnamen)",
   "ed_sensors_hint": "Jedes Feld zeigt bereits die unter dem Standardnamen gefundene Entität. Ändern Sie sie nur, wenn Ihre Sensoren eigene Namen haben.",
+  "ed_loading": "Entitätsauswahl wird geladen…",
   "eg_main": "Hauptwerte",
   "eg_cellsum": "Zellstatistik",
   "eg_temps": "Temperaturen",

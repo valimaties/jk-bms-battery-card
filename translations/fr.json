@@ -90,6 +90,7 @@
   "ed_rows_1": "1 rangée de 8",
   "ed_sensors": "Capteurs (manuel, pour des noms personnalisés)",
   "ed_sensors_hint": "Chaque champ affiche déjà l'entité trouvée avec le nom standard. Ne la changez que si vos capteurs ont des noms personnalisés.",
+  "ed_loading": "Chargement des sélecteurs d'entités…",
   "eg_main": "Valeurs principales",
   "eg_cellsum": "Statistiques des cellules",
   "eg_temps": "Températures",
