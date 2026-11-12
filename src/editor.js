@@ -167,56 +167,107 @@ export class JkBatteryCardEditor extends HTMLElement {
     }, 150);
   }
 
-  // the manual sensors of one battery: a collapsed section, the entity pickers are only created when it is opened
-  _sensorsUI(b, i, token) {
+  // the manual sensors of one battery: a collapsed section, the pickers are only created when it is opened.
+  // Home Assistant's own ha-form (entity pickers) is used when it can be loaded; otherwise (or when it renders nothing) plain inputs with a list of the entities are shown
+  _sensorsUI(b, i) {
     const d = document.createElement("details");
     d.className = "bsd";
     d.innerHTML = `<summary>${tt("ed_sensors")}</summary><div class="hint">${tt("ed_sensors_hint")}</div><div class="bsf"></div>`;
     const dflt = (k) => `${batDom(k)}.${b.entity_base}_${k}`,
-      cur = (k) => (b.entities && b.entities[k]) || (this._hass && this._hass.states[dflt(k)] ? dflt(k) : "");
-    let form = null;
-    d._rebuild = () => {
-      if (!form) return;
+      cur = (k) => (b.entities && b.entities[k]) || (this._hass && this._hass.states[dflt(k)] ? dflt(k) : ""),
+      sleep = (ms) => new Promise((r) => setTimeout(r, ms)),
+      slot = () => d.querySelector(".bsf");
+    const dims = () => {
       const n = +(b.cells ?? this._config.cells ?? 16) <= 8 ? 8 : 16,
-        t = +(b.temps ?? this._config.temps ?? 4),
-        groups = batGroups(n, t).filter((g) => g[1].length);
-      form.schema = groups.map(([title, keys]) => ({
-        type: "expandable",
-        title: tt(title),
-        schema: keys.map((k) => ({ name: k, selector: batSel(k) })),
-      }));
-      form.data = Object.fromEntries(groups.flatMap((g) => g[1]).map((k) => [k, cur(k)]));
+        t = +(b.temps ?? this._config.temps ?? 4);
+      return batGroups(n, t).filter((g) => g[1].length);
+    };
+    // only what differs from the standard name is stored
+    const commit = (v) => {
+      const ent = {};
+      Object.entries(v || {}).forEach(([k, x]) => {
+        if (x && x !== dflt(k)) ent[k] = x;
+      });
+      const old = { ...(b.entities || {}) };
+      if (old.display_always_on) ent.display_always_on = old.display_always_on; // that one has its own field
+      if (stable(old) === stable(ent)) return false;
+      if (Object.keys(ent).length) b.entities = ent;
+      else delete b.entities;
+      this._emit();
+      return true;
+    };
+    let form = null,
+      plain = false;
+    const mkPlain = () => {
+      plain = true;
+      form = null;
+      const ids = this._hass ? Object.keys(this._hass.states) : [],
+        dl = (id, pre) => `<datalist id="${id}">${ids.filter((x) => pre.some((p) => x.startsWith(p))).map((x) => `<option value="${x}">`).join("")}</datalist>`,
+        list = (k) => (batDom(k) === "switch" ? "s" : batDom(k) === "binary_sensor" ? "b" : "n");
+      slot().innerHTML =
+        dl(`bl${i}n`, ["sensor.", "number."]) +
+        dl(`bl${i}s`, ["switch."]) +
+        dl(`bl${i}b`, ["binary_sensor."]) +
+        dims()
+          .map(
+            ([t, keys], gi) =>
+              `<details${gi === 0 ? " open" : ""}><summary>${tt(t)}</summary>${keys.map((k) => `<label class="fld"><span>${batLabel(k)}</span><input class="bsi" data-k="${k}" list="bl${i}${list(k)}" placeholder="${dflt(k)}"></label>`).join("")}</details>`,
+          )
+          .join("");
+      slot().querySelectorAll(".bsi").forEach((inp) => {
+        inp.value = cur(inp.dataset.k);
+        inp.onchange = () => {
+          const v = {};
+          slot().querySelectorAll(".bsi").forEach((x) => (v[x.dataset.k] = x.value.trim()));
+          commit(v);
+        };
+      });
+    };
+    d._rebuild = () => {
+      if (plain) mkPlain();
+      else if (form) {
+        const groups = dims();
+        form.schema = groups.map(([title, keys]) => ({
+          type: "expandable",
+          title: tt(title),
+          schema: keys.map((k) => ({ name: k, selector: batSel(k) })),
+        }));
+        form.data = Object.fromEntries(groups.flatMap((g) => g[1]).map((k) => [k, cur(k)]));
+      }
     };
     d.addEventListener("toggle", async () => {
-      if (!d.open || form) return;
+      if (!d.open || form || plain) return;
       try {
         if (!customElements.get("ha-form") && window.loadCardHelpers) {
-          const h = await window.loadCardHelpers();
-          await h.createCardElement({ type: "entities", entities: [] });
+          const h = await Promise.race([window.loadCardHelpers(), sleep(3000)]);
+          if (h && h.createCardElement) await Promise.race([h.createCardElement({ type: "entities", entities: [] }), sleep(3000)]);
         }
+        if (customElements.get("ha-form")) await Promise.race([customElements.whenDefined("ha-form"), sleep(1000)]);
       } catch (e) {}
-      if (token !== this._tok || form) return;
-      form = document.createElement("ha-form");
-      this._sf.add(form);
-      form.hass = this._hass;
-      form.computeLabel = (s) => batLabel(s.name);
-      d._rebuild();
-      form.addEventListener("value-changed", (e) => {
-        e.stopPropagation();
-        const v = e.detail.value || {},
-          ent = {};
-        Object.entries(v).forEach(([k, x]) => {
-          if (x && x !== dflt(k)) ent[k] = x;
+      if (!d.isConnected || form || plain) return; // the editor was drawn again meanwhile: this section is gone
+      if (!customElements.get("ha-form")) return mkPlain();
+      try {
+        form = document.createElement("ha-form");
+        this._sf.add(form);
+        form.hass = this._hass;
+        form.computeLabel = (s) => batLabel(s.name);
+        d._rebuild();
+        form.addEventListener("value-changed", (e) => {
+          e.stopPropagation();
+          const v = e.detail.value || {};
+          form.data = v;
+          commit(v);
         });
-        const old = { ...(b.entities || {}) };
-        if (old.display_always_on) ent.display_always_on = old.display_always_on; // that one has its own field
-        if (stable(old) === stable(ent)) return;
-        form.data = v;
-        if (Object.keys(ent).length) b.entities = ent;
-        else delete b.entities;
-        this._emit();
-      });
-      d.querySelector(".bsf").appendChild(form);
+        slot().appendChild(form);
+      } catch (e) {
+        return mkPlain();
+      }
+      await sleep(2000);
+      if (form && d.isConnected && !(form.shadowRoot && form.shadowRoot.childElementCount)) {
+        this._sf.delete(form);
+        form.remove();
+        mkPlain(); // ha-form is there but draws nothing: plain inputs instead
+      }
     });
     return d;
   }
@@ -318,7 +369,7 @@ export class JkBatteryCardEditor extends HTMLElement {
         lay = row.querySelector(".lay"),
         role = row.querySelector(".role"),
         ds = row.querySelector(".ds");
-      const sd = this._sensorsUI(b, i, token);
+      const sd = this._sensorsUI(b, i);
       row.appendChild(sd);
       nm.value = b.name || "";
       sel.value = b.entity_base || "";
