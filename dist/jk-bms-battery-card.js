@@ -1486,7 +1486,9 @@
         <path class="balline" data-d="bal" data-g0="${g0}" data-gp="${gp}" d="" pathLength="100" stroke-width="1.6"/>
         <path class="baltail" data-d="balt" d="" pathLength="100" stroke-width="3"/>
         <path class="balhead" data-d="balh" d="" pathLength="100" stroke-width="4.2"/>
-      </g>`;
+      </g>
+      <rect class="balhl" data-d="balhl" x="0" y="0" width="72" height="17" rx="5" fill="none"/>
+      <g class="balbadge" data-d="balbd" transform="translate(0 0)"><circle r="6.5"/><path data-d="balbp" d=""/></g>`;
       o += Array.from({ length: n }, (_, k) => {
         const x = 115 + k % 4 * 78, y = g0 + Math.floor(k / 4) * gp;
         return dsc(k + 1, x + 15, y, 11, cl, 'text-anchor="end"') + dv("cv" + k, x + 21, y, 12.5);
@@ -4224,7 +4226,54 @@
       stroke-dashoffset: -128;
     }
   }
+  .balhl {
+    stroke-width: 1.6;
+    opacity: 0;
+    pointer-events: none;
+  }
+  .balhl.on {
+    opacity: 1;
+    animation: balpulse 1.2s ease-in-out infinite;
+  }
+  .balbadge {
+    opacity: 0;
+    pointer-events: none;
+  }
+  .balbadge.on {
+    opacity: 1;
+  }
+  .balbadge circle {
+    fill: #06101a;
+    stroke-width: 1.4;
+  }
+  .balbadge path {
+    fill: none;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+  }
+  .balhl.pos,
+  .balbadge.pos circle,
+  .balbadge.pos path {
+    stroke: #ff5a4d;
+  }
+  .balhl.neg,
+  .balbadge.neg circle,
+  .balbadge.neg path {
+    stroke: #4da3ff;
+  }
+  @keyframes balpulse {
+    0%,
+    100% {
+      opacity: 0.4;
+    }
+    50% {
+      opacity: 1;
+    }
+  }
   @media (prefers-reduced-motion: reduce) {
+    .balhl.on {
+      animation: none;
+    }
     .baltail.on,
     .balhead.on {
       animation: none;
@@ -5178,13 +5227,16 @@
         T("tp2", isNaN(b.mos) ? "\u2013" : Math.round(b.mos) + " \xB0C");
         b.temps.forEach((t, k) => T("ts" + k, isNaN(t) ? "\u2013" : fmt(t, 1) + "\xB0C"));
         {
-          const I = b.balI, on = don >= 0 && rec >= 0, col = isNaN(I) ? GRN : I > 5e-3 ? "#ff5a4d" : I < -5e-3 ? "#4da3ff" : GRN, ln = D("bal");
+          const I = b.balI, on = don >= 0 && rec >= 0, pos = I > 5e-3, neg = I < -5e-3, col = isNaN(I) ? GRN : pos ? "#ff5a4d" : neg ? "#4da3ff" : GRN, ln = D("bal");
           T("bal2", isNaN(I) ? "\u2013" : (I > 0 ? "+" : "") + fmt(I, 2) + "A", col);
           if (ln) {
-            const g0 = +ln.dataset.g0, gp = +ln.dataset.gp, cx = (k) => 115 + k % 4 * 78 + 44, ty = (k) => g0 + Math.floor(k / 4) * gp, gy = (r) => g0 + r * gp + gp / 2 - 3, [a, z] = I < -5e-3 ? [rec, don] : [don, rec];
+            const g0 = +ln.dataset.g0, gp = +ln.dataset.gp, cx = (k) => 115 + k % 4 * 78 + 44, ty = (k) => g0 + Math.floor(k / 4) * gp, gy = (r) => g0 + r * gp + gp / 2 - 3;
             let d = "";
-            if (on) {
-              const ra = Math.floor(a / 4), rb = Math.floor(z / 4), xa = cx(a), xb = cx(z), down = ra < rb, y0 = down || ra === rb ? ty(a) + 3 : ty(a) - 10, y1 = down ? ty(z) - 10 : ty(z) + 3, bandA = down || ra === rb ? gy(ra) : gy(ra - 1), bandB = ra === rb ? gy(ra) : down ? gy(rb - 1) : gy(rb);
+            if (on && pos) {
+              const rz = Math.floor(rec / 4);
+              d = `M74 194 H116 V${rz > 0 ? gy(rz - 1) : gy(-1)} H${cx(rec)} V${ty(rec) - 10}`;
+            } else if (on) {
+              const a = don, z = rec, ra = Math.floor(a / 4), rb = Math.floor(z / 4), xa = cx(a), xb = cx(z), down = ra < rb, y0 = down || ra === rb ? ty(a) + 3 : ty(a) - 10, y1 = down ? ty(z) - 10 : ty(z) + 3, bandA = down || ra === rb ? gy(ra) : gy(ra - 1), bandB = ra === rb ? gy(ra) : down ? gy(rb - 1) : gy(rb);
               if (bandA === bandB) d = `M${xa} ${y0} V${bandA} H${xb} V${y1}`;
               else {
                 const xv = [116, 190, 268, 346].reduce(
@@ -5193,7 +5245,9 @@
                 d = `M${xa} ${y0} V${bandA} H${xv} V${bandB} H${xb} V${y1}`;
               }
             }
-            const sign = I > 5e-3 ? "pos" : I < -5e-3 ? "neg" : "unk";
+            const sign = pos ? "pos" : neg ? "neg" : "unk", set = (el, k, v) => {
+              if (el && el.getAttribute(k) !== String(v)) el.setAttribute(k, v);
+            };
             [
               ["bal", "balline"],
               ["balt", "baltail"],
@@ -5201,10 +5255,21 @@
             ].forEach(([k, base]) => {
               const p = D(k);
               if (!p) return;
-              if (p.getAttribute("d") !== d) p.setAttribute("d", d);
-              const cls = base + (on ? " on " : " ") + sign;
-              if (p.getAttribute("class") !== cls) p.setAttribute("class", cls);
+              set(p, "d", d);
+              set(p, "class", base + (on ? " on " : " ") + sign);
             });
+            const hl = D("balhl"), bd = D("balbd"), tgt = on && (pos || neg) ? pos ? rec : don : -1;
+            if (hl && bd) {
+              if (tgt >= 0) {
+                const x0 = 115 + tgt % 4 * 78, y0 = ty(tgt) - 13;
+                set(hl, "x", x0 - 1);
+                set(hl, "y", y0);
+                set(bd, "transform", `translate(${x0 + 71} ${y0})`);
+                set(D("balbp"), "d", pos ? "M-3 0H3M0 -3V3" : "M-3 0H3");
+              }
+              set(hl, "class", "balhl" + (tgt >= 0 ? " on " : " ") + sign);
+              set(bd, "class", "balbadge" + (tgt >= 0 ? " on " : " ") + sign);
+            }
           }
         }
         T("chg2", b.sw.charging ? tt("scr_on") : tt("scr_off"), b.sw.charging ? GRN : "#e0705f");
@@ -5816,7 +5881,7 @@
         const d = dst.querySelector(`[data-d="${e.dataset.d}"]`);
         if (!d) return;
         if (d.textContent !== e.textContent) d.textContent = e.textContent;
-        (/^bal[th]?$/.test(e.dataset.d) ? ["fill", "stroke", "stroke-dasharray", "d", "class"] : ["fill", "stroke", "stroke-dasharray"]).forEach((a) => {
+        (/^bal(hl|bd|bp|[th])?$/.test(e.dataset.d) ? ["fill", "stroke", "stroke-dasharray", "d", "class", "x", "y", "transform"] : ["fill", "stroke", "stroke-dasharray"]).forEach((a) => {
           const v = e.getAttribute(a);
           if (v !== null && v !== d.getAttribute(a)) d.setAttribute(a, v);
         });

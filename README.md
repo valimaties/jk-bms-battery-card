@@ -24,6 +24,7 @@ Balancing: the highest cell gives to the lowest one and the two are joined by a 
 - **Balancing**: the lightning between the highest and the lowest cell, and the status chip *balancing* while the balancer works.
 - **BMS screen replica**: click it to enlarge. GROUP / PACKS / cells pages like the real display, the round button switches the `display_always_on` switch, the *Language* label changes the language of the whole card (see *Translations*).
 - **SETTING page on the screen**: display mode (full card / screen only), battery name, number of cells, cell layout (8 cells) and the round button on every page. *Save to dashboard* (asks for a second click) writes the change into the dashboard configuration, so it needs a dashboard in the UI editor (not YAML mode) and an administrator account; otherwise use the card editor.
+- **Balancing current on the cells page of the screen**: positive (red): the lowest cell receives energy from the pack, drawn from the battery icon; negative (blue): the highest cell gives energy to the lowest one. The cell that is charged or discharged is highlighted with a `+` or `-`, and an animated line shows the way.
 - **Master / slave groups** (declared in the card, the integration sees every BMS separately): one card, a selector chooses the pack, the screen shows the group totals.
 - **Safe switches**: charging / discharging / balancing / heating ask for confirmation.
 - **Every value opens its entity** (more-info).

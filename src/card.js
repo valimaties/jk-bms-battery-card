@@ -883,11 +883,13 @@ export class JkBatteryCard extends HTMLElement {
       T("tp2", isNaN(b.mos) ? "–" : Math.round(b.mos) + " °C");
       b.temps.forEach((t, k) => T("ts" + k, isNaN(t) ? "–" : fmt(t, 1) + "°C"));
       {
-        // balancing current: red when positive, blue when negative; the line between the two cells follows the same colour
-        // and runs from the highest cell to the lowest one when positive, the other way when negative
+        // balancing current: positive = the LOWEST cell receives energy (from the pack, drawn from the battery icon), red;
+        // negative = the HIGHEST cell gives energy to the lowest one, blue. The cell that is charged / discharged is marked.
         const I = b.balI,
           on = don >= 0 && rec >= 0,
-          col = isNaN(I) ? GRN : I > 0.005 ? "#ff5a4d" : I < -0.005 ? "#4da3ff" : GRN,
+          pos = I > 0.005,
+          neg = I < -0.005,
+          col = isNaN(I) ? GRN : pos ? "#ff5a4d" : neg ? "#4da3ff" : GRN,
           ln = D("bal");
         T("bal2", isNaN(I) ? "–" : (I > 0 ? "+" : "") + fmt(I, 2) + "A", col);
         if (ln) {
@@ -895,12 +897,18 @@ export class JkBatteryCard extends HTMLElement {
             gp = +ln.dataset.gp,
             cx = (k) => 115 + (k % 4) * 78 + 44,
             ty = (k) => g0 + Math.floor(k / 4) * gp, // baseline of the voltage text
-            gy = (r) => g0 + r * gp + gp / 2 - 3, // the free band under row r
-            [a, z] = I < -0.005 ? [rec, don] : [don, rec];
+            gy = (r) => g0 + r * gp + gp / 2 - 3; // the free band under row r
           let d = "";
-          if (on) {
+          if (on && pos) {
+            // from the battery icon, along the lane on the left, to the top of the lowest cell
+            const rz = Math.floor(rec / 4);
+            d = `M74 194 H116 V${rz > 0 ? gy(rz - 1) : gy(-1)} H${cx(rec)} V${ty(rec) - 10}`;
+          } else if (on) {
+            // highest cell -> lowest cell (the same line when the sign is not known)
             // the line runs in the free bands between the texts: it never crosses a number and never doubles back
-            const ra = Math.floor(a / 4),
+            const a = don,
+              z = rec,
+              ra = Math.floor(a / 4),
               rb = Math.floor(z / 4),
               xa = cx(a),
               xb = cx(z),
@@ -918,7 +926,10 @@ export class JkBatteryCard extends HTMLElement {
               d = `M${xa} ${y0} V${bandA} H${xv} V${bandB} H${xb} V${y1}`;
             }
           }
-          const sign = I > 0.005 ? "pos" : I < -0.005 ? "neg" : "unk";
+          const sign = pos ? "pos" : neg ? "neg" : "unk",
+            set = (el, k, v) => {
+              if (el && el.getAttribute(k) !== String(v)) el.setAttribute(k, v);
+            };
           [
             ["bal", "balline"],
             ["balt", "baltail"],
@@ -926,10 +937,25 @@ export class JkBatteryCard extends HTMLElement {
           ].forEach(([k, base]) => {
             const p = D(k);
             if (!p) return;
-            if (p.getAttribute("d") !== d) p.setAttribute("d", d);
-            const cls = base + (on ? " on " : " ") + sign;
-            if (p.getAttribute("class") !== cls) p.setAttribute("class", cls);
+            set(p, "d", d);
+            set(p, "class", base + (on ? " on " : " ") + sign);
           });
+          // the cell that takes part in the exchange: highlighted, with + (it is charged) or - (it is discharged)
+          const hl = D("balhl"),
+            bd = D("balbd"),
+            tgt = on && (pos || neg) ? (pos ? rec : don) : -1;
+          if (hl && bd) {
+            if (tgt >= 0) {
+              const x0 = 115 + (tgt % 4) * 78,
+                y0 = ty(tgt) - 13;
+              set(hl, "x", x0 - 1);
+              set(hl, "y", y0);
+              set(bd, "transform", `translate(${x0 + 71} ${y0})`);
+              set(D("balbp"), "d", pos ? "M-3 0H3M0 -3V3" : "M-3 0H3");
+            }
+            set(hl, "class", "balhl" + (tgt >= 0 ? " on " : " ") + sign);
+            set(bd, "class", "balbadge" + (tgt >= 0 ? " on " : " ") + sign);
+          }
         }
       }
       T("chg2", b.sw.charging ? tt("scr_on") : tt("scr_off"), b.sw.charging ? GRN : "#e0705f");
@@ -1650,8 +1676,8 @@ export class JkBatteryCard extends HTMLElement {
       const d = dst.querySelector(`[data-d="${e.dataset.d}"]`);
       if (!d) return;
       if (d.textContent !== e.textContent) d.textContent = e.textContent;
-      (/^bal[th]?$/.test(e.dataset.d)
-        ? ["fill", "stroke", "stroke-dasharray", "d", "class"]
+      (/^bal(hl|bd|bp|[th])?$/.test(e.dataset.d)
+        ? ["fill", "stroke", "stroke-dasharray", "d", "class", "x", "y", "transform"]
         : ["fill", "stroke", "stroke-dasharray"]
       ).forEach((a) => {
         const v = e.getAttribute(a);

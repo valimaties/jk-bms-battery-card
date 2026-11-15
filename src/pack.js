@@ -414,7 +414,9 @@ export function packSvg(n, id, np = 1, layout = "top-left", rows = 2, nt = 0, sc
         <path class="balline" data-d="bal" data-g0="${g0}" data-gp="${gp}" d="" pathLength="100" stroke-width="1.6"/>
         <path class="baltail" data-d="balt" d="" pathLength="100" stroke-width="3"/>
         <path class="balhead" data-d="balh" d="" pathLength="100" stroke-width="4.2"/>
-      </g>`;
+      </g>
+      <rect class="balhl" data-d="balhl" x="0" y="0" width="72" height="17" rx="5" fill="none"/>
+      <g class="balbadge" data-d="balbd" transform="translate(0 0)"><circle r="6.5"/><path data-d="balbp" d=""/></g>`;
       o += Array.from({ length: n }, (_, k) => {
         const x = 115 + (k % 4) * 78,
           y = g0 + Math.floor(k / 4) * gp;

@@ -2619,7 +2619,54 @@ export const CSS = `
       stroke-dashoffset: -128;
     }
   }
+  .balhl {
+    stroke-width: 1.6;
+    opacity: 0;
+    pointer-events: none;
+  }
+  .balhl.on {
+    opacity: 1;
+    animation: balpulse 1.2s ease-in-out infinite;
+  }
+  .balbadge {
+    opacity: 0;
+    pointer-events: none;
+  }
+  .balbadge.on {
+    opacity: 1;
+  }
+  .balbadge circle {
+    fill: #06101a;
+    stroke-width: 1.4;
+  }
+  .balbadge path {
+    fill: none;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+  }
+  .balhl.pos,
+  .balbadge.pos circle,
+  .balbadge.pos path {
+    stroke: #ff5a4d;
+  }
+  .balhl.neg,
+  .balbadge.neg circle,
+  .balbadge.neg path {
+    stroke: #4da3ff;
+  }
+  @keyframes balpulse {
+    0%,
+    100% {
+      opacity: 0.4;
+    }
+    50% {
+      opacity: 1;
+    }
+  }
   @media (prefers-reduced-motion: reduce) {
+    .balhl.on {
+      animation: none;
+    }
     .baltail.on,
     .balhead.on {
       animation: none;
