@@ -414,12 +414,7 @@ export function packSvg(n, id, np = 1, layout = "top-left", rows = 2, nt = 0, sc
         <path class="balline" data-d="bal" data-g0="${g0}" data-gp="${gp}" d="" pathLength="100" stroke-width="1.6"/>
         <path class="baltail" data-d="balt" d="" pathLength="100" stroke-width="3"/>
         <path class="balhead" data-d="balh" d="" pathLength="100" stroke-width="4.2"/>
-      </g>
-      <clipPath id="bfc${id}"><rect width="72" height="17" rx="5"/></clipPath>
-      <g class="balfx" data-d="balfx" transform="translate(0 0)" clip-path="url(#bfc${id})"><rect class="balband" data-d="balband" width="72" height="9"/></g>
-      <rect class="balhl" data-d="balhl" x="0" y="0" width="72" height="17" rx="5" fill="none"/>
-      <g class="balfx" data-d="balfx2" transform="translate(0 0)" clip-path="url(#bfc${id})"><rect class="balband" width="72" height="9"/></g>
-      <rect class="balhl" data-d="balhl2" x="0" y="0" width="72" height="17" rx="5" fill="none"/>`;
+      </g>`;
       o += Array.from({ length: n }, (_, k) => {
         const x = 115 + (k % 4) * 78,
           y = g0 + Math.floor(k / 4) * gp;

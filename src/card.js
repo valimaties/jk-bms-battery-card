@@ -937,26 +937,6 @@ export class JkBatteryCard extends HTMLElement {
             set(p, "d", d);
             set(p, "class", base + (on ? " on " : " ") + sign);
           });
-          // both cells of the exchange are outlined: the highest one gives (a band falls in it), the lowest one receives
-          // (a band rises in it); the sign of the current only sets the colour (red / blue)
-          [
-            ["balhl", "balfx", rec, "rise"], // receives
-            ["balhl2", "balfx2", don, "fall"], // gives
-          ].forEach(([h, f, cell, way]) => {
-            const hl = D(h),
-              fx = D(f),
-              show = on && cell >= 0;
-            if (!hl || !fx) return;
-            if (show) {
-              const x0 = 115 + (cell % 4) * 78 - 1,
-                y0 = ty(cell) - 13;
-              set(hl, "x", x0);
-              set(hl, "y", y0);
-              set(fx, "transform", `translate(${x0} ${y0})`);
-            }
-            set(hl, "class", "balhl" + (show ? " on " : " ") + sign);
-            set(fx, "class", "balfx " + way + (show ? " on " : " ") + sign);
-          });
         }
       }
       T("chg2", b.sw.charging ? tt("scr_on") : tt("scr_off"), b.sw.charging ? GRN : "#e0705f");
@@ -1733,7 +1713,7 @@ export class JkBatteryCard extends HTMLElement {
       const d = dst.querySelector(`[data-d="${e.dataset.d}"]`);
       if (!d) return;
       if (d.textContent !== e.textContent) d.textContent = e.textContent;
-      (/^bal(hl|fx)2?$|^bal(band|[th])?$/.test(e.dataset.d)
+      (/^bal[th]?$/.test(e.dataset.d)
         ? ["fill", "stroke", "stroke-dasharray", "d", "class", "x", "y", "transform"]
         : ["fill", "stroke", "stroke-dasharray"]
       ).forEach((a) => {

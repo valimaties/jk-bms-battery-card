@@ -18,7 +18,7 @@ Balancing: the highest cell gives to the lowest one and the two are joined by a 
 
 - **Screen-only mode**: the card can show nothing but the JK display, with the main screen, the cells screen, or both one under the other (see *Screen-only mode*).
 - **SETTING page on the screen**: change the display mode, the battery name, the number of cells, the cell layout and the round button, and save it into the dashboard.
-- **Balancing on the cells screen**: a moving line goes from the highest cell (it gives: a band falls in it) to the lowest one (it receives: a band rises in it); the balancing current only sets the colour, red when positive, blue when negative.
+- **Balancing on the cells screen**: a moving line (a snake) goes from the highest cell to the lowest one through the free space between the numbers; red when the balancing current is positive, blue when it is negative.
 - **Row of temperature sensors (T1…T4) and the MOS temperature with its unit** on the cells screen.
 - **Labels and values aligned in every language**: the labels of the screen shrink to fit their column.
 - **Tooltip on the round button** of the display: *Turn the display off* / *Turn the display on*.
@@ -34,7 +34,7 @@ Balancing: the highest cell gives to the lowest one and the two are joined by a 
 - **Balancing**: the lightning between the highest and the lowest cell, and the status chip *balancing* while the balancer works.
 - **BMS screen replica**: click it to enlarge. GROUP / PACKS / cells pages like the real display, the round button switches the `display_always_on` switch, the *Language* label changes the language of the whole card (see *Translations*).
 - **SETTING page on the screen**: display mode (full card / screen only), battery name, number of cells, cell layout (8 cells) and the round button on every page. *Save to dashboard* (asks for a second click) writes the change into the dashboard configuration, so it needs a dashboard in the UI editor (not YAML mode) and an administrator account; otherwise use the card editor.
-- **Balancing on the cells page of the screen**: a moving line goes from the highest cell (it gives: a band falls in it) to the lowest one (it receives: a band rises in it), through the free space between the numbers; red for a positive balancing current, blue for a negative one.
+- **Balancing on the cells page of the screen**: a moving line goes from the highest cell to the lowest one, through the free space between the numbers; red for a positive balancing current, blue for a negative one.
 - **Screen-only mode**: only the JK display, the main screen, the cells screen or both, for dashboards that just want the screen (see *Screen-only mode*).
 - **Master / slave groups** (declared in the card, the integration sees every BMS separately): one card, a selector chooses the pack, the screen shows the group totals.
 - **Safe switches**: charging / discharging / balancing / heating ask for confirmation.
@@ -149,7 +149,7 @@ In a sections dashboard the card takes the **whole width of its section** by def
 
 #### Balancing on the cells screen
 
-While the balancer works, the highest cell **gives** energy to the lowest one: the two cells are outlined, a band falls in the highest cell and a band rises in the lowest one, and a moving line runs from the first to the second. The sensor `balancing_current` only sets the colour: **red** when it is positive, **blue** when it is negative.
+While the balancer works, a moving line runs from the highest cell, which gives energy, to the lowest one, which receives it. The sensor `balancing_current` only sets the colour: **red** when it is positive, **blue** when it is negative.
 
 The line between the two cells follows the free space between the numbers and never crosses one.
 
