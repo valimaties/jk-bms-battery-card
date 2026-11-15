@@ -22,6 +22,7 @@ Balancing: the highest cell gives to the lowest one and the two are joined by a 
 - **Row of temperature sensors (T1…T4) and the MOS temperature with its unit** on the cells screen.
 - **Labels and values aligned in every language**: the labels of the screen shrink to fit their column.
 - **Tooltip on the round button** of the display: *Turn the display off* / *Turn the display on*.
+- **Sections dashboards**: the card asks for the whole width of its section and the screens follow it (columns); if a saved width keeps it narrow, a notice with one button, *Use the full width*, fixes it. The *Language* label of the screen also works in screen-only mode.
 
 > **Tested only with the JK BMS PB2A16S20P v19.** Using the card with another BMS (other model or firmware, different entity names or values) is your own responsibility: expect that things may not work as shown.
 >
