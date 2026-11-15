@@ -134,9 +134,9 @@ batteries:
 
 While the balancer works, the highest cell **gives** energy to the lowest one: the two cells are outlined, a band falls in the highest cell and a band rises in the lowest one, and a moving line runs from the first to the second. The sensor `balancing_current` only sets the colour: **red** when it is positive, **blue** when it is negative.
 
-The line between the two cells follows the free space between the numbers and never crosses one. The recording below is one continuous run: the BMS picks the pair of cells at random, balances for a random time with a random current (positive, red, or negative, blue), the voltages move by themselves and the highest and the lowest cell change from one pair to the next, so every direction shows up (left to right, right to left, up, down, neighbouring and far-away cells). The battery is at 99 %.
+The line between the two cells follows the free space between the numbers and never crosses one.
 
-<p align="center"><img src="docs/screen-balancing.gif" alt="Balancing between random pairs of cells, with a positive and a negative current" width="560"></p>
+<p align="center"><img src="docs/screen-balancing.gif" alt="Balancing on the cells screen, with a positive and a negative current" width="560"></p>
 
 ### 8 cells: two rows of 4 or one row of 8
 
