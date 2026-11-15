@@ -17,6 +17,8 @@
     pick_battery: "Batterie w\xE4hlen",
     screen_tip: "BMS-Display \xB7 Klick: vergr\xF6\xDFern",
     pwr_tip: "BMS-Display: ein / aus (display_always_on)",
+    pwr_off: "Display ausschalten",
+    pwr_on: "Display einschalten",
     st_charging: "l\xE4dt",
     st_discharging: "entl\xE4dt",
     st_idle: "Ruhe",
@@ -160,6 +162,22 @@
     scr_tab_group: "GRUPPE",
     scr_tab_packs: "PACKS",
     scr_tab_setting: "EINSTELL.",
+    scr_st_view: "Anzeigemodus",
+    scr_st_name: "Batteriename",
+    scr_st_cells: "Zellen",
+    scr_st_rows: "Zellenanordnung",
+    scr_st_btn: "Knopf auf allen Seiten",
+    scr_st_save: "Im Dashboard speichern",
+    scr_st_confirm: "Speichern best\xE4tigen",
+    scr_st_saving: "Speichern\u2026",
+    scr_st_ok: "Gespeichert",
+    scr_st_nochg: "Nichts ge\xE4ndert",
+    scr_st_err_ws: "Speichern geht nur in Home Assistant",
+    scr_st_err_yaml: "Dashboard nicht \xE4nderbar (YAML-Modus oder keine Rechte): Karteneditor benutzen",
+    scr_st_err_nf: "Diese Karte wurde im Dashboard nicht gefunden",
+    scr_st_err_many: "Mehrere gleiche Karten: diese im Editor \xE4ndern",
+    scr_st_err_save: "Speichern fehlgeschlagen: {e}",
+    scr_st_err_auto: "Name und Zellen brauchen eine in der Karte eingetragene Batterie (nicht automatisch erkannt)",
     scr_batcap2: "Bat.-Kapazit\xE4t",
     scr_remcap2: "Restkapazit\xE4t",
     scr_voldiff: "Spg.-Diff.",
@@ -197,6 +215,8 @@
     pick_battery: "Choose battery",
     screen_tip: "BMS screen \xB7 click: enlarge",
     pwr_tip: "BMS screen: on / off (display_always_on)",
+    pwr_off: "Turn the display off",
+    pwr_on: "Turn the display on",
     st_charging: "charging",
     st_discharging: "discharging",
     st_idle: "idle",
@@ -340,6 +360,22 @@
     scr_tab_group: "GROUP",
     scr_tab_packs: "PACKS",
     scr_tab_setting: "SETTING",
+    scr_st_view: "Display mode",
+    scr_st_name: "Battery name",
+    scr_st_cells: "Cells",
+    scr_st_rows: "Cell layout",
+    scr_st_btn: "Button on every page",
+    scr_st_save: "Save to dashboard",
+    scr_st_confirm: "Confirm save",
+    scr_st_saving: "Saving\u2026",
+    scr_st_ok: "Saved",
+    scr_st_nochg: "Nothing changed",
+    scr_st_err_ws: "Saving works only inside Home Assistant",
+    scr_st_err_yaml: "Cannot edit this dashboard (YAML mode or no permission): use the card editor",
+    scr_st_err_nf: "This card was not found in the dashboard",
+    scr_st_err_many: "Several identical cards: change this one in the editor",
+    scr_st_err_save: "Could not save: {e}",
+    scr_st_err_auto: "Name and cells need a battery listed in the card (not auto-detected)",
     scr_batcap2: "Bat-Capacity",
     scr_remcap2: "Rem-Capacity",
     scr_voldiff: "Vol.diff",
@@ -377,6 +413,8 @@
     pick_battery: "Elegir bater\xEDa",
     screen_tip: "Pantalla BMS \xB7 clic: ampliar",
     pwr_tip: "Pantalla BMS: encendida / apagada (display_always_on)",
+    pwr_off: "Apagar la pantalla",
+    pwr_on: "Encender la pantalla",
     st_charging: "cargando",
     st_discharging: "descargando",
     st_idle: "en reposo",
@@ -520,6 +558,22 @@
     scr_tab_group: "GRUPO",
     scr_tab_packs: "PACKS",
     scr_tab_setting: "AJUSTES",
+    scr_st_view: "Modo de visualizaci\xF3n",
+    scr_st_name: "Nombre de la bater\xEDa",
+    scr_st_cells: "Celdas",
+    scr_st_rows: "Disposici\xF3n de las celdas",
+    scr_st_btn: "Bot\xF3n en todas las p\xE1ginas",
+    scr_st_save: "Guardar en el panel",
+    scr_st_confirm: "Confirmar guardado",
+    scr_st_saving: "Guardando\u2026",
+    scr_st_ok: "Guardado",
+    scr_st_nochg: "Nada que guardar",
+    scr_st_err_ws: "Guardar solo funciona dentro de Home Assistant",
+    scr_st_err_yaml: "No se puede editar este panel (modo YAML o permisos): usa el editor de la tarjeta",
+    scr_st_err_nf: "No se encontr\xF3 esta tarjeta en el panel",
+    scr_st_err_many: "Varias tarjetas id\xE9nticas: c\xE1mbiala en el editor",
+    scr_st_err_save: "No se pudo guardar: {e}",
+    scr_st_err_auto: "El nombre y las celdas requieren una bater\xEDa escrita en la tarjeta (no detectada autom\xE1ticamente)",
     scr_batcap2: "Cap. bater\xEDa",
     scr_remcap2: "Cap. restante",
     scr_voldiff: "Dif. tens.",
@@ -557,6 +611,8 @@
     pick_battery: "Choisir la batterie",
     screen_tip: "\xC9cran BMS \xB7 clic : agrandir",
     pwr_tip: "\xC9cran BMS : allum\xE9 / \xE9teint (display_always_on)",
+    pwr_off: "\xC9teindre l'\xE9cran",
+    pwr_on: "Allumer l'\xE9cran",
     st_charging: "en charge",
     st_discharging: "en d\xE9charge",
     st_idle: "au repos",
@@ -700,6 +756,22 @@
     scr_tab_group: "GROUPE",
     scr_tab_packs: "PACKS",
     scr_tab_setting: "R\xC9GLAGES",
+    scr_st_view: "Mode d'affichage",
+    scr_st_name: "Nom de la batterie",
+    scr_st_cells: "Cellules",
+    scr_st_rows: "Disposition des cellules",
+    scr_st_btn: "Bouton sur toutes les pages",
+    scr_st_save: "Enregistrer dans le tableau de bord",
+    scr_st_confirm: "Confirmer l'enregistrement",
+    scr_st_saving: "Enregistrement\u2026",
+    scr_st_ok: "Enregistr\xE9",
+    scr_st_nochg: "Rien \xE0 enregistrer",
+    scr_st_err_ws: "L'enregistrement ne marche que dans Home Assistant",
+    scr_st_err_yaml: "Ce tableau de bord n'est pas modifiable (mode YAML ou droits): utilisez l'\xE9diteur de la carte",
+    scr_st_err_nf: "Cette carte est introuvable dans le tableau de bord",
+    scr_st_err_many: "Plusieurs cartes identiques: modifiez celle-ci dans l'\xE9diteur",
+    scr_st_err_save: "\xC9chec de l'enregistrement: {e}",
+    scr_st_err_auto: "Le nom et les cellules demandent une batterie list\xE9e dans la carte (non d\xE9tect\xE9e automatiquement)",
     scr_batcap2: "Capacit\xE9 bat.",
     scr_remcap2: "Capacit\xE9 rest.",
     scr_voldiff: "\xC9cart V",
@@ -737,6 +809,8 @@
     pick_battery: "Scegli la batteria",
     screen_tip: "Schermo BMS \xB7 clic: ingrandisci",
     pwr_tip: "Schermo BMS: acceso / spento (display_always_on)",
+    pwr_off: "Spegni il display",
+    pwr_on: "Accendi il display",
     st_charging: "in carica",
     st_discharging: "in scarica",
     st_idle: "a riposo",
@@ -880,6 +954,22 @@
     scr_tab_group: "GRUPPO",
     scr_tab_packs: "PACK",
     scr_tab_setting: "IMPOST.",
+    scr_st_view: "Modalit\xE0 di visualizzazione",
+    scr_st_name: "Nome della batteria",
+    scr_st_cells: "Celle",
+    scr_st_rows: "Disposizione delle celle",
+    scr_st_btn: "Pulsante su tutte le pagine",
+    scr_st_save: "Salva nella dashboard",
+    scr_st_confirm: "Conferma il salvataggio",
+    scr_st_saving: "Salvataggio\u2026",
+    scr_st_ok: "Salvato",
+    scr_st_nochg: "Nessuna modifica",
+    scr_st_err_ws: "Il salvataggio funziona solo in Home Assistant",
+    scr_st_err_yaml: "Dashboard non modificabile (modalit\xE0 YAML o permessi): usa l'editor della scheda",
+    scr_st_err_nf: "Scheda non trovata nella dashboard",
+    scr_st_err_many: "Pi\xF9 schede identiche: modifica questa nell'editor",
+    scr_st_err_save: "Salvataggio non riuscito: {e}",
+    scr_st_err_auto: "Nome e celle richiedono una batteria elencata nella scheda (non rilevata automaticamente)",
     scr_batcap2: "Cap. batteria",
     scr_remcap2: "Cap. residua",
     scr_voldiff: "Diff. tens.",
@@ -917,6 +1007,8 @@
     pick_battery: "Alege bateria",
     screen_tip: "Ecranul BMS \xB7 click: m\u0103re\u0219te",
     pwr_tip: "Ecran BMS: aprins / stins (display_always_on)",
+    pwr_off: "Stinge display-ul",
+    pwr_on: "Aprinde display-ul",
     st_charging: "\xEEncarc\u0103",
     st_discharging: "descarc\u0103",
     st_idle: "repaus",
@@ -1060,6 +1152,22 @@
     scr_tab_group: "GRUP",
     scr_tab_packs: "PACHETE",
     scr_tab_setting: "SET\u0102RI",
+    scr_st_view: "Mod de afi\u0219are",
+    scr_st_name: "Numele bateriei",
+    scr_st_cells: "Celule",
+    scr_st_rows: "Aranjarea celulelor",
+    scr_st_btn: "Buton pe toate paginile",
+    scr_st_save: "Salveaz\u0103 \xEEn dashboard",
+    scr_st_confirm: "Confirm\u0103 salvarea",
+    scr_st_saving: "Se salveaz\u0103\u2026",
+    scr_st_ok: "Salvat",
+    scr_st_nochg: "Nimic de salvat",
+    scr_st_err_ws: "Salvarea merge doar \xEEn Home Assistant",
+    scr_st_err_yaml: "Dashboardul nu poate fi modificat (mod YAML sau f\u0103r\u0103 drepturi): folose\u0219te editorul cardului",
+    scr_st_err_nf: "Cardul nu a fost g\u0103sit \xEEn dashboard",
+    scr_st_err_many: "Mai multe carduri identice: schimb\u0103 acest card din editor",
+    scr_st_err_save: "Nu s-a putut salva: {e}",
+    scr_st_err_auto: "Numele \u0219i celulele cer o baterie scris\u0103 \xEEn card (nu detectat\u0103 automat)",
     scr_batcap2: "Cap. baterie",
     scr_remcap2: "Cap. r\u0103mas\u0103",
     scr_voldiff: "Dif. tens.",
@@ -1346,7 +1454,7 @@
       <path d="M${cx + 2} ${top + 9} L${cx - 7} ${top + 24} H${cx - 1} L${cx - 3} ${top + 36} L${cx + 7} ${top + 19} H${cx + 1} Z" fill="#fff"/>
       <circle cx="${cx}" cy="${top + 57}" r="7" fill="none" stroke="#e6ece8" stroke-width="1"/>${dsc(i, cx, top + 60.5, 9, WT, 'text-anchor="middle"')}${on ? `<rect x="${cx - 18}" y="${top - 2}" width="36" height="72" fill="#000" fill-opacity="0"/>` : ""}</g>`;
     };
-    const packsPage = `<path d="${outline}" fill="#03060a" stroke="#8d9aa3" stroke-width="1.3" stroke-linejoin="round"/>${logo}${[0, 1, 2, 3].map((k) => `<path class="chv chv${k}" d="M${201 + k * 12} 11 L${207 + k * 12} 17.5 L${201 + k * 12} 24"/>`).join("")}${Array.from({ length: 16 }, (_, i) => pkIco(i)).join("")}${tab(76, "scr_tab_group", false, "group")}${tab(216, "scr_tab_packs", true)}${tab(355, "scr_tab_setting", false)}`;
+    const packsPage = `<path d="${outline}" fill="#03060a" stroke="#8d9aa3" stroke-width="1.3" stroke-linejoin="round"/>${logo}${[0, 1, 2, 3].map((k) => `<path class="chv chv${k}" d="M${201 + k * 12} 11 L${207 + k * 12} 17.5 L${201 + k * 12} 24"/>`).join("")}${Array.from({ length: 16 }, (_, i) => pkIco(i)).join("")}${tab(76, "scr_tab_group", false, "group")}${tab(216, "scr_tab_packs", true)}${tab(355, "scr_tab_setting", false, "settings")}`;
     const cl = "#e6ece8", gic = (cy, ch2) => `<circle cx="121" cy="${cy}" r="7" fill="none" stroke="${GR}" stroke-width="1.4"/>${dsc(ch2, 121, cy + 3.6, 9.5, GR, 'text-anchor="middle" font-weight="700"')}`;
     const cellsPage = `<rect width="433" height="243" fill="#03060a"/>
   <g data-go="packs">
@@ -1385,6 +1493,22 @@
       }).join("");
       return o;
     })()}`;
+    const settingsPage = `<rect width="433" height="243" fill="#03060a"/>
+  <g data-go="group">
+    <circle cx="22" cy="21" r="9" fill="none" stroke="${cl}" stroke-width="1.4"/>
+    <path d="M27 21 H17 M20.5 17 L16.5 21 L20.5 25" fill="none" stroke="${cl}" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="22" cy="21" r="12" fill="#000" fill-opacity="0"/>
+  </g>${dt("scr_tab_setting", "", 216, 26, 14, WT, 'font-weight="700" text-anchor="middle"')}
+  <foreignObject x="10" y="38" width="413" height="200">
+    <div class="stg">
+      <label><span data-tr="scr_st_view|">${tt("scr_st_view")}</span><select data-s="view"><option value="full">${tt("view_full")}</option><option value="screen">${tt("view_screen")}</option></select></label>
+      <label><span data-tr="scr_st_name|">${tt("scr_st_name")}</span><input data-s="name" type="text"></label>
+      <label><span data-tr="scr_st_cells|">${tt("scr_st_cells")}</span><select data-s="cells"><option value="16">16</option><option value="8">8</option></select></label>
+      <label data-s-row="rows"><span data-tr="scr_st_rows|">${tt("scr_st_rows")}</span><select data-s="rows"><option value="2">${tt("ed_rows_2")}</option><option value="1">${tt("ed_rows_1")}</option></select></label>
+      <label class="stgc"><input data-s="btn" type="checkbox"><span data-tr="scr_st_btn|">${tt("scr_st_btn")}</span></label>
+      <div class="stgb"><button data-s="save" type="button" data-tr="scr_st_save|">${tt("scr_st_save")}</button><span class="stgm" data-s="msg"></span></div>
+    </div>
+  </foreignObject>`;
     const dsp = `<g class="dsp" data-d="dsp" transform="translate(-246 44) scale(.4)">
     <title>${tt("screen_tip")}</title><clipPath id="dc${id}">
       <rect x="1.5" y="1.5" width="607" height="420" rx="34.5"/>
@@ -1409,9 +1533,10 @@
     ${row2("scr_maxcell", "mx", 13, 135, 189, 72)}${row2("scr_mincell", "mn", 13, 135, 211, 72)}
     ${row2("scr_temp", "tp", 150, 256, 189, 60)}${row2("scr_pwr", "pw", 150, 256, 211, 60)}
     ${row2("scr_alarm", "alm", 262, 354, 189, 44, 11)}${row2("scr_packs", "np", 262, 354, 211, 44)}
-    ${row2("scr_chg", "chg", 360, 424, 189, 36)}${row2("scr_dch", "dch", 360, 424, 211, 36)}${tab(76, "scr_tab_group", true)}${tab(216, "scr_tab_packs", false, "packs")}${tab(355, "scr_tab_setting", false)}</g>
+    ${row2("scr_chg", "chg", 360, 424, 189, 36)}${row2("scr_dch", "dch", 360, 424, 211, 36)}${tab(76, "scr_tab_group", true)}${tab(216, "scr_tab_packs", false, "packs")}${tab(355, "scr_tab_setting", false, "settings")}</g>
     <g class="pg pg-packs">${packsPage}</g>
     <g class="pg pg-cells">${cellsPage}</g>
+    <g class="pg pg-settings">${settingsPage}</g>
     </g>
   <g class="pwr">
     <title>${tt("pwr_tip")}</title>
@@ -4115,8 +4240,72 @@
   .pk2 .dsp:not([data-pg]) .pg-group,
   .pk2 .dsp[data-pg="group"] .pg-group,
   .pk2 .dsp[data-pg="packs"] .pg-packs,
-  .pk2 .dsp[data-pg="cells"] .pg-cells {
+  .pk2 .dsp[data-pg="cells"] .pg-cells,
+  .pk2 .dsp[data-pg="settings"] .pg-settings {
     display: inline;
+  }
+  .pk2 .dsp .stg {
+    display: grid;
+    gap: 7px;
+    font-family: Roboto, Arial, sans-serif;
+    font-size: 12px;
+    color: #e6ece8;
+    padding: 2px 6px;
+  }
+  .pk2 .dsp .stg label {
+    display: grid;
+    grid-template-columns: 150px 1fr;
+    align-items: center;
+    gap: 8px;
+  }
+  .pk2 .dsp .stg label.stgc {
+    grid-template-columns: 18px 1fr;
+  }
+  .pk2 .dsp .stg select,
+  .pk2 .dsp .stg input[type="text"] {
+    background: #0b1420;
+    color: #e6ece8;
+    border: 1px solid #5a6672;
+    border-radius: 5px;
+    padding: 3px 6px;
+    font: inherit;
+    min-width: 0;
+  }
+  .pk2 .dsp .stg input[type="checkbox"] {
+    width: 14px;
+    height: 14px;
+    accent-color: #5cf08a;
+  }
+  .pk2 .dsp .stg .stgb {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 2px;
+  }
+  .pk2 .dsp .stg button {
+    background: #1f4d35;
+    color: #e6ffee;
+    border: 1px solid #5cf08a;
+    border-radius: 6px;
+    padding: 4px 12px;
+    font: inherit;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .pk2 .dsp .stg button.confirm {
+    background: #7a3a14;
+    border-color: #ffb347;
+    color: #fff;
+  }
+  .pk2 .dsp .stg .stgm {
+    font-size: 11px;
+    color: #9fb3c8;
+  }
+  .pk2 .dsp .stg .stgm.err {
+    color: #ff8a7a;
+  }
+  .pk2 .dsp .stg .stgm.ok {
+    color: #5cf08a;
   }
   .dpopbk [data-go] {
     cursor: pointer;
@@ -4154,6 +4343,12 @@
     const w = measure.measureText(el.textContent).width;
     el.setAttribute("font-size", w > mw ? Math.max(fs * 0.6, fs * mw / w).toFixed(2) : String(fs));
   };
+  var canon = (o) => JSON.stringify(
+    o,
+    (k, v) => v && typeof v === "object" && !Array.isArray(v) ? Object.fromEntries(
+      Object.keys(v).sort().map((x) => [x, v[x]])
+    ) : v
+  );
 
   // src/victron.js
   var VIC_TILES = [
@@ -4324,6 +4519,7 @@
       if (this._built && key === this._cfgKey) return;
       this._cfgKey = key;
       if (this._built) this.style.minHeight = this.offsetHeight + "px";
+      this._raw = JSON.parse(JSON.stringify(config));
       this._cfg = { cells: 16, temps: 4, batteries: [], victron: {}, ...config };
       this._lang = null;
       this._setLang(this._wantLang(this._hass));
@@ -4526,6 +4722,7 @@
       clearTimeout(this._tm);
       this._selB = c.batteries.map(() => -1);
       this._sel = 0;
+      this._wireSettings(root);
       this._screenView = c.view === "screen";
       root.host.classList.toggle("screenview", this._screenView);
       if (this._screenView) {
@@ -4931,9 +5128,15 @@
     // little random wobble: B- -> B+ while charging, B+ -> B- while discharging (opposite to the conventional current).
     // paints the values of one JK display (the live one of the card, or the only thing of the "screen" view)
     _paintScreen(dsp, { ci, b, G0, grp, imx, imn, don, rec }) {
+      dsp._ci = ci;
+      this._stgFill(dsp);
       const D = (k) => dsp.querySelector(`[data-d="${k}"]`), swOff = this._dpv(ci, b.dsp) === "off", dOn = grp ? !this._vOff : !swOff;
       dsp.classList.toggle("off", !dOn);
       dsp.classList.toggle("pwroff", swOff);
+      {
+        const tip = dsp.querySelector(".pwr title");
+        if (tip && tip.textContent !== tt(dOn ? "pwr_off" : "pwr_on")) tip.textContent = tt(dOn ? "pwr_off" : "pwr_on");
+      }
       dsp.classList.toggle("act", G0.I > 0.04);
       if (dOn) {
         const T = (k, s, col) => {
@@ -5070,7 +5273,7 @@
           strip._n = sg;
           strip.innerHTML = packSvg(n, i, grp ? grp.order.length : 1, "top-left", 2, this._tOf(bcfg), true);
           const svg = strip.querySelector("svg");
-          svg.querySelectorAll("title").forEach((t) => t.remove());
+          svg.querySelectorAll("title").forEach((t) => !t.closest(".pwr") && t.remove());
           svg.querySelectorAll("clipPath rect, .dsp > rect:first-of-type").forEach((e) => {
             e.setAttribute("rx", 15);
             e.setAttribute("ry", 15);
@@ -5079,7 +5282,15 @@
           dsp0.setAttribute("data-pg", this._cfg.view_page === "cells" ? "cells" : "group");
           svg.querySelectorAll("[data-mw]").forEach(fitLabel);
           strip.addEventListener("click", (e) => {
-            if (e.target.closest(".pwr")) this._toggleDisp(ci);
+            if (e.target.closest(".pwr")) return this._toggleDisp(ci);
+            const go = e.target.closest("[data-go]");
+            if (!go || go.dataset.go === "lang") return;
+            if (go.dataset.pk !== void 0) {
+              this._sel = +go.dataset.pk;
+              this._vOff = false;
+              if (this._data) this._updSimple(this._data);
+            }
+            strip.querySelector(".dsp").setAttribute("data-pg", go.dataset.go);
           });
         }
         const nm = strip.querySelector(".scrname");
@@ -5095,6 +5306,124 @@
         this._paintScreen(dsp, { ci, b, G0, grp, imx, imn, don, rec });
       });
       this._ringTick();
+    }
+    // ---- SETTINGS page of the screen: a part of the editor; the changes are saved in the dashboard configuration
+    _wireSettings(root) {
+      if (root._sw) return;
+      root._sw = 1;
+      const on = (e) => {
+        const s = e.target.closest && e.target.closest("[data-s]");
+        if (!s || s.dataset.s === "save" || s.dataset.s === "msg") return;
+        const v = this._stgv || (this._stgv = {}), k = s.dataset.s;
+        v[k] = s.type === "checkbox" ? s.checked : k === "name" ? s.value : k === "view" ? s.value : +s.value;
+        this.shadowRoot.querySelectorAll(".dsp").forEach((d) => this._stgFill(d));
+      };
+      root.addEventListener("input", on);
+      root.addEventListener("change", on);
+      root.addEventListener("click", (e) => {
+        const b = e.target.closest && e.target.closest('button[data-s="save"]');
+        if (b) this._stgSave(b);
+      });
+      root.addEventListener("keydown", (e) => {
+        if (e.target.closest && e.target.closest(".stg")) e.stopPropagation();
+      });
+    }
+    _stgFill(dsp) {
+      const f = dsp.querySelector(".stg");
+      if (!f || dsp._ci === void 0) return;
+      const raw = this._raw || {}, bc = (raw.batteries || [])[dsp._ci] || {}, p = this._stgv || {}, v = (k, d) => k in p ? p[k] : d, act = f.getRootNode().activeElement, set = (k, val) => {
+        const e = f.querySelector(`[data-s="${k}"]`);
+        if (!e || e === act) return;
+        if (e.type === "checkbox") e.checked = !!val;
+        else if (e.value !== String(val)) e.value = String(val);
+      }, view = v("view", raw.view === "screen" ? "screen" : "full"), cells = +v("cells", this._nOf(bc));
+      set("view", view);
+      set("name", v("name", bc.name || ""));
+      set("cells", cells);
+      set("rows", v("rows", bc.rows === 1 ? 1 : 2));
+      set("btn", v("btn", raw.button_all_pages !== false));
+      f.querySelector('[data-s-row="rows"]').style.display = cells === 8 && view !== "screen" ? "" : "none";
+    }
+    async _stgSave(btn) {
+      const f = btn.closest(".stg"), ci = btn.closest(".dsp")._ci, say = (k, cls, p2) => {
+        const m = f.querySelector('[data-s="msg"]');
+        m.className = "stgm " + (cls || "");
+        m.textContent = k ? tt(k, p2) : "";
+      }, reset = () => {
+        clearTimeout(btn._ct);
+        btn._confirm = false;
+        btn.classList.remove("confirm");
+        btn.textContent = tt("scr_st_save");
+      };
+      if (!btn._confirm) {
+        btn._confirm = true;
+        btn.classList.add("confirm");
+        btn.textContent = tt("scr_st_confirm");
+        btn._ct = setTimeout(reset, 8e3);
+        say("");
+        return;
+      }
+      reset();
+      const old = this._raw, next = JSON.parse(JSON.stringify(old)), p = this._stgv || {};
+      if ("view" in p) {
+        if (p.view === "screen") next.view = "screen";
+        else {
+          delete next.view;
+          delete next.view_page;
+        }
+      }
+      if ("btn" in p) {
+        if (p.btn) delete next.button_all_pages;
+        else next.button_all_pages = false;
+      }
+      const bc = (next.batteries || [])[ci];
+      if (bc) {
+        if ("name" in p) {
+          if (p.name) bc.name = p.name;
+          else delete bc.name;
+        }
+        if ("cells" in p) bc.cells = p.cells;
+        if ("rows" in p || "cells" in p) {
+          const rows = "rows" in p ? p.rows : bc.rows === 1 ? 1 : 2;
+          if (+bc.cells === 8 && rows === 1) bc.rows = 1;
+          else delete bc.rows;
+        }
+      } else if (["name", "cells", "rows"].some((k) => k in p)) return say("scr_st_err_auto", "err");
+      if (canon(next) === canon(old)) return say("scr_st_nochg");
+      say("scr_st_saving");
+      try {
+        await this._dashSave(old, next);
+        this._stgv = null;
+        say("scr_st_ok", "ok");
+        this.setConfig(next);
+      } catch (e) {
+        const k = e && e.message && e.message.startsWith("scr_st_err") ? e.message : "scr_st_err_save";
+        say(k, "err", { e: e && (e.message || e.code) || "" });
+      }
+    }
+    // finds this card (by its configuration) in the dashboard that is open and saves the changed copy
+    async _dashSave(old, next) {
+      const h = this._hass;
+      if (!h || typeof h.callWS !== "function") throw new Error("scr_st_err_ws");
+      const seg = location.pathname.split("/")[1] || "lovelace", url_path = seg === "lovelace" ? null : seg;
+      let cfg;
+      try {
+        cfg = await h.callWS({ type: "lovelace/config", url_path, force: false });
+      } catch (e) {
+        throw new Error("scr_st_err_yaml");
+      }
+      const key = canon(old), hits = [], walk = (o) => {
+        if (Array.isArray(o)) o.forEach(walk);
+        else if (o && typeof o === "object") {
+          if (o.type === old.type && canon(o) === key) hits.push(o);
+          else Object.values(o).forEach(walk);
+        }
+      };
+      walk(cfg);
+      if (hits.length !== 1) throw new Error(hits.length ? "scr_st_err_many" : "scr_st_err_nf");
+      Object.keys(hits[0]).forEach((k) => delete hits[0][k]);
+      Object.assign(hits[0], next);
+      await h.callWS({ type: "lovelace/config/save", url_path, config: cfg });
     }
     _elInit(strip) {
       const NS2 = "http://www.w3.org/2000/svg", svg = strip.querySelector("svg"), layer = document.createElementNS(NS2, "g"), und = svg.querySelector(".und"), layerUnder = document.createElementNS(NS2, "g");
@@ -5382,7 +5711,7 @@
       const svg = bk.querySelector("svg");
       svg.innerHTML = src.outerHTML;
       svg.firstChild.removeAttribute("transform");
-      svg.querySelectorAll("title").forEach((t) => t.remove());
+      svg.querySelectorAll("title").forEach((t) => !t.closest(".pwr") && t.remove());
       {
         const cp = svg.querySelector("clipPath"), gl = svg.querySelector(".gl");
         if (cp && gl) {
@@ -5461,6 +5790,12 @@
       if (!p) return;
       const dst = p.el.querySelector(".dsp");
       if (!dst) return;
+      dst._ci = src._ci;
+      {
+        const a = src.querySelector(".pwr title"), b = dst.querySelector(".pwr title");
+        if (a && b && b.textContent !== a.textContent) b.textContent = a.textContent;
+      }
+      this._stgFill(dst);
       ["class", "style"].forEach((a) => {
         const v = src.getAttribute(a) || "";
         if (dst.getAttribute(a) !== v) dst.setAttribute(a, v);

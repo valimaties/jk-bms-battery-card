@@ -56,3 +56,15 @@ export const fitLabel = (el) => {
   const w = measure.measureText(el.textContent).width;
   el.setAttribute("font-size", w > mw ? Math.max(fs * 0.6, (fs * mw) / w).toFixed(2) : String(fs));
 };
+
+// the same JSON for the same content, whatever the order of the keys
+export const canon = (o) =>
+  JSON.stringify(o, (k, v) =>
+    v && typeof v === "object" && !Array.isArray(v)
+      ? Object.fromEntries(
+          Object.keys(v)
+            .sort()
+            .map((x) => [x, v[x]]),
+        )
+      : v,
+  );

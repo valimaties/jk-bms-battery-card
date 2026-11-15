@@ -359,7 +359,7 @@ export function packSvg(n, id, np = 1, layout = "top-left", rows = 2, nt = 0, sc
       <path d="M${cx + 2} ${top + 9} L${cx - 7} ${top + 24} H${cx - 1} L${cx - 3} ${top + 36} L${cx + 7} ${top + 19} H${cx + 1} Z" fill="#fff"/>
       <circle cx="${cx}" cy="${top + 57}" r="7" fill="none" stroke="#e6ece8" stroke-width="1"/>${dsc(i, cx, top + 60.5, 9, WT, 'text-anchor="middle"')}${on ? `<rect x="${cx - 18}" y="${top - 2}" width="36" height="72" fill="#000" fill-opacity="0"/>` : ""}</g>`;
   };
-  const packsPage = `<path d="${outline}" fill="#03060a" stroke="#8d9aa3" stroke-width="1.3" stroke-linejoin="round"/>${logo}${[0, 1, 2, 3].map((k) => `<path class="chv chv${k}" d="M${201 + k * 12} 11 L${207 + k * 12} 17.5 L${201 + k * 12} 24"/>`).join("")}${Array.from({ length: 16 }, (_, i) => pkIco(i)).join("")}${tab(76, "scr_tab_group", false, "group")}${tab(216, "scr_tab_packs", true)}${tab(355, "scr_tab_setting", false)}`;
+  const packsPage = `<path d="${outline}" fill="#03060a" stroke="#8d9aa3" stroke-width="1.3" stroke-linejoin="round"/>${logo}${[0, 1, 2, 3].map((k) => `<path class="chv chv${k}" d="M${201 + k * 12} 11 L${207 + k * 12} 17.5 L${201 + k * 12} 24"/>`).join("")}${Array.from({ length: 16 }, (_, i) => pkIco(i)).join("")}${tab(76, "scr_tab_group", false, "group")}${tab(216, "scr_tab_packs", true)}${tab(355, "scr_tab_setting", false, "settings")}`;
   const cl = "#e6ece8",
     gic = (cy, ch) =>
       `<circle cx="121" cy="${cy}" r="7" fill="none" stroke="${GR}" stroke-width="1.4"/>${dsc(ch, 121, cy + 3.6, 9.5, GR, 'text-anchor="middle" font-weight="700"')}`;
@@ -422,6 +422,23 @@ export function packSvg(n, id, np = 1, layout = "top-left", rows = 2, nt = 0, sc
       }).join("");
       return o;
     })()}`;
+  // SETTINGS page: a part of the editor on the screen; the values are saved in the dashboard configuration (see _stgSave)
+  const settingsPage = `<rect width="433" height="243" fill="#03060a"/>
+  <g data-go="group">
+    <circle cx="22" cy="21" r="9" fill="none" stroke="${cl}" stroke-width="1.4"/>
+    <path d="M27 21 H17 M20.5 17 L16.5 21 L20.5 25" fill="none" stroke="${cl}" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="22" cy="21" r="12" fill="#000" fill-opacity="0"/>
+  </g>${dt("scr_tab_setting", "", 216, 26, 14, WT, 'font-weight="700" text-anchor="middle"')}
+  <foreignObject x="10" y="38" width="413" height="200">
+    <div class="stg">
+      <label><span data-tr="scr_st_view|">${tt("scr_st_view")}</span><select data-s="view"><option value="full">${tt("view_full")}</option><option value="screen">${tt("view_screen")}</option></select></label>
+      <label><span data-tr="scr_st_name|">${tt("scr_st_name")}</span><input data-s="name" type="text"></label>
+      <label><span data-tr="scr_st_cells|">${tt("scr_st_cells")}</span><select data-s="cells"><option value="16">16</option><option value="8">8</option></select></label>
+      <label data-s-row="rows"><span data-tr="scr_st_rows|">${tt("scr_st_rows")}</span><select data-s="rows"><option value="2">${tt("ed_rows_2")}</option><option value="1">${tt("ed_rows_1")}</option></select></label>
+      <label class="stgc"><input data-s="btn" type="checkbox"><span data-tr="scr_st_btn|">${tt("scr_st_btn")}</span></label>
+      <div class="stgb"><button data-s="save" type="button" data-tr="scr_st_save|">${tt("scr_st_save")}</button><span class="stgm" data-s="msg"></span></div>
+    </div>
+  </foreignObject>`;
   const dsp = `<g class="dsp" data-d="dsp" transform="translate(-246 44) scale(.4)">
     <title>${tt("screen_tip")}</title><clipPath id="dc${id}">
       <rect x="1.5" y="1.5" width="607" height="420" rx="34.5"/>
@@ -447,9 +464,10 @@ export function packSvg(n, id, np = 1, layout = "top-left", rows = 2, nt = 0, sc
     ${row2("scr_maxcell", "mx", 13, 135, 189, 72)}${row2("scr_mincell", "mn", 13, 135, 211, 72)}
     ${row2("scr_temp", "tp", 150, 256, 189, 60)}${row2("scr_pwr", "pw", 150, 256, 211, 60)}
     ${row2("scr_alarm", "alm", 262, 354, 189, 44, 11)}${row2("scr_packs", "np", 262, 354, 211, 44)}
-    ${row2("scr_chg", "chg", 360, 424, 189, 36)}${row2("scr_dch", "dch", 360, 424, 211, 36)}${tab(76, "scr_tab_group", true)}${tab(216, "scr_tab_packs", false, "packs")}${tab(355, "scr_tab_setting", false)}</g>
+    ${row2("scr_chg", "chg", 360, 424, 189, 36)}${row2("scr_dch", "dch", 360, 424, 211, 36)}${tab(76, "scr_tab_group", true)}${tab(216, "scr_tab_packs", false, "packs")}${tab(355, "scr_tab_setting", false, "settings")}</g>
     <g class="pg pg-packs">${packsPage}</g>
     <g class="pg pg-cells">${cellsPage}</g>
+    <g class="pg pg-settings">${settingsPage}</g>
     </g>
   <g class="pwr">
     <title>${tt("pwr_tip")}</title>

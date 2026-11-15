@@ -2635,8 +2635,72 @@ export const CSS = `
   .pk2 .dsp:not([data-pg]) .pg-group,
   .pk2 .dsp[data-pg="group"] .pg-group,
   .pk2 .dsp[data-pg="packs"] .pg-packs,
-  .pk2 .dsp[data-pg="cells"] .pg-cells {
+  .pk2 .dsp[data-pg="cells"] .pg-cells,
+  .pk2 .dsp[data-pg="settings"] .pg-settings {
     display: inline;
+  }
+  .pk2 .dsp .stg {
+    display: grid;
+    gap: 7px;
+    font-family: Roboto, Arial, sans-serif;
+    font-size: 12px;
+    color: #e6ece8;
+    padding: 2px 6px;
+  }
+  .pk2 .dsp .stg label {
+    display: grid;
+    grid-template-columns: 150px 1fr;
+    align-items: center;
+    gap: 8px;
+  }
+  .pk2 .dsp .stg label.stgc {
+    grid-template-columns: 18px 1fr;
+  }
+  .pk2 .dsp .stg select,
+  .pk2 .dsp .stg input[type="text"] {
+    background: #0b1420;
+    color: #e6ece8;
+    border: 1px solid #5a6672;
+    border-radius: 5px;
+    padding: 3px 6px;
+    font: inherit;
+    min-width: 0;
+  }
+  .pk2 .dsp .stg input[type="checkbox"] {
+    width: 14px;
+    height: 14px;
+    accent-color: #5cf08a;
+  }
+  .pk2 .dsp .stg .stgb {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 2px;
+  }
+  .pk2 .dsp .stg button {
+    background: #1f4d35;
+    color: #e6ffee;
+    border: 1px solid #5cf08a;
+    border-radius: 6px;
+    padding: 4px 12px;
+    font: inherit;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .pk2 .dsp .stg button.confirm {
+    background: #7a3a14;
+    border-color: #ffb347;
+    color: #fff;
+  }
+  .pk2 .dsp .stg .stgm {
+    font-size: 11px;
+    color: #9fb3c8;
+  }
+  .pk2 .dsp .stg .stgm.err {
+    color: #ff8a7a;
+  }
+  .pk2 .dsp .stg .stgm.ok {
+    color: #5cf08a;
   }
   .dpopbk [data-go] {
     cursor: pointer;

@@ -2,7 +2,7 @@ import { CARDS, I18N, inPreview, loadLang, loadLangList, pickLang, tt } from "./
 import { GRN, PK, packOverlay, packSvg } from "./pack.js";
 import { ST } from "./state.js";
 import { CSS } from "./styles.js";
-import { clamp, fitLabel, fmt, fmtW, grpOrder, html, num, socColor } from "./util.js";
+import { canon, clamp, fitLabel, fmt, fmtW, grpOrder, html, num, socColor } from "./util.js";
 import { VIC_TILES, discoverBatteries, discoverVictron, title } from "./victron.js";
 
 export const setH = (el, h) => {
@@ -48,6 +48,7 @@ export class JkBatteryCard extends HTMLElement {
     if (this._built && key === this._cfgKey) return; // HA may call setConfig again with the same config: rebuilding would collapse the card and make the page jump
     this._cfgKey = key;
     if (this._built) this.style.minHeight = this.offsetHeight + "px"; // keep the height while rebuilding, so the scroll position survives
+    this._raw = JSON.parse(JSON.stringify(config)); // as it is stored in the dashboard (the SETTINGS page saves a changed copy of it)
     this._cfg = { cells: 16, temps: 4, batteries: [], victron: {}, ...config };
     this._lang = null;
     this._setLang(this._wantLang(this._hass));
@@ -271,6 +272,7 @@ export class JkBatteryCard extends HTMLElement {
     clearTimeout(this._tm);
     this._selB = c.batteries.map(() => -1);
     this._sel = 0;
+    this._wireSettings(root);
     this._screenView = c.view === "screen";
     root.host.classList.toggle("screenview", this._screenView);
     if (this._screenView) {
@@ -806,11 +808,18 @@ export class JkBatteryCard extends HTMLElement {
   // little random wobble: B- -> B+ while charging, B+ -> B- while discharging (opposite to the conventional current).
   // paints the values of one JK display (the live one of the card, or the only thing of the "screen" view)
   _paintScreen(dsp, { ci, b, G0, grp, imx, imn, don, rec }) {
+    dsp._ci = ci;
+    this._stgFill(dsp);
     const D = (k) => dsp.querySelector(`[data-d="${k}"]`),
       swOff = this._dpv(ci, b.dsp) === "off",
       dOn = grp ? !this._vOff : !swOff;
     dsp.classList.toggle("off", !dOn);
     dsp.classList.toggle("pwroff", swOff);
+    {
+      // tooltip of the round button: what a click will do
+      const tip = dsp.querySelector(".pwr title");
+      if (tip && tip.textContent !== tt(dOn ? "pwr_off" : "pwr_on")) tip.textContent = tt(dOn ? "pwr_off" : "pwr_on");
+    }
     dsp.classList.toggle("act", G0.I > 0.04);
     if (dOn) {
       const T = (k, s, col) => {
@@ -1009,7 +1018,7 @@ export class JkBatteryCard extends HTMLElement {
         strip._n = sg;
         strip.innerHTML = packSvg(n, i, grp ? grp.order.length : 1, "top-left", 2, this._tOf(bcfg), true);
         const svg = strip.querySelector("svg");
-        svg.querySelectorAll("title").forEach((t) => t.remove());
+        svg.querySelectorAll("title").forEach((t) => !t.closest(".pwr") && t.remove());
         svg.querySelectorAll("clipPath rect, .dsp > rect:first-of-type").forEach((e) => {
           e.setAttribute("rx", 15);
           e.setAttribute("ry", 15);
@@ -1018,7 +1027,15 @@ export class JkBatteryCard extends HTMLElement {
         dsp0.setAttribute("data-pg", this._cfg.view_page === "cells" ? "cells" : "group");
         svg.querySelectorAll("[data-mw]").forEach(fitLabel);
         strip.addEventListener("click", (e) => {
-          if (e.target.closest(".pwr")) this._toggleDisp(ci);
+          if (e.target.closest(".pwr")) return this._toggleDisp(ci);
+          const go = e.target.closest("[data-go]");
+          if (!go || go.dataset.go === "lang") return;
+          if (go.dataset.pk !== undefined) {
+            this._sel = +go.dataset.pk;
+            this._vOff = false;
+            if (this._data) this._updSimple(this._data);
+          }
+          strip.querySelector(".dsp").setAttribute("data-pg", go.dataset.go);
         });
       }
       const nm = strip.querySelector(".scrname");
@@ -1041,6 +1058,142 @@ export class JkBatteryCard extends HTMLElement {
       this._paintScreen(dsp, { ci, b, G0, grp, imx, imn, don, rec });
     });
     this._ringTick();
+  }
+  // ---- SETTINGS page of the screen: a part of the editor; the changes are saved in the dashboard configuration
+  _wireSettings(root) {
+    if (root._sw) return;
+    root._sw = 1;
+    const on = (e) => {
+      const s = e.target.closest && e.target.closest("[data-s]");
+      if (!s || s.dataset.s === "save" || s.dataset.s === "msg") return;
+      const v = this._stgv || (this._stgv = {}),
+        k = s.dataset.s;
+      v[k] = s.type === "checkbox" ? s.checked : k === "name" ? s.value : k === "view" ? s.value : +s.value;
+      this.shadowRoot.querySelectorAll(".dsp").forEach((d) => this._stgFill(d));
+    };
+    root.addEventListener("input", on);
+    root.addEventListener("change", on);
+    root.addEventListener("click", (e) => {
+      const b = e.target.closest && e.target.closest('button[data-s="save"]');
+      if (b) this._stgSave(b);
+    });
+    // keys typed in the settings must not reach the dashboard shortcuts
+    root.addEventListener("keydown", (e) => {
+      if (e.target.closest && e.target.closest(".stg")) e.stopPropagation();
+    });
+  }
+  _stgFill(dsp) {
+    const f = dsp.querySelector(".stg");
+    if (!f || dsp._ci === undefined) return;
+    const raw = this._raw || {},
+      bc = (raw.batteries || [])[dsp._ci] || {},
+      p = this._stgv || {},
+      v = (k, d) => (k in p ? p[k] : d),
+      act = f.getRootNode().activeElement,
+      set = (k, val) => {
+        const e = f.querySelector(`[data-s="${k}"]`);
+        if (!e || e === act) return;
+        if (e.type === "checkbox") e.checked = !!val;
+        else if (e.value !== String(val)) e.value = String(val);
+      },
+      view = v("view", raw.view === "screen" ? "screen" : "full"),
+      cells = +v("cells", this._nOf(bc));
+    set("view", view);
+    set("name", v("name", bc.name || ""));
+    set("cells", cells);
+    set("rows", v("rows", bc.rows === 1 ? 1 : 2));
+    set("btn", v("btn", raw.button_all_pages !== false));
+    f.querySelector('[data-s-row="rows"]').style.display = cells === 8 && view !== "screen" ? "" : "none";
+  }
+  async _stgSave(btn) {
+    const f = btn.closest(".stg"),
+      ci = btn.closest(".dsp")._ci,
+      say = (k, cls, p) => {
+        const m = f.querySelector('[data-s="msg"]');
+        m.className = "stgm " + (cls || "");
+        m.textContent = k ? tt(k, p) : "";
+      },
+      reset = () => {
+        clearTimeout(btn._ct);
+        btn._confirm = false;
+        btn.classList.remove("confirm");
+        btn.textContent = tt("scr_st_save");
+      };
+    // two clicks: the dashboard is only written after a confirmation (auto-cancels after 8 s)
+    if (!btn._confirm) {
+      btn._confirm = true;
+      btn.classList.add("confirm");
+      btn.textContent = tt("scr_st_confirm");
+      btn._ct = setTimeout(reset, 8000);
+      say("");
+      return;
+    }
+    reset();
+    const old = this._raw,
+      next = JSON.parse(JSON.stringify(old)),
+      p = this._stgv || {};
+    if ("view" in p) {
+      if (p.view === "screen") next.view = "screen";
+      else {
+        delete next.view;
+        delete next.view_page;
+      }
+    }
+    if ("btn" in p) {
+      if (p.btn) delete next.button_all_pages;
+      else next.button_all_pages = false;
+    }
+    const bc = (next.batteries || [])[ci];
+    if (bc) {
+      if ("name" in p) {
+        if (p.name) bc.name = p.name;
+        else delete bc.name;
+      }
+      if ("cells" in p) bc.cells = p.cells;
+      if ("rows" in p || "cells" in p) {
+        const rows = "rows" in p ? p.rows : bc.rows === 1 ? 1 : 2;
+        if (+bc.cells === 8 && rows === 1) bc.rows = 1;
+        else delete bc.rows;
+      }
+    } else if (["name", "cells", "rows"].some((k) => k in p)) return say("scr_st_err_auto", "err");
+    if (canon(next) === canon(old)) return say("scr_st_nochg");
+    say("scr_st_saving");
+    try {
+      await this._dashSave(old, next);
+      this._stgv = null;
+      say("scr_st_ok", "ok");
+      this.setConfig(next);
+    } catch (e) {
+      const k = e && e.message && e.message.startsWith("scr_st_err") ? e.message : "scr_st_err_save";
+      say(k, "err", { e: (e && (e.message || e.code)) || "" });
+    }
+  }
+  // finds this card (by its configuration) in the dashboard that is open and saves the changed copy
+  async _dashSave(old, next) {
+    const h = this._hass;
+    if (!h || typeof h.callWS !== "function") throw new Error("scr_st_err_ws");
+    const seg = location.pathname.split("/")[1] || "lovelace",
+      url_path = seg === "lovelace" ? null : seg;
+    let cfg;
+    try {
+      cfg = await h.callWS({ type: "lovelace/config", url_path, force: false });
+    } catch (e) {
+      throw new Error("scr_st_err_yaml");
+    }
+    const key = canon(old),
+      hits = [],
+      walk = (o) => {
+        if (Array.isArray(o)) o.forEach(walk);
+        else if (o && typeof o === "object") {
+          if (o.type === old.type && canon(o) === key) hits.push(o);
+          else Object.values(o).forEach(walk);
+        }
+      };
+    walk(cfg);
+    if (hits.length !== 1) throw new Error(hits.length ? "scr_st_err_many" : "scr_st_err_nf");
+    Object.keys(hits[0]).forEach((k) => delete hits[0][k]);
+    Object.assign(hits[0], next);
+    await h.callWS({ type: "lovelace/config/save", url_path, config: cfg });
   }
   _elInit(strip) {
     const NS2 = "http://www.w3.org/2000/svg",
@@ -1381,7 +1534,7 @@ export class JkBatteryCard extends HTMLElement {
     const svg = bk.querySelector("svg");
     svg.innerHTML = src.outerHTML;
     svg.firstChild.removeAttribute("transform");
-    svg.querySelectorAll("title").forEach((t) => t.remove());
+    svg.querySelectorAll("title").forEach((t) => !t.closest(".pwr") && t.remove());
     {
       const cp = svg.querySelector("clipPath"),
         gl = svg.querySelector(".gl");
@@ -1470,6 +1623,13 @@ export class JkBatteryCard extends HTMLElement {
     if (!p) return;
     const dst = p.el.querySelector(".dsp");
     if (!dst) return;
+    dst._ci = src._ci;
+    {
+      const a = src.querySelector(".pwr title"),
+        b = dst.querySelector(".pwr title");
+      if (a && b && b.textContent !== a.textContent) b.textContent = a.textContent;
+    }
+    this._stgFill(dst);
     ["class", "style"].forEach((a) => {
       const v = src.getAttribute(a) || "";
       if (dst.getAttribute(a) !== v) dst.setAttribute(a, v);
