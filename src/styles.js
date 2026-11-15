@@ -2769,7 +2769,7 @@ export const CSS = `
   }
   .pk2 .dsp .stg {
     display: grid;
-    gap: 7px;
+    gap: 4px;
     font-family: Roboto, Arial, sans-serif;
     font-size: 12px;
     color: #e6ece8;
