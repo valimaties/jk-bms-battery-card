@@ -4217,12 +4217,12 @@
   .baltail.on {
     opacity: 0.5;
     stroke-dasharray: 40 300;
-    animation: balsnake-t 1.8s linear infinite;
+    animation: balsnake-t 1s linear infinite;
   }
   .balhead.on {
     opacity: 1;
     stroke-dasharray: 12 300;
-    animation: balsnake-h 1.8s linear infinite;
+    animation: balsnake-h 1s linear infinite;
   }
   .balline.pos,
   .baltail.pos,
