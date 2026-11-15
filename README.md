@@ -153,7 +153,7 @@ While the balancer works, a moving line runs from the highest cell, which gives 
 
 The line between the two cells follows the free space between the numbers and never crosses one.
 
-<p align="center"><img src="docs/screen-balancing.gif" alt="Balancing on the cells screen, with a positive and a negative current" width="560"></p>
+<p align="center"><img src="docs/screen-balancing-snake.gif" alt="Balancing on the cells screen, with a positive and a negative current" width="560"></p>
 
 ### 8 cells: two rows of 4 or one row of 8
 
