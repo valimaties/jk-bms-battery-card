@@ -14,6 +14,15 @@ Balancing: the highest cell gives to the lowest one and the two are joined by a 
 
 <p align="center"><img src="docs/balancing.gif" alt="Balancing between several pairs of cells" width="720"></p>
 
+## What's new in 1.0.3
+
+- **Screen-only mode**: the card can show nothing but the JK display, with the main screen, the cells screen, or both one under the other (see *Screen-only mode*).
+- **SETTING page on the screen**: change the display mode, the battery name, the number of cells, the cell layout and the round button, and save it into the dashboard.
+- **Balancing current on the cells screen**: red for a positive current (the lowest cell is charged), blue for a negative one (the highest cell is discharged); the two cells are joined by a moving line and the charged / discharged cell is outlined and filled by a moving band.
+- **Row of temperature sensors (T1…T4) and the MOS temperature with its unit** on the cells screen.
+- **Labels and values aligned in every language**: the labels of the screen shrink to fit their column.
+- **Tooltip on the round button** of the display: *Turn the display off* / *Turn the display on*.
+
 > **Tested only with the JK BMS PB2A16S20P v19.** Using the card with another BMS (other model or firmware, different entity names or values) is your own responsibility: expect that things may not work as shown.
 >
 > **This card is distributed "as is"**, without any warranty of any kind and without any promise of support or fixes. You use it at your own risk.
@@ -24,7 +33,8 @@ Balancing: the highest cell gives to the lowest one and the two are joined by a 
 - **Balancing**: the lightning between the highest and the lowest cell, and the status chip *balancing* while the balancer works.
 - **BMS screen replica**: click it to enlarge. GROUP / PACKS / cells pages like the real display, the round button switches the `display_always_on` switch, the *Language* label changes the language of the whole card (see *Translations*).
 - **SETTING page on the screen**: display mode (full card / screen only), battery name, number of cells, cell layout (8 cells) and the round button on every page. *Save to dashboard* (asks for a second click) writes the change into the dashboard configuration, so it needs a dashboard in the UI editor (not YAML mode) and an administrator account; otherwise use the card editor.
-- **Balancing current on the cells page of the screen**: positive (red): the lowest cell receives energy from the pack, drawn from the battery icon; negative (blue): the highest cell gives energy to the lowest one. The cell that is charged or discharged is highlighted with a `+` or `-`, and an animated line shows the way.
+- **Balancing current on the cells page of the screen**: positive (red): the lowest cell receives energy; negative (blue): the highest cell gives energy away. The two cells are joined by a moving line, from the highest to the lowest one, and the cell that is charged or discharged is outlined and filled by a band that rises (charging) or falls (discharging).
+- **Screen-only mode**: only the JK display, the main screen, the cells screen or both, for dashboards that just want the screen (see *Screen-only mode*).
 - **Master / slave groups** (declared in the card, the integration sees every BMS separately): one card, a selector chooses the pack, the screen shows the group totals.
 - **Safe switches**: charging / discharging / balancing / heating ask for confirmation.
 - **Every value opens its entity** (more-info).
@@ -89,6 +99,55 @@ batteries:
 | `performance` | `auto` | `auto` (light on touch / weak devices), `full`, `lite` |
 | `translations_path` | next to the card | Optional: URL of a folder with `translations/<code>.json` for a language that is not bundled |
 | `victron` | – | Optional SmartShunt / MultiPlus entities, see below |
+
+### Screen-only mode
+
+For a dashboard that only needs the display, set `view: screen`: no BMS, no cells, no numbers or texts around it, just the JK screen with the name of the battery in grey above it. You choose the page of the screen:
+
+```yaml
+type: custom:jk-bms-battery-card
+view: screen
+view_page: group        # group = main screen (default), cells = screen with the cell voltages
+batteries:
+  - name: Battery 1
+    entity_base: jk_bms_bms0
+```
+
+To show the main screen and the cells screen one under the other, in the same card, add `screen_cells: true`:
+
+```yaml
+type: custom:jk-bms-battery-card
+view: screen
+screen_cells: true
+batteries:
+  - name: Battery 1
+    entity_base: jk_bms_bms0
+```
+
+<p align="center"><img src="docs/screen-only.png" alt="Screen-only mode: the main screen and the cells screen" width="440"></p>
+
+- With `screen_cells` the **PACKS page is off** (the tab is greyed out and the back arrow of the cells page is hidden): every battery has its own two screens. With a master / slave group a selector above the screens chooses the pack.
+- The round button still switches the display on and off; its tooltip says what a click will do. `button_all_pages: false` draws it only on the main screen.
+- The **SETTING** tab opens a page with the display mode (full card / screen only), the name of the battery, the number of cells, the cell layout (8 cells, full card), the button option and the cells screen under the main one. **Save to dashboard** asks for a second click and then writes the change into the dashboard configuration: it needs a dashboard edited in the user interface (not YAML mode) and an administrator account; otherwise use the card editor. The name and the cells can only be saved for a battery that is written in the card (not an auto-detected one).
+
+#### Balancing on the cells screen
+
+The sensor `balancing_current` tells what the balancer does:
+
+- **positive** (red): the cell with the **lowest** voltage receives energy; the cell is outlined in red and a band rises in it;
+- **negative** (blue): the cell with the **highest** voltage gives energy away; the cell is outlined in blue and a band falls in it.
+
+The line between the two cells follows the free space between the numbers and never crosses one. The recordings below show many routes (the current alternates + and − from one pair to the next, the cells with the highest and the lowest voltage change like on a real pack, the battery is at 99 %):
+
+<details>
+<summary>Balancing routes (4 recordings)</summary>
+
+<p align="center"><b>Same row</b> (column 1→4, 4→1, 1→3, 4→2, …)<br><img src="docs/screen-balancing-rows.gif" alt="Balancing between cells of the same row" width="560"></p>
+<p align="center"><b>Same column</b> (top to bottom, bottom to top, …)<br><img src="docs/screen-balancing-columns.gif" alt="Balancing between cells of the same column" width="560"></p>
+<p align="center"><b>Next row, another column</b><br><img src="docs/screen-balancing-nextrow.gif" alt="Balancing between cells of neighbouring rows" width="560"></p>
+<p align="center"><b>Far diagonals</b><br><img src="docs/screen-balancing-diagonals.gif" alt="Balancing between cells far apart" width="560"></p>
+
+</details>
 
 ### 8 cells: two rows of 4 or one row of 8
 
