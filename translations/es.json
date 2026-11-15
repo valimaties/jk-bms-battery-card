@@ -171,6 +171,8 @@
   "scr_st_err_many": "Varias tarjetas idénticas: cámbiala en el editor",
   "scr_st_err_save": "No se pudo guardar: {e}",
   "scr_st_err_auto": "El nombre y las celdas requieren una batería escrita en la tarjeta (no detectada automáticamente)",
+  "scr_note_narrow": "La tarjeta solo usa una parte del ancho de su sección.",
+  "scr_note_btn": "Usar todo el ancho",
   "scr_batcap2": "Cap. batería",
   "scr_remcap2": "Cap. restante",
   "scr_voldiff": "Dif. tens.",

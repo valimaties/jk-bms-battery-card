@@ -171,6 +171,8 @@
   "scr_st_err_many": "Plusieurs cartes identiques: modifiez celle-ci dans l'éditeur",
   "scr_st_err_save": "Échec de l'enregistrement: {e}",
   "scr_st_err_auto": "Le nom et les cellules demandent une batterie listée dans la carte (non détectée automatiquement)",
+  "scr_note_narrow": "La carte n'utilise qu'une partie de la largeur de sa section.",
+  "scr_note_btn": "Utiliser toute la largeur",
   "scr_batcap2": "Capacité bat.",
   "scr_remcap2": "Capacité rest.",
   "scr_voldiff": "Écart V",

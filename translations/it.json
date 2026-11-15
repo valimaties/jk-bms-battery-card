@@ -171,6 +171,8 @@
   "scr_st_err_many": "Più schede identiche: modifica questa nell'editor",
   "scr_st_err_save": "Salvataggio non riuscito: {e}",
   "scr_st_err_auto": "Nome e celle richiedono una batteria elencata nella scheda (non rilevata automaticamente)",
+  "scr_note_narrow": "La scheda usa solo una parte della larghezza della sezione.",
+  "scr_note_btn": "Usa tutta la larghezza",
   "scr_batcap2": "Cap. batteria",
   "scr_remcap2": "Cap. residua",
   "scr_voldiff": "Diff. tens.",

@@ -2351,6 +2351,41 @@ export const CSS = `
     gap: 12px;
     align-items: start;
   }
+  .scrnote {
+    display: none;
+    grid-column: 1 / -1;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    padding: 8px 12px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 179, 71, 0.5);
+    background: rgba(255, 179, 71, 0.08);
+    color: var(--txt);
+    font-size: 13px;
+  }
+  .scrnote.on {
+    display: flex;
+  }
+  .scrnote button {
+    background: #1f4d35;
+    color: #e6ffee;
+    border: 1px solid #5cf08a;
+    border-radius: 8px;
+    padding: 4px 12px;
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .scrnote button:disabled {
+    opacity: 0.5;
+  }
+  .scrnote .stgm.err {
+    color: #ff8a7a;
+  }
+  .scrnote .stgm.ok {
+    color: #5cf08a;
+  }
   .scrbox {
     display: flex;
     flex-direction: column;

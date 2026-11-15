@@ -171,6 +171,8 @@
   "scr_st_err_many": "Several identical cards: change this one in the editor",
   "scr_st_err_save": "Could not save: {e}",
   "scr_st_err_auto": "Name and cells need a battery listed in the card (not auto-detected)",
+  "scr_note_narrow": "The card uses only part of the width of its section.",
+  "scr_note_btn": "Use the full width",
   "scr_batcap2": "Bat-Capacity",
   "scr_remcap2": "Rem-Capacity",
   "scr_voldiff": "Vol.diff",

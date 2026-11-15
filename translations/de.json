@@ -171,6 +171,8 @@
   "scr_st_err_many": "Mehrere gleiche Karten: diese im Editor ändern",
   "scr_st_err_save": "Speichern fehlgeschlagen: {e}",
   "scr_st_err_auto": "Name und Zellen brauchen eine in der Karte eingetragene Batterie (nicht automatisch erkannt)",
+  "scr_note_narrow": "Die Karte nutzt nur einen Teil der Breite ihres Abschnitts.",
+  "scr_note_btn": "Volle Breite nutzen",
   "scr_batcap2": "Bat.-Kapazität",
   "scr_remcap2": "Restkapazität",
   "scr_voldiff": "Spg.-Diff.",

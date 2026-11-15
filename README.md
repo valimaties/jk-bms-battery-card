@@ -143,7 +143,7 @@ With several batteries the screens follow the **width of the section** the card 
 
 In a sections dashboard the card takes the **whole width of its section** by default (`columns: full`); to make it narrower use the *Layout* tab of the card (or `grid_options` in YAML).
 
-> If you updated from an older version and the card stays narrow, Home Assistant has kept the width it saved when the card was first placed (`grid_options: { columns: 12, rows: auto }` in the card's YAML). Change it to `grid_options: { columns: full, rows: auto }` (*Show code editor*), or drag the width in the *Layout* tab: a saved width always wins over what the card asks for.
+> If the card stays narrow in a wide section (Home Assistant keeps the width it saved when the card was first placed, `grid_options: { columns: 12 }`, and a saved width wins over what the card asks for), the screen-only card shows a notice with a button **Use the full width**. One click writes the full width into the dashboard (it needs an administrator account); no YAML to edit. By hand: `grid_options: { columns: full, rows: auto }` in the card's YAML, or the *Layout* tab.
  A narrow screen (a phone) always stacks the screens. The full card (`view: full`) puts at most two batteries in a row.
 
 #### Balancing on the cells screen

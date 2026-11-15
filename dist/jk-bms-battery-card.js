@@ -179,6 +179,8 @@
     scr_st_err_many: "Mehrere gleiche Karten: diese im Editor \xE4ndern",
     scr_st_err_save: "Speichern fehlgeschlagen: {e}",
     scr_st_err_auto: "Name und Zellen brauchen eine in der Karte eingetragene Batterie (nicht automatisch erkannt)",
+    scr_note_narrow: "Die Karte nutzt nur einen Teil der Breite ihres Abschnitts.",
+    scr_note_btn: "Volle Breite nutzen",
     scr_batcap2: "Bat.-Kapazit\xE4t",
     scr_remcap2: "Restkapazit\xE4t",
     scr_voldiff: "Spg.-Diff.",
@@ -379,6 +381,8 @@
     scr_st_err_many: "Several identical cards: change this one in the editor",
     scr_st_err_save: "Could not save: {e}",
     scr_st_err_auto: "Name and cells need a battery listed in the card (not auto-detected)",
+    scr_note_narrow: "The card uses only part of the width of its section.",
+    scr_note_btn: "Use the full width",
     scr_batcap2: "Bat-Capacity",
     scr_remcap2: "Rem-Capacity",
     scr_voldiff: "Vol.diff",
@@ -579,6 +583,8 @@
     scr_st_err_many: "Varias tarjetas id\xE9nticas: c\xE1mbiala en el editor",
     scr_st_err_save: "No se pudo guardar: {e}",
     scr_st_err_auto: "El nombre y las celdas requieren una bater\xEDa escrita en la tarjeta (no detectada autom\xE1ticamente)",
+    scr_note_narrow: "La tarjeta solo usa una parte del ancho de su secci\xF3n.",
+    scr_note_btn: "Usar todo el ancho",
     scr_batcap2: "Cap. bater\xEDa",
     scr_remcap2: "Cap. restante",
     scr_voldiff: "Dif. tens.",
@@ -779,6 +785,8 @@
     scr_st_err_many: "Plusieurs cartes identiques: modifiez celle-ci dans l'\xE9diteur",
     scr_st_err_save: "\xC9chec de l'enregistrement: {e}",
     scr_st_err_auto: "Le nom et les cellules demandent une batterie list\xE9e dans la carte (non d\xE9tect\xE9e automatiquement)",
+    scr_note_narrow: "La carte n'utilise qu'une partie de la largeur de sa section.",
+    scr_note_btn: "Utiliser toute la largeur",
     scr_batcap2: "Capacit\xE9 bat.",
     scr_remcap2: "Capacit\xE9 rest.",
     scr_voldiff: "\xC9cart V",
@@ -979,6 +987,8 @@
     scr_st_err_many: "Pi\xF9 schede identiche: modifica questa nell'editor",
     scr_st_err_save: "Salvataggio non riuscito: {e}",
     scr_st_err_auto: "Nome e celle richiedono una batteria elencata nella scheda (non rilevata automaticamente)",
+    scr_note_narrow: "La scheda usa solo una parte della larghezza della sezione.",
+    scr_note_btn: "Usa tutta la larghezza",
     scr_batcap2: "Cap. batteria",
     scr_remcap2: "Cap. residua",
     scr_voldiff: "Diff. tens.",
@@ -1179,6 +1189,8 @@
     scr_st_err_many: "Mai multe carduri identice: schimb\u0103 acest card din editor",
     scr_st_err_save: "Nu s-a putut salva: {e}",
     scr_st_err_auto: "Numele \u0219i celulele cer o baterie scris\u0103 \xEEn card (nu detectat\u0103 automat)",
+    scr_note_narrow: "Cardul folose\u0219te doar o parte din l\u0103\u021Bimea sec\u021Biunii.",
+    scr_note_btn: "Folose\u0219te toat\u0103 l\u0103\u021Bimea",
     scr_batcap2: "Cap. baterie",
     scr_remcap2: "Cap. r\u0103mas\u0103",
     scr_voldiff: "Dif. tens.",
@@ -3974,6 +3986,41 @@
     gap: 12px;
     align-items: start;
   }
+  .scrnote {
+    display: none;
+    grid-column: 1 / -1;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    padding: 8px 12px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 179, 71, 0.5);
+    background: rgba(255, 179, 71, 0.08);
+    color: var(--txt);
+    font-size: 13px;
+  }
+  .scrnote.on {
+    display: flex;
+  }
+  .scrnote button {
+    background: #1f4d35;
+    color: #e6ffee;
+    border: 1px solid #5cf08a;
+    border-radius: 8px;
+    padding: 4px 12px;
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .scrnote button:disabled {
+    opacity: 0.5;
+  }
+  .scrnote .stgm.err {
+    color: #ff8a7a;
+  }
+  .scrnote .stgm.ok {
+    color: #5cf08a;
+  }
   .scrbox {
     display: flex;
     flex-direction: column;
@@ -5354,7 +5401,7 @@
     // "screen" view: nothing but the JK display (no BMS, cells, tiles or texts); view_page chooses its page
     _buildScreens(root) {
       const c = this._cfg, grp = this._groupInfo(), list = grp ? [c.batteries[grp.mi]] : c.batteries;
-      root.innerHTML = `<style>${CSS}</style><ha-card class="scronly">${list.map(
+      root.innerHTML = `<style>${CSS}</style><ha-card class="scronly"><div class="scrnote" data-k="note"><span>${tt("scr_note_narrow")}</span><button type="button" data-s="width">${tt("scr_note_btn")}</button><span class="stgm" data-s="wmsg"></span></div>${list.map(
         () => `<div class="scrbox">
         ${grp ? `<select class="pksel scrsel" data-k="pksel" title="${tt("pick_battery")}"></select>` : ""}
         <div class="pk2 scrmini" data-k="bccells"></div>${c.screen_cells ? '<div class="pk2 scrmini scrmini2"></div>' : ""}</div>`
@@ -5438,7 +5485,40 @@
           this._paintScreen(strip.querySelector(".dsp"), { ci, b, G0, grp, imx, imn, don, rec });
         });
       });
+      this._widthHint();
       this._ringTick();
+    }
+    // a width saved in the dashboard (grid_options.columns: 12, what Home Assistant keeps from the first placement) keeps the card
+    // narrow in a wide section: the card offers to switch it to the full width with one click, no YAML to edit
+    _widthHint() {
+      const note = this.shadowRoot.querySelector(".scrnote");
+      if (!note) return;
+      const go = this._raw && this._raw.grid_options;
+      let sec = null, n = this;
+      for (let i = 0; n && i < 14 && !sec; i++) {
+        n = n.parentNode || n.host;
+        if (n && n.localName && n.localName.indexOf("hui-grid-section") === 0) sec = n;
+      }
+      const w = this.getBoundingClientRect().width, sw = sec ? sec.getBoundingClientRect().width : 0, show = !!(go && typeof go.columns === "number" && sw > w * 1.35 && w > 0);
+      note.classList.toggle("on", show);
+    }
+    async _widthSave(btn) {
+      const msg = this.shadowRoot.querySelector('.scrnote [data-s="wmsg"]'), say = (k, cls, p) => {
+        msg.className = "stgm " + (cls || "");
+        msg.textContent = k ? tt(k, p) : "";
+      }, old = this._raw, next = JSON.parse(JSON.stringify(old));
+      next.grid_options = { ...next.grid_options || {}, columns: "full" };
+      btn.disabled = true;
+      say("scr_st_saving");
+      try {
+        await this._dashSave(old, next);
+        say("scr_st_ok", "ok");
+        this.setConfig(next);
+      } catch (e) {
+        const k = e && e.message && e.message.startsWith("scr_st_err") ? e.message : "scr_st_err_save";
+        say(k, "err", { e: e && (e.message || e.code) || "" });
+      }
+      btn.disabled = false;
     }
     // ---- SETTINGS page of the screen: a part of the editor; the changes are saved in the dashboard configuration
     _wireSettings(root) {
@@ -5456,6 +5536,8 @@
       root.addEventListener("click", (e) => {
         const b = e.target.closest && e.target.closest('button[data-s="save"]');
         if (b) this._stgSave(b);
+        const w = e.target.closest && e.target.closest('button[data-s="width"]');
+        if (w) this._widthSave(w);
       });
       root.addEventListener("keydown", (e) => {
         if (e.target.closest && e.target.closest(".stg")) e.stopPropagation();

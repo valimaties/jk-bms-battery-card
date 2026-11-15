@@ -985,7 +985,7 @@ export class JkBatteryCard extends HTMLElement {
     const c = this._cfg,
       grp = this._groupInfo(),
       list = grp ? [c.batteries[grp.mi]] : c.batteries;
-    root.innerHTML = `<style>${CSS}</style><ha-card class="scronly">${list
+    root.innerHTML = `<style>${CSS}</style><ha-card class="scronly"><div class="scrnote" data-k="note"><span>${tt("scr_note_narrow")}</span><button type="button" data-s="width">${tt("scr_note_btn")}</button><span class="stgm" data-s="wmsg"></span></div>${list
       .map(
         () => `<div class="scrbox">
         ${grp ? `<select class="pksel scrsel" data-k="pksel" title="${tt("pick_battery")}"></select>` : ""}
@@ -1089,7 +1089,46 @@ export class JkBatteryCard extends HTMLElement {
         this._paintScreen(strip.querySelector(".dsp"), { ci, b, G0, grp, imx, imn, don, rec });
       });
     });
+    this._widthHint();
     this._ringTick();
+  }
+  // a width saved in the dashboard (grid_options.columns: 12, what Home Assistant keeps from the first placement) keeps the card
+  // narrow in a wide section: the card offers to switch it to the full width with one click, no YAML to edit
+  _widthHint() {
+    const note = this.shadowRoot.querySelector(".scrnote");
+    if (!note) return;
+    const go = this._raw && this._raw.grid_options;
+    let sec = null,
+      n = this;
+    for (let i = 0; n && i < 14 && !sec; i++) {
+      n = n.parentNode || n.host;
+      if (n && n.localName && n.localName.indexOf("hui-grid-section") === 0) sec = n;
+    }
+    const w = this.getBoundingClientRect().width,
+      sw = sec ? sec.getBoundingClientRect().width : 0,
+      show = !!(go && typeof go.columns === "number" && sw > w * 1.35 && w > 0);
+    note.classList.toggle("on", show);
+  }
+  async _widthSave(btn) {
+    const msg = this.shadowRoot.querySelector('.scrnote [data-s="wmsg"]'),
+      say = (k, cls, p) => {
+        msg.className = "stgm " + (cls || "");
+        msg.textContent = k ? tt(k, p) : "";
+      },
+      old = this._raw,
+      next = JSON.parse(JSON.stringify(old));
+    next.grid_options = { ...(next.grid_options || {}), columns: "full" };
+    btn.disabled = true;
+    say("scr_st_saving");
+    try {
+      await this._dashSave(old, next);
+      say("scr_st_ok", "ok");
+      this.setConfig(next);
+    } catch (e) {
+      const k = e && e.message && e.message.startsWith("scr_st_err") ? e.message : "scr_st_err_save";
+      say(k, "err", { e: (e && (e.message || e.code)) || "" });
+    }
+    btn.disabled = false;
   }
   // ---- SETTINGS page of the screen: a part of the editor; the changes are saved in the dashboard configuration
   _wireSettings(root) {
@@ -1108,6 +1147,8 @@ export class JkBatteryCard extends HTMLElement {
     root.addEventListener("click", (e) => {
       const b = e.target.closest && e.target.closest('button[data-s="save"]');
       if (b) this._stgSave(b);
+      const w = e.target.closest && e.target.closest('button[data-s="width"]');
+      if (w) this._widthSave(w);
     });
     // keys typed in the settings must not reach the dashboard shortcuts
     root.addEventListener("keydown", (e) => {

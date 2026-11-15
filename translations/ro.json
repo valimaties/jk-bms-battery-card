@@ -171,6 +171,8 @@
   "scr_st_err_many": "Mai multe carduri identice: schimbă acest card din editor",
   "scr_st_err_save": "Nu s-a putut salva: {e}",
   "scr_st_err_auto": "Numele și celulele cer o baterie scrisă în card (nu detectată automat)",
+  "scr_note_narrow": "Cardul folosește doar o parte din lățimea secțiunii.",
+  "scr_note_btn": "Folosește toată lățimea",
   "scr_batcap2": "Cap. baterie",
   "scr_remcap2": "Cap. rămasă",
   "scr_voldiff": "Dif. tens.",
