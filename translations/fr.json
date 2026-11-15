@@ -144,6 +144,7 @@
   "scr_temp": "Temp",
   "scr_pwr": "Puiss.(kW)",
   "scr_alarm": "Alarme",
+  "scr_balcur": "Cour.équil.",
   "scr_packs": "Packs",
   "scr_chg": "CHG",
   "scr_dch": "DCH",

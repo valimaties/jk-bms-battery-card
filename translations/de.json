@@ -144,6 +144,7 @@
   "scr_temp": "Temp",
   "scr_pwr": "Leist.(kW)",
   "scr_alarm": "Alarm",
+  "scr_balcur": "Bal.-Strom",
   "scr_packs": "Packs",
   "scr_chg": "LAD",
   "scr_dch": "ENT",

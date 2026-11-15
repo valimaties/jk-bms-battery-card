@@ -144,6 +144,7 @@
   "scr_temp": "Temp",
   "scr_pwr": "Put.(kW)",
   "scr_alarm": "Alarmă",
+  "scr_balcur": "Cur.echil.",
   "scr_packs": "Pachete",
   "scr_chg": "ÎNC",
   "scr_dch": "DES",

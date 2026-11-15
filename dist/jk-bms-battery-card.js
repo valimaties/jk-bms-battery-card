@@ -152,6 +152,7 @@
     scr_temp: "Temp",
     scr_pwr: "Leist.(kW)",
     scr_alarm: "Alarm",
+    scr_balcur: "Bal.-Strom",
     scr_packs: "Packs",
     scr_chg: "LAD",
     scr_dch: "ENT",
@@ -324,6 +325,7 @@
     scr_temp: "Temp",
     scr_pwr: "Pwr(kW)",
     scr_alarm: "Alarm",
+    scr_balcur: "Bal.cur.",
     scr_packs: "Packs",
     scr_chg: "CHG",
     scr_dch: "DCH",
@@ -496,6 +498,7 @@
     scr_temp: "Temp",
     scr_pwr: "Pot.(kW)",
     scr_alarm: "Alarma",
+    scr_balcur: "Corr.equil.",
     scr_packs: "Packs",
     scr_chg: "CAR",
     scr_dch: "DES",
@@ -668,6 +671,7 @@
     scr_temp: "Temp",
     scr_pwr: "Puiss.(kW)",
     scr_alarm: "Alarme",
+    scr_balcur: "Cour.\xE9quil.",
     scr_packs: "Packs",
     scr_chg: "CHG",
     scr_dch: "DCH",
@@ -840,6 +844,7 @@
     scr_temp: "Temp",
     scr_pwr: "Pot.(kW)",
     scr_alarm: "Allarme",
+    scr_balcur: "Corr.bil.",
     scr_packs: "Pack",
     scr_chg: "CAR",
     scr_dch: "SCA",
@@ -1012,6 +1017,7 @@
     scr_temp: "Temp",
     scr_pwr: "Put.(kW)",
     scr_alarm: "Alarm\u0103",
+    scr_balcur: "Cur.echil.",
     scr_packs: "Pachete",
     scr_chg: "\xCENC",
     scr_dch: "DES",
@@ -1317,7 +1323,7 @@
       const three = nt > 0, ry = three ? [49, 71, 93] : [56, 82], by = three ? 30 : 34, bh = three ? 76 : 62, cy0 = three ? 114 : 108, ch0 = three ? 124 : 128, g0 = three ? 140 : 135, gp = three ? 24 : 26, p2 = (key, vk, x, xe2, y, mw, vfs = 12) => dt(key, ":", x, y, 11, cl, `data-mw="${mw}" data-fs="11"`) + dv(vk, xe2, y, vfs, "end");
       let o = `<rect x="105" y="${by}" width="318" height="${bh}" rx="8" fill="none" stroke="#8d9aa3" stroke-width="1"/>`;
       o += gic(ry[0] - 4, "\u25D4") + p2("scr_voldiff", "vd", 133, 238, ry[0], 57, 12.5) + p2("scr_chg", "chg2", 250, 326, ry[0], 46) + p2("scr_temp", "tp2", 334, 419, ry[0], 43);
-      o += gic(ry[1] - 4, "A") + p2("scr_cur", "a2", 133, 238, ry[1], 57, 12.5) + p2("scr_dch", "dch2", 250, 326, ry[1], 46) + p2("scr_alarm", "alm2", 334, 419, ry[1], 43, 11);
+      o += gic(ry[1] - 4, "A") + p2("scr_cur", "a2", 133, 238, ry[1], 57, 12.5) + p2("scr_dch", "dch2", 250, 326, ry[1], 46) + p2("scr_balcur", "bal2", 334, 419, ry[1], 43, 11);
       if (three) {
         o += gic(ry[2] - 4, "T");
         const sw = 286 / nt;
@@ -1326,6 +1332,7 @@
       }
       o += `<rect x="105" y="${cy0}" width="318" height="${ch0}" rx="8" fill="none" stroke="#8d9aa3" stroke-width="1"/>`;
       o += `<rect x="226" y="${cy0 - 6}" width="76" height="12" fill="#03060a"/>` + dt("scr_cellsv", "", 264, cy0 + 4, 10.5, cl, 'text-anchor="middle"');
+      o += `<path class="balline" data-d="bal" data-g0="${g0}" data-gp="${gp}" d="" fill="none" stroke-width="2.2" stroke-linecap="round"/>`;
       o += Array.from({ length: n }, (_, k) => {
         const x = 115 + k % 4 * 78, y = g0 + Math.floor(k / 4) * gp;
         return dsc(k + 1, x + 15, y, 11, cl, 'text-anchor="end"') + dv("cv" + k, x + 21, y, 12.5);
@@ -3959,6 +3966,36 @@
       opacity: 0.12;
     }
   }
+  .balline {
+    opacity: 0;
+    stroke-dasharray: 7 6;
+    stroke-linejoin: round;
+    transition: opacity 0.35s;
+    pointer-events: none;
+  }
+  .balline.on {
+    opacity: 0.95;
+    animation: balflow 0.7s linear infinite;
+  }
+  .balline.pos {
+    stroke: #ff5a4d;
+  }
+  .balline.neg {
+    stroke: #4da3ff;
+  }
+  .balline.unk {
+    stroke: #5cf08a;
+  }
+  @keyframes balflow {
+    to {
+      stroke-dashoffset: -13;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .balline.on {
+      animation: none;
+    }
+  }
   .pk2 .dsp.off .dsc {
     display: none;
   }
@@ -4526,6 +4563,7 @@
           mx,
           mn,
           mxI: g("max_voltage_cell"),
+          balI: g("balancing_current"),
           mnI: g("min_voltage_cell"),
           av: g("average_cell_voltage"),
           cells,
@@ -4738,7 +4776,25 @@
           T("a2", fmt(b.I, 1) + "A");
           T("tp2", isNaN(b.mos) ? "\u2013" : Math.round(b.mos) + " \xB0C");
           b.temps.forEach((t, k) => T("ts" + k, isNaN(t) ? "\u2013" : fmt(t, 1) + "\xB0C"));
-          T("alm2", b.err ? tt("scr_alarmv") : tt("scr_normal"), b.err ? "#ff4d4d" : GRN);
+          {
+            const I = b.balI, on = don >= 0 && rec >= 0, col = isNaN(I) ? GRN : I > 5e-3 ? "#ff5a4d" : I < -5e-3 ? "#4da3ff" : GRN, ln = D("bal");
+            T("bal2", isNaN(I) ? "\u2013" : (I > 0 ? "+" : "") + fmt(I, 2) + "A", col);
+            if (ln) {
+              const g0 = +ln.dataset.g0, gp = +ln.dataset.gp, cx = (k) => 115 + k % 4 * 78 + 44, ty = (k) => g0 + Math.floor(k / 4) * gp, gy = (r2) => g0 + r2 * gp + gp / 2 - 3, [a, z] = I < -5e-3 ? [rec, don] : [don, rec];
+              let d2 = "";
+              if (on) {
+                const ra = Math.floor(a / 4), rb = Math.floor(z / 4), xa = cx(a), xb = cx(z);
+                if (ra === rb) d2 = `M${xa} ${ty(a) + 3} V${gy(ra)} H${xb} V${ty(z) + 3}`;
+                else {
+                  const xv = [116, 190, 268, 346].reduce((p, q2) => Math.abs(q2 - xa) < Math.abs(p - xa) ? q2 : p);
+                  d2 = ra < rb ? `M${xa} ${ty(a) + 3} V${gy(ra)} H${xv} V${gy(rb - 1)} H${xb} V${ty(z) - 10}` : `M${xa} ${ty(a) - 10} V${gy(ra - 1)} H${xv} V${gy(rb)} H${xb} V${ty(z) + 3}`;
+                }
+              }
+              if (ln.getAttribute("d") !== d2) ln.setAttribute("d", d2);
+              const cls2 = "balline" + (on ? " on " : " ") + (I > 5e-3 ? "pos" : I < -5e-3 ? "neg" : "unk");
+              if (ln.getAttribute("class") !== cls2) ln.setAttribute("class", cls2);
+            }
+          }
           T("chg2", b.sw.charging ? tt("scr_on") : tt("scr_off"), b.sw.charging ? GRN : "#e0705f");
           T("dch2", b.sw.discharging ? tt("scr_on") : tt("scr_off"), b.sw.discharging ? GRN : "#e0705f");
           {
@@ -5215,7 +5271,7 @@
         const d = dst.querySelector(`[data-d="${e.dataset.d}"]`);
         if (!d) return;
         if (d.textContent !== e.textContent) d.textContent = e.textContent;
-        ["fill", "stroke", "stroke-dasharray"].forEach((a) => {
+        (e.dataset.d === "bal" ? ["fill", "stroke", "stroke-dasharray", "d", "class"] : ["fill", "stroke", "stroke-dasharray"]).forEach((a) => {
           const v = e.getAttribute(a);
           if (v !== null && v !== d.getAttribute(a)) d.setAttribute(a, v);
         });

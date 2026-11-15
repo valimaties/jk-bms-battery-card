@@ -144,6 +144,7 @@
   "scr_temp": "Temp",
   "scr_pwr": "Pot.(kW)",
   "scr_alarm": "Alarma",
+  "scr_balcur": "Corr.equil.",
   "scr_packs": "Packs",
   "scr_chg": "CAR",
   "scr_dch": "DES",

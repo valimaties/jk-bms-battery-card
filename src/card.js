@@ -465,6 +465,7 @@ export class JkBatteryCard extends HTMLElement {
         mx,
         mn,
         mxI: g("max_voltage_cell"),
+        balI: g("balancing_current"),
         mnI: g("min_voltage_cell"),
         av: g("average_cell_voltage"),
         cells,
@@ -758,7 +759,42 @@ export class JkBatteryCard extends HTMLElement {
         T("a2", fmt(b.I, 1) + "A");
         T("tp2", isNaN(b.mos) ? "–" : Math.round(b.mos) + " °C");
         b.temps.forEach((t, k) => T("ts" + k, isNaN(t) ? "–" : fmt(t, 1) + "°C"));
-        T("alm2", b.err ? tt("scr_alarmv") : tt("scr_normal"), b.err ? "#ff4d4d" : GRN);
+        {
+          // balancing current: red when positive, blue when negative; the line between the two cells follows the same colour
+          // and runs from the highest cell to the lowest one when positive, the other way when negative
+          const I = b.balI,
+            on = don >= 0 && rec >= 0,
+            col = isNaN(I) ? GRN : I > 0.005 ? "#ff5a4d" : I < -0.005 ? "#4da3ff" : GRN,
+            ln = D("bal");
+          T("bal2", isNaN(I) ? "–" : (I > 0 ? "+" : "") + fmt(I, 2) + "A", col);
+          if (ln) {
+            const g0 = +ln.dataset.g0,
+              gp = +ln.dataset.gp,
+              cx = (k) => 115 + (k % 4) * 78 + 44,
+              ty = (k) => g0 + Math.floor(k / 4) * gp, // baseline of the voltage text
+              gy = (r) => g0 + r * gp + gp / 2 - 3, // the free band under row r
+              [a, z] = I < -0.005 ? [rec, don] : [don, rec];
+            let d = "";
+            if (on) {
+              // the line runs in the free bands between the texts: it never crosses a number
+              const ra = Math.floor(a / 4),
+                rb = Math.floor(z / 4),
+                xa = cx(a),
+                xb = cx(z);
+              if (ra === rb) d = `M${xa} ${ty(a) + 3} V${gy(ra)} H${xb} V${ty(z) + 3}`;
+              else {
+                const xv = [116, 190, 268, 346].reduce((p, q) => (Math.abs(q - xa) < Math.abs(p - xa) ? q : p));
+                d =
+                  ra < rb
+                    ? `M${xa} ${ty(a) + 3} V${gy(ra)} H${xv} V${gy(rb - 1)} H${xb} V${ty(z) - 10}`
+                    : `M${xa} ${ty(a) - 10} V${gy(ra - 1)} H${xv} V${gy(rb)} H${xb} V${ty(z) + 3}`;
+              }
+            }
+            if (ln.getAttribute("d") !== d) ln.setAttribute("d", d);
+            const cls = "balline" + (on ? " on " : " ") + (I > 0.005 ? "pos" : I < -0.005 ? "neg" : "unk");
+            if (ln.getAttribute("class") !== cls) ln.setAttribute("class", cls);
+          }
+        }
         T("chg2", b.sw.charging ? tt("scr_on") : tt("scr_off"), b.sw.charging ? GRN : "#e0705f");
         T("dch2", b.sw.discharging ? tt("scr_on") : tt("scr_off"), b.sw.discharging ? GRN : "#e0705f");
         {
@@ -1330,7 +1366,10 @@ export class JkBatteryCard extends HTMLElement {
       const d = dst.querySelector(`[data-d="${e.dataset.d}"]`);
       if (!d) return;
       if (d.textContent !== e.textContent) d.textContent = e.textContent;
-      ["fill", "stroke", "stroke-dasharray"].forEach((a) => {
+      (e.dataset.d === "bal"
+        ? ["fill", "stroke", "stroke-dasharray", "d", "class"]
+        : ["fill", "stroke", "stroke-dasharray"]
+      ).forEach((a) => {
         const v = e.getAttribute(a);
         if (v !== null && v !== d.getAttribute(a)) d.setAttribute(a, v);
       });

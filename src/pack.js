@@ -397,7 +397,7 @@ export function packSvg(n, id, np = 1, layout = "top-left", rows = 2, nt = 0) {
         gic(ry[1] - 4, "A") +
         p2("scr_cur", "a2", 133, 238, ry[1], 57, 12.5) +
         p2("scr_dch", "dch2", 250, 326, ry[1], 46) +
-        p2("scr_alarm", "alm2", 334, 419, ry[1], 43, 11);
+        p2("scr_balcur", "bal2", 334, 419, ry[1], 43, 11);
       if (three) {
         o += gic(ry[2] - 4, "T");
         const sw = 286 / nt;
@@ -409,6 +409,8 @@ export function packSvg(n, id, np = 1, layout = "top-left", rows = 2, nt = 0) {
       o +=
         `<rect x="226" y="${cy0 - 6}" width="76" height="12" fill="#03060a"/>` +
         dt("scr_cellsv", "", 264, cy0 + 4, 10.5, cl, 'text-anchor="middle"');
+      // the line between the two cells that exchange charge (moved and coloured by the card): below the voltages
+      o += `<path class="balline" data-d="bal" data-g0="${g0}" data-gp="${gp}" d="" fill="none" stroke-width="2.2" stroke-linecap="round"/>`;
       o += Array.from({ length: n }, (_, k) => {
         const x = 115 + (k % 4) * 78,
           y = g0 + Math.floor(k / 4) * gp;

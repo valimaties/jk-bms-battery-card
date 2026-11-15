@@ -2535,6 +2535,36 @@ export const CSS = `
       opacity: 0.12;
     }
   }
+  .balline {
+    opacity: 0;
+    stroke-dasharray: 7 6;
+    stroke-linejoin: round;
+    transition: opacity 0.35s;
+    pointer-events: none;
+  }
+  .balline.on {
+    opacity: 0.95;
+    animation: balflow 0.7s linear infinite;
+  }
+  .balline.pos {
+    stroke: #ff5a4d;
+  }
+  .balline.neg {
+    stroke: #4da3ff;
+  }
+  .balline.unk {
+    stroke: #5cf08a;
+  }
+  @keyframes balflow {
+    to {
+      stroke-dashoffset: -13;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .balline.on {
+      animation: none;
+    }
+  }
   .pk2 .dsp.off .dsc {
     display: none;
   }
