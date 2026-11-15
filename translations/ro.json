@@ -167,5 +167,11 @@
   "lbl_perf": "Performanță",
   "perf_auto": "Automat (mai ușor pe telefon/tabletă)",
   "perf_full": "Efecte complete",
-  "perf_lite": "Ușor (fără bule, valuri și străluciri)"
+  "perf_lite": "Ușor (fără bule, valuri și străluciri)",
+  "lbl_view": "Afișare",
+  "view_full": "Card complet",
+  "view_screen": "Doar ecranul JK",
+  "lbl_vpage": "Pagina ecranului",
+  "vpage_group": "Ecranul principal",
+  "vpage_cells": "Ecranul cu celule"
 }

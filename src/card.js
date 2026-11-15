@@ -270,6 +270,12 @@ export class JkBatteryCard extends HTMLElement {
     clearTimeout(this._tm);
     this._selB = c.batteries.map(() => -1);
     this._sel = 0;
+    this._screenView = c.view === "screen";
+    root.host.classList.toggle("screenview", this._screenView);
+    if (this._screenView) {
+      this._buildScreens(root);
+      return;
+    }
     const card = (b) => `<div class="bc">
     <div class="pkw">
       <div class="pk2" data-k="bccells">
@@ -510,6 +516,7 @@ export class JkBatteryCard extends HTMLElement {
   }
 
   _updSimple(d) {
+    if (this._screenView) return this._updScreens(d);
     const r = this.shadowRoot,
       $ = (k) => r.querySelector(`.main [data-k="${k}"]`),
       V = this._cfg.victron || {};
@@ -691,139 +698,8 @@ export class JkBatteryCard extends HTMLElement {
         don >= 0
           ? { a: [+cls[don].dataset.lx, +cls[don].dataset.ly], b: [+cls[rec].dataset.lx, +cls[rec].dataset.ly] }
           : null;
-      const dsp = strip.querySelector(".dsp"),
-        D = (k) => dsp.querySelector(`[data-d="${k}"]`),
-        swOff = this._dpv(ci, b.dsp) === "off",
-        dOn = grp ? !this._vOff : !swOff;
-      dsp.classList.toggle("off", !dOn);
-      dsp.classList.toggle("pwroff", swOff);
-      dsp.classList.toggle("act", G0.I > 0.04);
-      if (dOn) {
-        const T = (k, s, col) => {
-            const e = D(k);
-            if (e.textContent !== s) e.textContent = s;
-            if (col) e.setAttribute("fill", col);
-          },
-          soc = clamp(G0.soc || 0, 0, 100),
-          L = soc * 2.4504,
-          mn_ = Math.min,
-          mx_ = Math.max,
-          red = soc <= 10,
-          st = dsp.style,
-          f1 = (x) => x.toFixed(1),
-          tot = !isNaN(G0.capTot) && G0.capTot > 0 ? G0.capTot : soc > 0 && !isNaN(G0.rem) ? (G0.rem / soc) * 100 : NaN,
-          pct = tot > 0 && !isNaN(G0.rem) ? clamp((G0.rem / tot) * 100, 0, 100) : soc,
-          rn = Math.ceil(pct / 5),
-          Lc = mn_(245, rn * 12.25);
-        T("v", fmt(G0.V, 2) + "V");
-        T("a", fmt(G0.I, 1) + "A");
-        T("soc", fmt(G0.soc, 0) + "%");
-        T("np", String(grp ? grp.order.length : 1));
-        T("pn", String(grp ? this._sel || 0 : 0));
-
-        const full = 1.75 * Math.exp(-mx_(0, G0.I - 30) / 60),
-          rst = String(Math.round(mx_(30, (full * 1000) / 20)));
-        {
-          const n1 = Math.max(0, rn);
-          if (st.getPropertyValue("--rn") !== String(n1)) st.setProperty("--rn", n1);
-          if (st.getPropertyValue("--rst") !== rst) st.setProperty("--rst", rst);
-        } // ring: sectors to draw / ms per step (drawn by _ringTick)
-        // Bat-Capacity = number.<bms>_total_battery_capacity (estimated from remaining / SoC only when that entity is missing)
-        T(
-          "cap",
-          !isNaN(G0.capTot)
-            ? G0.capTot.toFixed(1)
-            : G0.soc > 0 && !isNaN(G0.rem)
-              ? ((G0.rem / G0.soc) * 100).toFixed(1)
-              : "–",
-        );
-        T("rem", fmt(G0.rem, 1));
-        T("mx", fmt(G0.mx, 3) + "V");
-        T("mn", fmt(G0.mn, 3) + "V");
-        T("tp", isNaN(G0.mos) ? "–" : Math.round(G0.mos) + " °C");
-        T("pw", fmt(Math.abs(G0.P) / 1000, 1));
-        T("alm", G0.err ? tt("scr_alarmv") : tt("scr_normal"), G0.err ? "#ff4d4d" : GRN);
-        T("chg", b.sw.charging ? tt("scr_on") : tt("scr_off"), b.sw.charging ? GRN : "#e0705f");
-        T("dch", b.sw.discharging ? tt("scr_on") : tt("scr_off"), b.sw.discharging ? GRN : "#e0705f");
-        T(
-          "cap2",
-          (!isNaN(b.capTot)
-            ? b.capTot.toFixed(1)
-            : b.soc > 0 && !isNaN(b.rem)
-              ? ((b.rem / b.soc) * 100).toFixed(1)
-              : "–") + "AH",
-        );
-        T("rem2", fmt(b.rem, 1) + "AH");
-        T("pct2", fmt(b.soc, 0) + "%");
-        T("vd", fmt(b.mx - b.mn, 3) + "V");
-        T("a2", fmt(b.I, 1) + "A");
-        T("tp2", isNaN(b.mos) ? "–" : Math.round(b.mos) + " °C");
-        b.temps.forEach((t, k) => T("ts" + k, isNaN(t) ? "–" : fmt(t, 1) + "°C"));
-        {
-          // balancing current: red when positive, blue when negative; the line between the two cells follows the same colour
-          // and runs from the highest cell to the lowest one when positive, the other way when negative
-          const I = b.balI,
-            on = don >= 0 && rec >= 0,
-            col = isNaN(I) ? GRN : I > 0.005 ? "#ff5a4d" : I < -0.005 ? "#4da3ff" : GRN,
-            ln = D("bal");
-          T("bal2", isNaN(I) ? "–" : (I > 0 ? "+" : "") + fmt(I, 2) + "A", col);
-          if (ln) {
-            const g0 = +ln.dataset.g0,
-              gp = +ln.dataset.gp,
-              cx = (k) => 115 + (k % 4) * 78 + 44,
-              ty = (k) => g0 + Math.floor(k / 4) * gp, // baseline of the voltage text
-              gy = (r) => g0 + r * gp + gp / 2 - 3, // the free band under row r
-              [a, z] = I < -0.005 ? [rec, don] : [don, rec];
-            let d = "";
-            if (on) {
-              // the line runs in the free bands between the texts: it never crosses a number
-              const ra = Math.floor(a / 4),
-                rb = Math.floor(z / 4),
-                xa = cx(a),
-                xb = cx(z);
-              if (ra === rb) d = `M${xa} ${ty(a) + 3} V${gy(ra)} H${xb} V${ty(z) + 3}`;
-              else {
-                const xv = [116, 190, 268, 346].reduce((p, q) => (Math.abs(q - xa) < Math.abs(p - xa) ? q : p));
-                d =
-                  ra < rb
-                    ? `M${xa} ${ty(a) + 3} V${gy(ra)} H${xv} V${gy(rb - 1)} H${xb} V${ty(z) - 10}`
-                    : `M${xa} ${ty(a) - 10} V${gy(ra - 1)} H${xv} V${gy(rb)} H${xb} V${ty(z) + 3}`;
-              }
-            }
-            const sign = I > 0.005 ? "pos" : I < -0.005 ? "neg" : "unk";
-            [
-              ["bal", "balline"],
-              ["balt", "baltail"],
-              ["balh", "balhead"],
-            ].forEach(([k, base]) => {
-              const p = D(k);
-              if (!p) return;
-              if (p.getAttribute("d") !== d) p.setAttribute("d", d);
-              const cls = base + (on ? " on " : " ") + sign;
-              if (p.getAttribute("class") !== cls) p.setAttribute("class", cls);
-            });
-          }
-        }
-        T("chg2", b.sw.charging ? tt("scr_on") : tt("scr_off"), b.sw.charging ? GRN : "#e0705f");
-        T("dch2", b.sw.discharging ? tt("scr_on") : tt("scr_off"), b.sw.discharging ? GRN : "#e0705f");
-        {
-          const totB =
-              !isNaN(b.capTot) && b.capTot > 0 ? b.capTot : b.soc > 0 && !isNaN(b.rem) ? (b.rem / b.soc) * 100 : NaN,
-            pctB = totB > 0 && !isNaN(b.rem) ? clamp((b.rem / totB) * 100, 0, 100) : clamp(b.soc || 0, 0, 100),
-            bn = Math.ceil(pctB / 20);
-          if (dsp._bk !== bn) {
-            dsp._bk = bn;
-            const bcol = bn <= 2 ? "#e0302f" : bn <= 4 ? "#2f8cff" : "#2fd24a";
-            dsp.querySelectorAll(".bb").forEach((e, k) => e.setAttribute("fill", k < bn ? bcol : "#1a0d0d"));
-            dsp
-              .querySelectorAll(".bo")
-              .forEach((e) => e.setAttribute(e.classList.contains("bcap") ? "fill" : "stroke", bcol));
-          }
-        } // battery icon of the pack page (Rem-Capacity / Bat-Capacity in fifths); it flashes through CSS while charging
-        b.cells.forEach((v, k) =>
-          T("cv" + k, isNaN(v) ? "–" : fmt(v, 3) + "V", k === imx ? "#6f8cff" : k === imn ? "#ff4d4d" : GRN),
-        );
-      }
+      const dsp = strip.querySelector(".dsp");
+      this._paintScreen(dsp, { ci, b, G0, grp, imx, imn, don, rec });
       if (this._pop && this._pop.i === i) this._syncPop(dsp);
       const avgV = okV.reduce((a, x) => a + x, 0) / (okV.length || 1),
         rv = b.res.filter((x) => !isNaN(x)),
@@ -927,6 +803,236 @@ export class JkBatteryCard extends HTMLElement {
   /* ------------------------------------------------------------ electrons along the conductors */
   // every conductor already carries a hidden path (class "fl") drawn in the direction of the series string, B- -> B+. Electrons run along it with a
   // little random wobble: B- -> B+ while charging, B+ -> B- while discharging (opposite to the conventional current).
+  // paints the values of one JK display (the live one of the card, or the only thing of the "screen" view)
+  _paintScreen(dsp, { ci, b, G0, grp, imx, imn, don, rec }) {
+    const D = (k) => dsp.querySelector(`[data-d="${k}"]`),
+      swOff = this._dpv(ci, b.dsp) === "off",
+      dOn = grp ? !this._vOff : !swOff;
+    dsp.classList.toggle("off", !dOn);
+    dsp.classList.toggle("pwroff", swOff);
+    dsp.classList.toggle("act", G0.I > 0.04);
+    if (dOn) {
+      const T = (k, s, col) => {
+          const e = D(k);
+          if (e.textContent !== s) e.textContent = s;
+          if (col) e.setAttribute("fill", col);
+        },
+        soc = clamp(G0.soc || 0, 0, 100),
+        L = soc * 2.4504,
+        mn_ = Math.min,
+        mx_ = Math.max,
+        red = soc <= 10,
+        st = dsp.style,
+        f1 = (x) => x.toFixed(1),
+        tot = !isNaN(G0.capTot) && G0.capTot > 0 ? G0.capTot : soc > 0 && !isNaN(G0.rem) ? (G0.rem / soc) * 100 : NaN,
+        pct = tot > 0 && !isNaN(G0.rem) ? clamp((G0.rem / tot) * 100, 0, 100) : soc,
+        rn = Math.ceil(pct / 5),
+        Lc = mn_(245, rn * 12.25);
+      T("v", fmt(G0.V, 2) + "V");
+      T("a", fmt(G0.I, 1) + "A");
+      T("soc", fmt(G0.soc, 0) + "%");
+      T("np", String(grp ? grp.order.length : 1));
+      T("pn", String(grp ? this._sel || 0 : 0));
+
+      const full = 1.75 * Math.exp(-mx_(0, G0.I - 30) / 60),
+        rst = String(Math.round(mx_(30, (full * 1000) / 20)));
+      {
+        const n1 = Math.max(0, rn);
+        if (st.getPropertyValue("--rn") !== String(n1)) st.setProperty("--rn", n1);
+        if (st.getPropertyValue("--rst") !== rst) st.setProperty("--rst", rst);
+      } // ring: sectors to draw / ms per step (drawn by _ringTick)
+      // Bat-Capacity = number.<bms>_total_battery_capacity (estimated from remaining / SoC only when that entity is missing)
+      T(
+        "cap",
+        !isNaN(G0.capTot)
+          ? G0.capTot.toFixed(1)
+          : G0.soc > 0 && !isNaN(G0.rem)
+            ? ((G0.rem / G0.soc) * 100).toFixed(1)
+            : "–",
+      );
+      T("rem", fmt(G0.rem, 1));
+      T("mx", fmt(G0.mx, 3) + "V");
+      T("mn", fmt(G0.mn, 3) + "V");
+      T("tp", isNaN(G0.mos) ? "–" : Math.round(G0.mos) + " °C");
+      T("pw", fmt(Math.abs(G0.P) / 1000, 1));
+      T("alm", G0.err ? tt("scr_alarmv") : tt("scr_normal"), G0.err ? "#ff4d4d" : GRN);
+      T("chg", b.sw.charging ? tt("scr_on") : tt("scr_off"), b.sw.charging ? GRN : "#e0705f");
+      T("dch", b.sw.discharging ? tt("scr_on") : tt("scr_off"), b.sw.discharging ? GRN : "#e0705f");
+      T(
+        "cap2",
+        (!isNaN(b.capTot)
+          ? b.capTot.toFixed(1)
+          : b.soc > 0 && !isNaN(b.rem)
+            ? ((b.rem / b.soc) * 100).toFixed(1)
+            : "–") + "AH",
+      );
+      T("rem2", fmt(b.rem, 1) + "AH");
+      T("pct2", fmt(b.soc, 0) + "%");
+      T("vd", fmt(b.mx - b.mn, 3) + "V");
+      T("a2", fmt(b.I, 1) + "A");
+      T("tp2", isNaN(b.mos) ? "–" : Math.round(b.mos) + " °C");
+      b.temps.forEach((t, k) => T("ts" + k, isNaN(t) ? "–" : fmt(t, 1) + "°C"));
+      {
+        // balancing current: red when positive, blue when negative; the line between the two cells follows the same colour
+        // and runs from the highest cell to the lowest one when positive, the other way when negative
+        const I = b.balI,
+          on = don >= 0 && rec >= 0,
+          col = isNaN(I) ? GRN : I > 0.005 ? "#ff5a4d" : I < -0.005 ? "#4da3ff" : GRN,
+          ln = D("bal");
+        T("bal2", isNaN(I) ? "–" : (I > 0 ? "+" : "") + fmt(I, 2) + "A", col);
+        if (ln) {
+          const g0 = +ln.dataset.g0,
+            gp = +ln.dataset.gp,
+            cx = (k) => 115 + (k % 4) * 78 + 44,
+            ty = (k) => g0 + Math.floor(k / 4) * gp, // baseline of the voltage text
+            gy = (r) => g0 + r * gp + gp / 2 - 3, // the free band under row r
+            [a, z] = I < -0.005 ? [rec, don] : [don, rec];
+          let d = "";
+          if (on) {
+            // the line runs in the free bands between the texts: it never crosses a number
+            const ra = Math.floor(a / 4),
+              rb = Math.floor(z / 4),
+              xa = cx(a),
+              xb = cx(z);
+            if (ra === rb) d = `M${xa} ${ty(a) + 3} V${gy(ra)} H${xb} V${ty(z) + 3}`;
+            else {
+              const xv = [116, 190, 268, 346].reduce((p, q) => (Math.abs(q - xa) < Math.abs(p - xa) ? q : p));
+              d =
+                ra < rb
+                  ? `M${xa} ${ty(a) + 3} V${gy(ra)} H${xv} V${gy(rb - 1)} H${xb} V${ty(z) - 10}`
+                  : `M${xa} ${ty(a) - 10} V${gy(ra - 1)} H${xv} V${gy(rb)} H${xb} V${ty(z) + 3}`;
+            }
+          }
+          const sign = I > 0.005 ? "pos" : I < -0.005 ? "neg" : "unk";
+          [
+            ["bal", "balline"],
+            ["balt", "baltail"],
+            ["balh", "balhead"],
+          ].forEach(([k, base]) => {
+            const p = D(k);
+            if (!p) return;
+            if (p.getAttribute("d") !== d) p.setAttribute("d", d);
+            const cls = base + (on ? " on " : " ") + sign;
+            if (p.getAttribute("class") !== cls) p.setAttribute("class", cls);
+          });
+        }
+      }
+      T("chg2", b.sw.charging ? tt("scr_on") : tt("scr_off"), b.sw.charging ? GRN : "#e0705f");
+      T("dch2", b.sw.discharging ? tt("scr_on") : tt("scr_off"), b.sw.discharging ? GRN : "#e0705f");
+      {
+        const totB =
+            !isNaN(b.capTot) && b.capTot > 0 ? b.capTot : b.soc > 0 && !isNaN(b.rem) ? (b.rem / b.soc) * 100 : NaN,
+          pctB = totB > 0 && !isNaN(b.rem) ? clamp((b.rem / totB) * 100, 0, 100) : clamp(b.soc || 0, 0, 100),
+          bn = Math.ceil(pctB / 20);
+        if (dsp._bk !== bn) {
+          dsp._bk = bn;
+          const bcol = bn <= 2 ? "#e0302f" : bn <= 4 ? "#2f8cff" : "#2fd24a";
+          dsp.querySelectorAll(".bb").forEach((e, k) => e.setAttribute("fill", k < bn ? bcol : "#1a0d0d"));
+          dsp
+            .querySelectorAll(".bo")
+            .forEach((e) => e.setAttribute(e.classList.contains("bcap") ? "fill" : "stroke", bcol));
+        }
+      } // battery icon of the pack page (Rem-Capacity / Bat-Capacity in fifths); it flashes through CSS while charging
+      b.cells.forEach((v, k) =>
+        T("cv" + k, isNaN(v) ? "–" : fmt(v, 3) + "V", k === imx ? "#6f8cff" : k === imn ? "#ff4d4d" : GRN),
+      );
+    }
+  }
+  // "screen" view: nothing but the JK display (no BMS, cells, tiles or texts); view_page chooses its page
+  _buildScreens(root) {
+    const c = this._cfg,
+      grp = this._groupInfo(),
+      list = grp ? [c.batteries[grp.mi]] : c.batteries;
+    root.innerHTML = `<style>${CSS}</style><ha-card class="scronly">${list
+      .map(
+        () => `<div class="scrbox">
+        ${grp ? `<select class="pksel scrsel" data-k="pksel" title="${tt("pick_battery")}"></select>` : ""}
+        <div class="pk2 scrmini" data-k="bccells"></div></div>`,
+      )
+      .join("")}</ha-card>`;
+    if (!root._mc) {
+      root._mc = 1;
+      root.addEventListener("change", (e) => {
+        const sl = e.target.closest(".pksel");
+        if (sl) {
+          this._sel = +sl.value;
+          this._vOff = false;
+          if (this._data) this._updSimple(this._data);
+        }
+      });
+      root.addEventListener("click", (e) => {
+        const m = e.target.closest("[data-m]");
+        if (m) this._more(m.dataset.m);
+      });
+    }
+    this._built = true;
+    if (this._hass) this._update();
+  }
+  _updScreens(d) {
+    const r = this.shadowRoot,
+      grp = (this._grp = this._groupInfo());
+    if (grp) this._sel = Math.min(this._sel || 0, grp.order.length - 1);
+    const view = grp
+      ? [{ b: d.bats[grp.order[this._sel || 0]], ci: grp.order[this._sel || 0] }]
+      : d.bats.map((b, ci) => ({ b, ci }));
+    view.forEach(({ b, ci }, i) => {
+      const box = r.querySelectorAll(".scrbox")[i];
+      if (!box) return;
+      const G0 = grp
+          ? this._aggr(
+              grp.order.map((x) => d.bats[x]),
+              grp,
+            )
+          : b,
+        bcfg = this._cfg.batteries[ci],
+        n = this._nOf(bcfg),
+        strip = box.querySelector(".scrmini"),
+        sg = n + "/" + (grp ? grp.order.length : 1) + "/" + this._tOf(bcfg) + "/" + this._cfg.view_page;
+      const sl = box.querySelector(".pksel");
+      if (grp && sl) {
+        const html2 = grp.order
+          .map((x, k) => `<option value="${k}">${k === 0 ? "Master" : "Slave " + k} · ${d.bats[x].name}</option>`)
+          .join("");
+        if (sl._h !== html2) {
+          sl._h = html2;
+          sl.innerHTML = html2;
+        }
+        sl.value = String(this._sel || 0);
+      }
+      if (strip._n !== sg) {
+        strip._n = sg;
+        strip.innerHTML = packSvg(n, i, grp ? grp.order.length : 1, "top-left", 2, this._tOf(bcfg), true);
+        const svg = strip.querySelector("svg");
+        svg.querySelectorAll("title").forEach((t) => t.remove());
+        svg.querySelectorAll("clipPath rect, .dsp > rect:first-of-type").forEach((e) => {
+          e.setAttribute("rx", 15);
+          e.setAttribute("ry", 15);
+        });
+        const dsp0 = svg.querySelector(".dsp");
+        dsp0.setAttribute("data-pg", this._cfg.view_page === "cells" ? "cells" : "group");
+        svg.querySelectorAll("[data-mw]").forEach(fitLabel);
+        strip.addEventListener("click", (e) => {
+          if (e.target.closest(".pwr")) this._toggleDisp(ci);
+        });
+      }
+      const dsp = strip.querySelector(".dsp"),
+        okV = b.cells.filter((x) => !isNaN(x)),
+        vmax = Math.max(...okV),
+        vmin = Math.min(...okV),
+        sIdx = (x) => (!isNaN(x) && x >= 1 && x <= b.cells.length ? x - 1 : -1),
+        imx = sIdx(b.mxI) >= 0 ? sIdx(b.mxI) : vmax > vmin ? b.cells.indexOf(vmax) : -1,
+        imn = sIdx(b.mnI) >= 0 ? sIdx(b.mnI) : vmax > vmin ? b.cells.indexOf(vmin) : -1;
+      let don = -1,
+        rec = -1;
+      if (b.balMask) {
+        don = imx >= 0 ? imx : b.cells.indexOf(vmax);
+        rec = imn >= 0 ? imn : b.cells.indexOf(vmin);
+      }
+      if (don === rec) don = rec = -1;
+      this._paintScreen(dsp, { ci, b, G0, grp, imx, imn, don, rec });
+    });
+    this._ringTick();
+  }
   _elInit(strip) {
     const NS2 = "http://www.w3.org/2000/svg",
       svg = strip.querySelector("svg"),

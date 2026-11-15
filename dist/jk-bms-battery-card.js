@@ -175,7 +175,13 @@
     lbl_perf: "Leistung",
     perf_auto: "Automatisch (schlanker auf Handy/Tablet)",
     perf_full: "Alle Effekte",
-    perf_lite: "Leicht (ohne Blasen, Wellen und Leuchten)"
+    perf_lite: "Leicht (ohne Blasen, Wellen und Leuchten)",
+    lbl_view: "Ansicht",
+    view_full: "Komplette Karte",
+    view_screen: "Nur JK-Bildschirm",
+    lbl_vpage: "Bildschirmseite",
+    vpage_group: "Hauptbildschirm",
+    vpage_cells: "Zellenbildschirm"
   };
 
   // translations/en.json
@@ -348,7 +354,13 @@
     lbl_perf: "Performance",
     perf_auto: "Automatic (lighter on phones/tablets)",
     perf_full: "Full effects",
-    perf_lite: "Light (no bubbles, waves or glows)"
+    perf_lite: "Light (no bubbles, waves or glows)",
+    lbl_view: "View",
+    view_full: "Full card",
+    view_screen: "JK screen only",
+    lbl_vpage: "Screen page",
+    vpage_group: "Main screen",
+    vpage_cells: "Cells screen"
   };
 
   // translations/es.json
@@ -521,7 +533,13 @@
     lbl_perf: "Rendimiento",
     perf_auto: "Autom\xE1tico (m\xE1s ligero en m\xF3vil/tablet)",
     perf_full: "Efectos completos",
-    perf_lite: "Ligero (sin burbujas, olas ni brillos)"
+    perf_lite: "Ligero (sin burbujas, olas ni brillos)",
+    lbl_view: "Vista",
+    view_full: "Tarjeta completa",
+    view_screen: "Solo pantalla JK",
+    lbl_vpage: "P\xE1gina de la pantalla",
+    vpage_group: "Pantalla principal",
+    vpage_cells: "Pantalla de celdas"
   };
 
   // translations/fr.json
@@ -694,7 +712,13 @@
     lbl_perf: "Performances",
     perf_auto: "Automatique (plus l\xE9ger sur t\xE9l\xE9phone/tablette)",
     perf_full: "Effets complets",
-    perf_lite: "L\xE9ger (sans bulles, vagues ni halos)"
+    perf_lite: "L\xE9ger (sans bulles, vagues ni halos)",
+    lbl_view: "Affichage",
+    view_full: "Carte compl\xE8te",
+    view_screen: "\xC9cran JK seulement",
+    lbl_vpage: "Page de l'\xE9cran",
+    vpage_group: "\xC9cran principal",
+    vpage_cells: "\xC9cran des cellules"
   };
 
   // translations/it.json
@@ -867,7 +891,13 @@
     lbl_perf: "Prestazioni",
     perf_auto: "Automatico (pi\xF9 leggero su telefono/tablet)",
     perf_full: "Effetti completi",
-    perf_lite: "Leggero (senza bolle, onde e aloni)"
+    perf_lite: "Leggero (senza bolle, onde e aloni)",
+    lbl_view: "Visualizzazione",
+    view_full: "Scheda completa",
+    view_screen: "Solo schermo JK",
+    lbl_vpage: "Pagina dello schermo",
+    vpage_group: "Schermata principale",
+    vpage_cells: "Schermata celle"
   };
 
   // translations/ro.json
@@ -1040,7 +1070,13 @@
     lbl_perf: "Performan\u021B\u0103",
     perf_auto: "Automat (mai u\u0219or pe telefon/tablet\u0103)",
     perf_full: "Efecte complete",
-    perf_lite: "U\u0219or (f\u0103r\u0103 bule, valuri \u0219i str\u0103luciri)"
+    perf_lite: "U\u0219or (f\u0103r\u0103 bule, valuri \u0219i str\u0103luciri)",
+    lbl_view: "Afi\u0219are",
+    view_full: "Card complet",
+    view_screen: "Doar ecranul JK",
+    lbl_vpage: "Pagina ecranului",
+    vpage_group: "Ecranul principal",
+    vpage_cells: "Ecranul cu celule"
   };
 
   // src/i18n.js
@@ -1113,7 +1149,7 @@
   </div>
   </div>`;
   }
-  function packSvg(n, id, np = 1, layout = "top-left", rows = 2, nt = 0) {
+  function packSvg(n, id, np = 1, layout = "top-left", rows = 2, nt = 0, screenOnly = false) {
     const { W, H, wh } = PK, per = rows === 1 ? n : Math.ceil(n / 2), xl = 236, xr = 834, slot = (xr - xl) / Math.max(8, per), xe = xl + per * slot, cw = slot * 0.9, ch = 165, dep = 40, f = 0.94, vx = (xl + xe) / 2, rowY = rows === 1 ? [H / 2 - (ch + 33 - dep) / 2] : [58, 314];
     const startRow = rows === 1 ? 0 : /^bottom/.test(layout) ? 1 : 0, fromLeft = rows === 1 || !/right$/.test(layout);
     const kOf = (row, j) => row === startRow ? fromLeft ? j : per - 1 - j : per + (fromLeft ? per - 1 - j : j);
@@ -1413,11 +1449,14 @@
   <path d="${wire}" fill="none" stroke="#9aa3b0" stroke-opacity=".5" stroke-width=".9" stroke-linecap="round" transform="translate(-.8 -.8)"/>
   <rect x="-47" y="209" width="14" height="5" rx="1.2" fill="#e4e6ea" stroke="#7a7f88" stroke-width=".6"/>
   <rect x="${(lcd[0] - 5).toFixed(1)}" y="${(lcd[1] - 3).toFixed(1)}" width="9" height="6" rx="1.2" fill="#e4e6ea" stroke="#7a7f88" stroke-width=".6"/>`;
-    const defs = `<linearGradient id="gg${id}" gradientUnits="userSpaceOnUse" x1="295" y1="211" x2="610" y2="423">
+    const gg = `<linearGradient id="gg${id}" gradientUnits="userSpaceOnUse" x1="295" y1="211" x2="610" y2="423">
     <stop offset="0" stop-color="#fff" stop-opacity=".11"/>
     <stop offset=".55" stop-color="#fff" stop-opacity=".03"/>
     <stop offset="1" stop-color="#fff" stop-opacity=".005"/>
-  </linearGradient><filter id="sh${id}" x="-20%" y="-20%" width="140%" height="140%">
+  </linearGradient>`;
+    if (screenOnly)
+      return `<svg class="dpsvg" viewBox="0 0 610 423"><defs>${gg}</defs>${dsp.replace(' transform="translate(-246 44) scale(.4)"', "")}</svg>`;
+    const defs = gg + `<filter id="sh${id}" x="-20%" y="-20%" width="140%" height="140%">
     <feGaussianBlur stdDeviation="5"/>
   </filter><filter id="zg${id}" x="-30%" y="-80%" width="160%" height="260%">
     <feGaussianBlur stdDeviation="2.6"/>
@@ -3771,6 +3810,35 @@
   .pk2 .dsp .gl {
     pointer-events: none;
   }
+  :host(.screenview) ha-card {
+    background: none;
+    border: 0;
+    box-shadow: none;
+    padding: 0;
+    overflow: visible;
+  }
+  .scronly {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .scrbox .scrmini {
+    width: 100%;
+    background: none;
+    border: 0;
+    padding: 0;
+    container-type: normal;
+  }
+  .scrbox .scrsel {
+    margin: 0 0 8px;
+    width: 100%;
+    padding: 8px 10px;
+    border-radius: 10px;
+    border: 1px solid var(--line);
+    background: var(--glass);
+    color: var(--txt);
+    font: inherit;
+  }
   .dpopbk {
     position: fixed;
     inset: 0;
@@ -4447,6 +4515,12 @@
       clearTimeout(this._tm);
       this._selB = c.batteries.map(() => -1);
       this._sel = 0;
+      this._screenView = c.view === "screen";
+      root.host.classList.toggle("screenview", this._screenView);
+      if (this._screenView) {
+        this._buildScreens(root);
+        return;
+      }
       const card = (b) => `<div class="bc">
     <div class="pkw">
       <div class="pk2" data-k="bccells">
@@ -4635,6 +4709,7 @@
       return { bats, flow, inv };
     }
     _updSimple(d) {
+      if (this._screenView) return this._updScreens(d);
       const r = this.shadowRoot, $ = (k) => r.querySelector(`.main [data-k="${k}"]`), V = this._cfg.victron || {};
       const alerts = [];
       const grp = this._grp = this._groupInfo();
@@ -4765,92 +4840,8 @@
         }
         strip._id = i;
         strip._zp = don >= 0 ? { a: [+cls[don].dataset.lx, +cls[don].dataset.ly], b: [+cls[rec].dataset.lx, +cls[rec].dataset.ly] } : null;
-        const dsp = strip.querySelector(".dsp"), D = (k) => dsp.querySelector(`[data-d="${k}"]`), swOff = this._dpv(ci, b.dsp) === "off", dOn = grp ? !this._vOff : !swOff;
-        dsp.classList.toggle("off", !dOn);
-        dsp.classList.toggle("pwroff", swOff);
-        dsp.classList.toggle("act", G0.I > 0.04);
-        if (dOn) {
-          const T = (k, s, col) => {
-            const e = D(k);
-            if (e.textContent !== s) e.textContent = s;
-            if (col) e.setAttribute("fill", col);
-          }, soc = clamp(G0.soc || 0, 0, 100), L = soc * 2.4504, mn_ = Math.min, mx_ = Math.max, red = soc <= 10, st2 = dsp.style, f1 = (x) => x.toFixed(1), tot = !isNaN(G0.capTot) && G0.capTot > 0 ? G0.capTot : soc > 0 && !isNaN(G0.rem) ? G0.rem / soc * 100 : NaN, pct = tot > 0 && !isNaN(G0.rem) ? clamp(G0.rem / tot * 100, 0, 100) : soc, rn = Math.ceil(pct / 5), Lc = mn_(245, rn * 12.25);
-          T("v", fmt(G0.V, 2) + "V");
-          T("a", fmt(G0.I, 1) + "A");
-          T("soc", fmt(G0.soc, 0) + "%");
-          T("np", String(grp ? grp.order.length : 1));
-          T("pn", String(grp ? this._sel || 0 : 0));
-          const full = 1.75 * Math.exp(-mx_(0, G0.I - 30) / 60), rst = String(Math.round(mx_(30, full * 1e3 / 20)));
-          {
-            const n1 = Math.max(0, rn);
-            if (st2.getPropertyValue("--rn") !== String(n1)) st2.setProperty("--rn", n1);
-            if (st2.getPropertyValue("--rst") !== rst) st2.setProperty("--rst", rst);
-          }
-          T(
-            "cap",
-            !isNaN(G0.capTot) ? G0.capTot.toFixed(1) : G0.soc > 0 && !isNaN(G0.rem) ? (G0.rem / G0.soc * 100).toFixed(1) : "\u2013"
-          );
-          T("rem", fmt(G0.rem, 1));
-          T("mx", fmt(G0.mx, 3) + "V");
-          T("mn", fmt(G0.mn, 3) + "V");
-          T("tp", isNaN(G0.mos) ? "\u2013" : Math.round(G0.mos) + " \xB0C");
-          T("pw", fmt(Math.abs(G0.P) / 1e3, 1));
-          T("alm", G0.err ? tt("scr_alarmv") : tt("scr_normal"), G0.err ? "#ff4d4d" : GRN);
-          T("chg", b.sw.charging ? tt("scr_on") : tt("scr_off"), b.sw.charging ? GRN : "#e0705f");
-          T("dch", b.sw.discharging ? tt("scr_on") : tt("scr_off"), b.sw.discharging ? GRN : "#e0705f");
-          T(
-            "cap2",
-            (!isNaN(b.capTot) ? b.capTot.toFixed(1) : b.soc > 0 && !isNaN(b.rem) ? (b.rem / b.soc * 100).toFixed(1) : "\u2013") + "AH"
-          );
-          T("rem2", fmt(b.rem, 1) + "AH");
-          T("pct2", fmt(b.soc, 0) + "%");
-          T("vd", fmt(b.mx - b.mn, 3) + "V");
-          T("a2", fmt(b.I, 1) + "A");
-          T("tp2", isNaN(b.mos) ? "\u2013" : Math.round(b.mos) + " \xB0C");
-          b.temps.forEach((t, k) => T("ts" + k, isNaN(t) ? "\u2013" : fmt(t, 1) + "\xB0C"));
-          {
-            const I = b.balI, on = don >= 0 && rec >= 0, col = isNaN(I) ? GRN : I > 5e-3 ? "#ff5a4d" : I < -5e-3 ? "#4da3ff" : GRN, ln = D("bal");
-            T("bal2", isNaN(I) ? "\u2013" : (I > 0 ? "+" : "") + fmt(I, 2) + "A", col);
-            if (ln) {
-              const g0 = +ln.dataset.g0, gp = +ln.dataset.gp, cx = (k) => 115 + k % 4 * 78 + 44, ty = (k) => g0 + Math.floor(k / 4) * gp, gy = (r2) => g0 + r2 * gp + gp / 2 - 3, [a, z] = I < -5e-3 ? [rec, don] : [don, rec];
-              let d2 = "";
-              if (on) {
-                const ra = Math.floor(a / 4), rb = Math.floor(z / 4), xa = cx(a), xb = cx(z);
-                if (ra === rb) d2 = `M${xa} ${ty(a) + 3} V${gy(ra)} H${xb} V${ty(z) + 3}`;
-                else {
-                  const xv = [116, 190, 268, 346].reduce((p, q2) => Math.abs(q2 - xa) < Math.abs(p - xa) ? q2 : p);
-                  d2 = ra < rb ? `M${xa} ${ty(a) + 3} V${gy(ra)} H${xv} V${gy(rb - 1)} H${xb} V${ty(z) - 10}` : `M${xa} ${ty(a) - 10} V${gy(ra - 1)} H${xv} V${gy(rb)} H${xb} V${ty(z) + 3}`;
-                }
-              }
-              const sign = I > 5e-3 ? "pos" : I < -5e-3 ? "neg" : "unk";
-              [
-                ["bal", "balline"],
-                ["balt", "baltail"],
-                ["balh", "balhead"]
-              ].forEach(([k, base]) => {
-                const p = D(k);
-                if (!p) return;
-                if (p.getAttribute("d") !== d2) p.setAttribute("d", d2);
-                const cls2 = base + (on ? " on " : " ") + sign;
-                if (p.getAttribute("class") !== cls2) p.setAttribute("class", cls2);
-              });
-            }
-          }
-          T("chg2", b.sw.charging ? tt("scr_on") : tt("scr_off"), b.sw.charging ? GRN : "#e0705f");
-          T("dch2", b.sw.discharging ? tt("scr_on") : tt("scr_off"), b.sw.discharging ? GRN : "#e0705f");
-          {
-            const totB = !isNaN(b.capTot) && b.capTot > 0 ? b.capTot : b.soc > 0 && !isNaN(b.rem) ? b.rem / b.soc * 100 : NaN, pctB = totB > 0 && !isNaN(b.rem) ? clamp(b.rem / totB * 100, 0, 100) : clamp(b.soc || 0, 0, 100), bn = Math.ceil(pctB / 20);
-            if (dsp._bk !== bn) {
-              dsp._bk = bn;
-              const bcol = bn <= 2 ? "#e0302f" : bn <= 4 ? "#2f8cff" : "#2fd24a";
-              dsp.querySelectorAll(".bb").forEach((e, k) => e.setAttribute("fill", k < bn ? bcol : "#1a0d0d"));
-              dsp.querySelectorAll(".bo").forEach((e) => e.setAttribute(e.classList.contains("bcap") ? "fill" : "stroke", bcol));
-            }
-          }
-          b.cells.forEach(
-            (v, k) => T("cv" + k, isNaN(v) ? "\u2013" : fmt(v, 3) + "V", k === imx ? "#6f8cff" : k === imn ? "#ff4d4d" : GRN)
-          );
-        }
+        const dsp = strip.querySelector(".dsp");
+        this._paintScreen(dsp, { ci, b, G0, grp, imx, imn, don, rec });
         if (this._pop && this._pop.i === i) this._syncPop(dsp);
         const avgV = okV.reduce((a, x) => a + x, 0) / (okV.length || 1), rv = b.res.filter((x) => !isNaN(x)), ravg = rv.length ? rv.reduce((a, x) => a + x, 0) / rv.length : NaN;
         const tr = tv.length ? Math.round(Math.min(...tv)) === Math.round(Math.max(...tv)) ? Math.round(Math.min(...tv)) + " \xB0C" : Math.round(Math.min(...tv)) + "\u2013" + Math.round(Math.max(...tv)) + " \xB0C" : "\u2013";
@@ -4927,6 +4918,168 @@
     /* ------------------------------------------------------------ electrons along the conductors */
     // every conductor already carries a hidden path (class "fl") drawn in the direction of the series string, B- -> B+. Electrons run along it with a
     // little random wobble: B- -> B+ while charging, B+ -> B- while discharging (opposite to the conventional current).
+    // paints the values of one JK display (the live one of the card, or the only thing of the "screen" view)
+    _paintScreen(dsp, { ci, b, G0, grp, imx, imn, don, rec }) {
+      const D = (k) => dsp.querySelector(`[data-d="${k}"]`), swOff = this._dpv(ci, b.dsp) === "off", dOn = grp ? !this._vOff : !swOff;
+      dsp.classList.toggle("off", !dOn);
+      dsp.classList.toggle("pwroff", swOff);
+      dsp.classList.toggle("act", G0.I > 0.04);
+      if (dOn) {
+        const T = (k, s, col) => {
+          const e = D(k);
+          if (e.textContent !== s) e.textContent = s;
+          if (col) e.setAttribute("fill", col);
+        }, soc = clamp(G0.soc || 0, 0, 100), L = soc * 2.4504, mn_ = Math.min, mx_ = Math.max, red = soc <= 10, st = dsp.style, f1 = (x) => x.toFixed(1), tot = !isNaN(G0.capTot) && G0.capTot > 0 ? G0.capTot : soc > 0 && !isNaN(G0.rem) ? G0.rem / soc * 100 : NaN, pct = tot > 0 && !isNaN(G0.rem) ? clamp(G0.rem / tot * 100, 0, 100) : soc, rn = Math.ceil(pct / 5), Lc = mn_(245, rn * 12.25);
+        T("v", fmt(G0.V, 2) + "V");
+        T("a", fmt(G0.I, 1) + "A");
+        T("soc", fmt(G0.soc, 0) + "%");
+        T("np", String(grp ? grp.order.length : 1));
+        T("pn", String(grp ? this._sel || 0 : 0));
+        const full = 1.75 * Math.exp(-mx_(0, G0.I - 30) / 60), rst = String(Math.round(mx_(30, full * 1e3 / 20)));
+        {
+          const n1 = Math.max(0, rn);
+          if (st.getPropertyValue("--rn") !== String(n1)) st.setProperty("--rn", n1);
+          if (st.getPropertyValue("--rst") !== rst) st.setProperty("--rst", rst);
+        }
+        T(
+          "cap",
+          !isNaN(G0.capTot) ? G0.capTot.toFixed(1) : G0.soc > 0 && !isNaN(G0.rem) ? (G0.rem / G0.soc * 100).toFixed(1) : "\u2013"
+        );
+        T("rem", fmt(G0.rem, 1));
+        T("mx", fmt(G0.mx, 3) + "V");
+        T("mn", fmt(G0.mn, 3) + "V");
+        T("tp", isNaN(G0.mos) ? "\u2013" : Math.round(G0.mos) + " \xB0C");
+        T("pw", fmt(Math.abs(G0.P) / 1e3, 1));
+        T("alm", G0.err ? tt("scr_alarmv") : tt("scr_normal"), G0.err ? "#ff4d4d" : GRN);
+        T("chg", b.sw.charging ? tt("scr_on") : tt("scr_off"), b.sw.charging ? GRN : "#e0705f");
+        T("dch", b.sw.discharging ? tt("scr_on") : tt("scr_off"), b.sw.discharging ? GRN : "#e0705f");
+        T(
+          "cap2",
+          (!isNaN(b.capTot) ? b.capTot.toFixed(1) : b.soc > 0 && !isNaN(b.rem) ? (b.rem / b.soc * 100).toFixed(1) : "\u2013") + "AH"
+        );
+        T("rem2", fmt(b.rem, 1) + "AH");
+        T("pct2", fmt(b.soc, 0) + "%");
+        T("vd", fmt(b.mx - b.mn, 3) + "V");
+        T("a2", fmt(b.I, 1) + "A");
+        T("tp2", isNaN(b.mos) ? "\u2013" : Math.round(b.mos) + " \xB0C");
+        b.temps.forEach((t, k) => T("ts" + k, isNaN(t) ? "\u2013" : fmt(t, 1) + "\xB0C"));
+        {
+          const I = b.balI, on = don >= 0 && rec >= 0, col = isNaN(I) ? GRN : I > 5e-3 ? "#ff5a4d" : I < -5e-3 ? "#4da3ff" : GRN, ln = D("bal");
+          T("bal2", isNaN(I) ? "\u2013" : (I > 0 ? "+" : "") + fmt(I, 2) + "A", col);
+          if (ln) {
+            const g0 = +ln.dataset.g0, gp = +ln.dataset.gp, cx = (k) => 115 + k % 4 * 78 + 44, ty = (k) => g0 + Math.floor(k / 4) * gp, gy = (r) => g0 + r * gp + gp / 2 - 3, [a, z] = I < -5e-3 ? [rec, don] : [don, rec];
+            let d = "";
+            if (on) {
+              const ra = Math.floor(a / 4), rb = Math.floor(z / 4), xa = cx(a), xb = cx(z);
+              if (ra === rb) d = `M${xa} ${ty(a) + 3} V${gy(ra)} H${xb} V${ty(z) + 3}`;
+              else {
+                const xv = [116, 190, 268, 346].reduce((p, q) => Math.abs(q - xa) < Math.abs(p - xa) ? q : p);
+                d = ra < rb ? `M${xa} ${ty(a) + 3} V${gy(ra)} H${xv} V${gy(rb - 1)} H${xb} V${ty(z) - 10}` : `M${xa} ${ty(a) - 10} V${gy(ra - 1)} H${xv} V${gy(rb)} H${xb} V${ty(z) + 3}`;
+              }
+            }
+            const sign = I > 5e-3 ? "pos" : I < -5e-3 ? "neg" : "unk";
+            [
+              ["bal", "balline"],
+              ["balt", "baltail"],
+              ["balh", "balhead"]
+            ].forEach(([k, base]) => {
+              const p = D(k);
+              if (!p) return;
+              if (p.getAttribute("d") !== d) p.setAttribute("d", d);
+              const cls = base + (on ? " on " : " ") + sign;
+              if (p.getAttribute("class") !== cls) p.setAttribute("class", cls);
+            });
+          }
+        }
+        T("chg2", b.sw.charging ? tt("scr_on") : tt("scr_off"), b.sw.charging ? GRN : "#e0705f");
+        T("dch2", b.sw.discharging ? tt("scr_on") : tt("scr_off"), b.sw.discharging ? GRN : "#e0705f");
+        {
+          const totB = !isNaN(b.capTot) && b.capTot > 0 ? b.capTot : b.soc > 0 && !isNaN(b.rem) ? b.rem / b.soc * 100 : NaN, pctB = totB > 0 && !isNaN(b.rem) ? clamp(b.rem / totB * 100, 0, 100) : clamp(b.soc || 0, 0, 100), bn = Math.ceil(pctB / 20);
+          if (dsp._bk !== bn) {
+            dsp._bk = bn;
+            const bcol = bn <= 2 ? "#e0302f" : bn <= 4 ? "#2f8cff" : "#2fd24a";
+            dsp.querySelectorAll(".bb").forEach((e, k) => e.setAttribute("fill", k < bn ? bcol : "#1a0d0d"));
+            dsp.querySelectorAll(".bo").forEach((e) => e.setAttribute(e.classList.contains("bcap") ? "fill" : "stroke", bcol));
+          }
+        }
+        b.cells.forEach(
+          (v, k) => T("cv" + k, isNaN(v) ? "\u2013" : fmt(v, 3) + "V", k === imx ? "#6f8cff" : k === imn ? "#ff4d4d" : GRN)
+        );
+      }
+    }
+    // "screen" view: nothing but the JK display (no BMS, cells, tiles or texts); view_page chooses its page
+    _buildScreens(root) {
+      const c = this._cfg, grp = this._groupInfo(), list = grp ? [c.batteries[grp.mi]] : c.batteries;
+      root.innerHTML = `<style>${CSS}</style><ha-card class="scronly">${list.map(
+        () => `<div class="scrbox">
+        ${grp ? `<select class="pksel scrsel" data-k="pksel" title="${tt("pick_battery")}"></select>` : ""}
+        <div class="pk2 scrmini" data-k="bccells"></div></div>`
+      ).join("")}</ha-card>`;
+      if (!root._mc) {
+        root._mc = 1;
+        root.addEventListener("change", (e) => {
+          const sl = e.target.closest(".pksel");
+          if (sl) {
+            this._sel = +sl.value;
+            this._vOff = false;
+            if (this._data) this._updSimple(this._data);
+          }
+        });
+        root.addEventListener("click", (e) => {
+          const m = e.target.closest("[data-m]");
+          if (m) this._more(m.dataset.m);
+        });
+      }
+      this._built = true;
+      if (this._hass) this._update();
+    }
+    _updScreens(d) {
+      const r = this.shadowRoot, grp = this._grp = this._groupInfo();
+      if (grp) this._sel = Math.min(this._sel || 0, grp.order.length - 1);
+      const view = grp ? [{ b: d.bats[grp.order[this._sel || 0]], ci: grp.order[this._sel || 0] }] : d.bats.map((b, ci) => ({ b, ci }));
+      view.forEach(({ b, ci }, i) => {
+        const box = r.querySelectorAll(".scrbox")[i];
+        if (!box) return;
+        const G0 = grp ? this._aggr(
+          grp.order.map((x) => d.bats[x]),
+          grp
+        ) : b, bcfg = this._cfg.batteries[ci], n = this._nOf(bcfg), strip = box.querySelector(".scrmini"), sg = n + "/" + (grp ? grp.order.length : 1) + "/" + this._tOf(bcfg) + "/" + this._cfg.view_page;
+        const sl = box.querySelector(".pksel");
+        if (grp && sl) {
+          const html2 = grp.order.map((x, k) => `<option value="${k}">${k === 0 ? "Master" : "Slave " + k} \xB7 ${d.bats[x].name}</option>`).join("");
+          if (sl._h !== html2) {
+            sl._h = html2;
+            sl.innerHTML = html2;
+          }
+          sl.value = String(this._sel || 0);
+        }
+        if (strip._n !== sg) {
+          strip._n = sg;
+          strip.innerHTML = packSvg(n, i, grp ? grp.order.length : 1, "top-left", 2, this._tOf(bcfg), true);
+          const svg = strip.querySelector("svg");
+          svg.querySelectorAll("title").forEach((t) => t.remove());
+          svg.querySelectorAll("clipPath rect, .dsp > rect:first-of-type").forEach((e) => {
+            e.setAttribute("rx", 15);
+            e.setAttribute("ry", 15);
+          });
+          const dsp0 = svg.querySelector(".dsp");
+          dsp0.setAttribute("data-pg", this._cfg.view_page === "cells" ? "cells" : "group");
+          svg.querySelectorAll("[data-mw]").forEach(fitLabel);
+          strip.addEventListener("click", (e) => {
+            if (e.target.closest(".pwr")) this._toggleDisp(ci);
+          });
+        }
+        const dsp = strip.querySelector(".dsp"), okV = b.cells.filter((x) => !isNaN(x)), vmax = Math.max(...okV), vmin = Math.min(...okV), sIdx = (x) => !isNaN(x) && x >= 1 && x <= b.cells.length ? x - 1 : -1, imx = sIdx(b.mxI) >= 0 ? sIdx(b.mxI) : vmax > vmin ? b.cells.indexOf(vmax) : -1, imn = sIdx(b.mnI) >= 0 ? sIdx(b.mnI) : vmax > vmin ? b.cells.indexOf(vmin) : -1;
+        let don = -1, rec = -1;
+        if (b.balMask) {
+          don = imx >= 0 ? imx : b.cells.indexOf(vmax);
+          rec = imn >= 0 ? imn : b.cells.indexOf(vmin);
+        }
+        if (don === rec) don = rec = -1;
+        this._paintScreen(dsp, { ci, b, G0, grp, imx, imn, don, rec });
+      });
+      this._ringTick();
+    }
     _elInit(strip) {
       const NS2 = "http://www.w3.org/2000/svg", svg = strip.querySelector("svg"), layer = document.createElementNS(NS2, "g"), und = svg.querySelector(".und"), layerUnder = document.createElementNS(NS2, "g");
       strip._el = [];
@@ -5580,13 +5733,49 @@
   var batDom = (k) => BAT_DOM[k] || "sensor";
   var batSel = (k) => ({ entity: { domain: BAT_DOM[k] ? [BAT_DOM[k]] : NUMD } });
   var batGroups = (n, t) => [
-    ["eg_main", ["total_voltage", "current", "power", "state_of_charge", "state_of_health", "capacity_remaining", "total_battery_capacity", "charging_cycles"]],
-    ["eg_cellsum", ["max_cell_voltage", "min_cell_voltage", "max_voltage_cell", "min_voltage_cell", "delta_cell_voltage", "average_cell_voltage", "balancer_bitmask"]],
+    [
+      "eg_main",
+      [
+        "total_voltage",
+        "current",
+        "power",
+        "state_of_charge",
+        "state_of_health",
+        "capacity_remaining",
+        "total_battery_capacity",
+        "charging_cycles"
+      ]
+    ],
+    [
+      "eg_cellsum",
+      [
+        "max_cell_voltage",
+        "min_cell_voltage",
+        "max_voltage_cell",
+        "min_voltage_cell",
+        "delta_cell_voltage",
+        "average_cell_voltage",
+        "balancer_bitmask"
+      ]
+    ],
     ["eg_temps", [...Array.from({ length: t }, (_, i) => "temperature_sensor_" + (i + 1)), "power_tube_temperature"]],
     ["eg_cellv", Array.from({ length: n }, (_, i) => "cell_voltage_" + (i + 1))],
     ["eg_cellr", Array.from({ length: n }, (_, i) => "cell_resistance_" + (i + 1))],
     ["eg_switches", ["charging", "discharging", "balancer", "heating"]],
-    ["eg_other", ["balance_starting_voltage", "balance_trigger_voltage", "online_status", "errors", "hardware_version", "software_version", "total_runtime_formatted", "charge_status", "operation_status"]]
+    [
+      "eg_other",
+      [
+        "balance_starting_voltage",
+        "balance_trigger_voltage",
+        "online_status",
+        "errors",
+        "hardware_version",
+        "software_version",
+        "total_runtime_formatted",
+        "charge_status",
+        "operation_status"
+      ]
+    ]
   ];
   var batLabel = (k) => {
     const m = /^(cell_voltage|cell_resistance|temperature_sensor)_(\d+)$/.exec(k);
@@ -5736,7 +5925,9 @@
       let all = {};
       const plainFields = (box, keys) => {
         const ids = this._hass ? Object.keys(this._hass.states) : [], list = (k) => batDom(k) === "switch" ? "s" : batDom(k) === "binary_sensor" ? "b" : "n", dl = (id, pre) => `<datalist id="${id}">${ids.filter((x) => pre.some((p) => x.startsWith(p))).map((x) => `<option value="${x}">`).join("")}</datalist>`;
-        box.innerHTML = dl(`bl${i}n`, ["sensor.", "number."]) + dl(`bl${i}s`, ["switch."]) + dl(`bl${i}b`, ["binary_sensor."]) + keys.map((k) => `<label class="fld"><span>${batLabel(k)}</span><input class="bsi" data-k="${k}" list="bl${i}${list(k)}" placeholder="${dflt(k)}"></label>`).join("");
+        box.innerHTML = dl(`bl${i}n`, ["sensor.", "number."]) + dl(`bl${i}s`, ["switch."]) + dl(`bl${i}b`, ["binary_sensor."]) + keys.map(
+          (k) => `<label class="fld"><span>${batLabel(k)}</span><input class="bsi" data-k="${k}" list="bl${i}${list(k)}" placeholder="${dflt(k)}"></label>`
+        ).join("");
         box.querySelectorAll(".bsi").forEach((inp) => {
           inp.value = all[inp.dataset.k] || "";
           inp.onchange = () => {
@@ -5746,7 +5937,9 @@
         });
       };
       const build = (usePlain) => {
-        all = Object.fromEntries(dims().flatMap((g) => g[1]).map((k) => [k, cur(k)]));
+        all = Object.fromEntries(
+          dims().flatMap((g) => g[1]).map((k) => [k, cur(k)])
+        );
         slot().innerHTML = "";
         dims().forEach(([t, keys]) => {
           const g = document.createElement("details");
@@ -5800,7 +5993,8 @@
         try {
           if (!customElements.get("ha-form") && window.loadCardHelpers) {
             const h = await Promise.race([window.loadCardHelpers(), sleep(3e3)]);
-            if (h && h.createCardElement) await Promise.race([h.createCardElement({ type: "entities", entities: [] }), sleep(3e3)]);
+            if (h && h.createCardElement)
+              await Promise.race([h.createCardElement({ type: "entities", entities: [] }), sleep(3e3)]);
           }
           if (customElements.get("ha-form")) await Promise.race([customElements.whenDefined("ha-form"), sleep(1e3)]);
         } catch (e) {
@@ -5856,9 +6050,7 @@
           <option value="">${tt("ed_choose")}</option>${opts.map((d) => `<option value="${d.entity_base}">${d.entity_base}</option>`).join("")}</select>
       </label>
       </div>
-      <div class="fg"><label class="fld"><span>${tt("lbl_cells")}</span><select class="b-cells">${[
-          .../* @__PURE__ */ new Set([8, 16])
-        ].sort((x, y) => x - y).map((v) => `<option value="${v}">${v}</option>`).join("")}</select>
+      <div class="fg"><label class="fld"><span>${tt("lbl_cells")}</span><select class="b-cells">${[.../* @__PURE__ */ new Set([8, 16])].sort((x, y) => x - y).map((v) => `<option value="${v}">${v}</option>`).join("")}</select>
         </label>
         <label class="fld"><span>${tt("lbl_temps")}</span>
           <select class="b-temps">${[0, 1, 2, 3, 4].map((v) => `<option value="${v}">${v}</option>`).join("")}</select>
@@ -6007,7 +6199,17 @@
     <label class="fld"><span>${tt("lbl_language")}</span><select class="f-lang"><option value="auto">${tt("lang_auto")}</option>${Object.entries(
         ST.langList || { en: "English", fr: "Fran\xE7ais", de: "Deutsch", it: "Italiano", es: "Espa\xF1ol", ro: "Rom\xE2n\u0103" }
       ).map(([v, l]) => `<option value="${v}">${l}</option>`).join("")}</select></label></div>
-    
+    <label class="fld"><span>${tt("lbl_view")}</span>
+      <select class="f-view">
+        <option value="full">${tt("view_full")}</option>
+        <option value="screen">${tt("view_screen")}</option>
+      </select>
+    </label>${c0.view === "screen" ? `<label class="fld"><span>${tt("lbl_vpage")}</span>
+      <select class="f-vpage">
+        <option value="group">${tt("vpage_group")}</option>
+        <option value="cells">${tt("vpage_cells")}</option>
+      </select>
+    </label>` : ""}
     <label class="fld"><span>${tt("lbl_perf")}</span>
       <select class="f-perf">
         <option value="auto">${tt("perf_auto")}</option>
@@ -6021,6 +6223,24 @@
       q2(".f-lang").value = c0.language || "auto";
       q2(".f-glare").checked = c0.glare !== false;
       q2(".f-perf").value = c0.performance || "auto";
+      q2(".f-view").value = c0.view === "screen" ? "screen" : "full";
+      q2(".f-view").onchange = (e) => {
+        if (e.target.value === "screen") this._config.view = "screen";
+        else {
+          delete this._config.view;
+          delete this._config.view_page;
+        }
+        this._emit();
+        this._render();
+      };
+      if (q2(".f-vpage")) {
+        q2(".f-vpage").value = c0.view_page === "cells" ? "cells" : "group";
+        q2(".f-vpage").onchange = (e) => {
+          if (e.target.value === "cells") this._config.view_page = "cells";
+          else delete this._config.view_page;
+          this._emit();
+        };
+      }
       q2(".f-perf").onchange = (e) => {
         if (e.target.value === "auto") delete this._config.performance;
         else this._config.performance = e.target.value;

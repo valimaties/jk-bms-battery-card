@@ -167,5 +167,11 @@
   "lbl_perf": "Performance",
   "perf_auto": "Automatic (lighter on phones/tablets)",
   "perf_full": "Full effects",
-  "perf_lite": "Light (no bubbles, waves or glows)"
+  "perf_lite": "Light (no bubbles, waves or glows)",
+  "lbl_view": "View",
+  "view_full": "Full card",
+  "view_screen": "JK screen only",
+  "lbl_vpage": "Screen page",
+  "vpage_group": "Main screen",
+  "vpage_cells": "Cells screen"
 }

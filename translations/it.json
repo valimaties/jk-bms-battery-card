@@ -167,5 +167,11 @@
   "lbl_perf": "Prestazioni",
   "perf_auto": "Automatico (più leggero su telefono/tablet)",
   "perf_full": "Effetti completi",
-  "perf_lite": "Leggero (senza bolle, onde e aloni)"
+  "perf_lite": "Leggero (senza bolle, onde e aloni)",
+  "lbl_view": "Visualizzazione",
+  "view_full": "Scheda completa",
+  "view_screen": "Solo schermo JK",
+  "lbl_vpage": "Pagina dello schermo",
+  "vpage_group": "Schermata principale",
+  "vpage_cells": "Schermata celle"
 }

@@ -167,5 +167,11 @@
   "lbl_perf": "Performances",
   "perf_auto": "Automatique (plus léger sur téléphone/tablette)",
   "perf_full": "Effets complets",
-  "perf_lite": "Léger (sans bulles, vagues ni halos)"
+  "perf_lite": "Léger (sans bulles, vagues ni halos)",
+  "lbl_view": "Affichage",
+  "view_full": "Carte complète",
+  "view_screen": "Écran JK seulement",
+  "lbl_vpage": "Page de l'écran",
+  "vpage_group": "Écran principal",
+  "vpage_cells": "Écran des cellules"
 }

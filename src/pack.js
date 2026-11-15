@@ -26,7 +26,7 @@ export function packOverlay(grouped, name) {
   </div>
   </div>`;
 }
-export function packSvg(n, id, np = 1, layout = "top-left", rows = 2, nt = 0) {
+export function packSvg(n, id, np = 1, layout = "top-left", rows = 2, nt = 0, screenOnly = false) {
   const { W, H, wh } = PK,
     per = rows === 1 ? n : Math.ceil(n / 2), // rows = 1: all the cells in one row (8 cells), centred on the BMS
     xl = 236,
@@ -493,11 +493,16 @@ export function packSvg(n, id, np = 1, layout = "top-left", rows = 2, nt = 0) {
   <path d="${wire}" fill="none" stroke="#9aa3b0" stroke-opacity=".5" stroke-width=".9" stroke-linecap="round" transform="translate(-.8 -.8)"/>
   <rect x="-47" y="209" width="14" height="5" rx="1.2" fill="#e4e6ea" stroke="#7a7f88" stroke-width=".6"/>
   <rect x="${(lcd[0] - 5).toFixed(1)}" y="${(lcd[1] - 3).toFixed(1)}" width="9" height="6" rx="1.2" fill="#e4e6ea" stroke="#7a7f88" stroke-width=".6"/>`;
-  const defs = `<linearGradient id="gg${id}" gradientUnits="userSpaceOnUse" x1="295" y1="211" x2="610" y2="423">
+  const gg = `<linearGradient id="gg${id}" gradientUnits="userSpaceOnUse" x1="295" y1="211" x2="610" y2="423">
     <stop offset="0" stop-color="#fff" stop-opacity=".11"/>
     <stop offset=".55" stop-color="#fff" stop-opacity=".03"/>
     <stop offset="1" stop-color="#fff" stop-opacity=".005"/>
-  </linearGradient><filter id="sh${id}" x="-20%" y="-20%" width="140%" height="140%">
+  </linearGradient>`;
+  if (screenOnly)
+    return `<svg class="dpsvg" viewBox="0 0 610 423"><defs>${gg}</defs>${dsp.replace(' transform="translate(-246 44) scale(.4)"', "")}</svg>`;
+  const defs =
+    gg +
+    `<filter id="sh${id}" x="-20%" y="-20%" width="140%" height="140%">
     <feGaussianBlur stdDeviation="5"/>
   </filter><filter id="zg${id}" x="-30%" y="-80%" width="160%" height="260%">
     <feGaussianBlur stdDeviation="2.6"/>

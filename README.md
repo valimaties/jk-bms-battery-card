@@ -78,6 +78,8 @@ batteries:
 | `batteries[].rows` | `2` | Only for 8 cells: `1` = one row of 8, `2` (default) = two rows of 4, see *8 cells* below |
 | `batteries[].heating` | `true` | `false` hides the Heating button (for a BMS without heating plates). Without this option the button is shown when the BMS has the heating switch |
 | `batteries[].role` | – | `master` for one battery, `slave` for the others: one card with a pack selector |
+| `view` | `full` | `full` (the whole card) or `screen` (only the JK display: no BMS, cells, numbers or texts) |
+| `view_page` | `group` | With `view: screen`: `group` (main screen) or `cells` (screen with the cell voltages). Add the card twice to show both |
 | `glare` | `true` | Light reflection on the BMS screen |
 | `language` | `auto` | `auto` (Home Assistant language) or `en` `fr` `de` `it` `es` `ro` |
 | `performance` | `auto` | `auto` (light on touch / weak devices), `full`, `lite` |

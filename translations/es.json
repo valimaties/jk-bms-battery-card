@@ -167,5 +167,11 @@
   "lbl_perf": "Rendimiento",
   "perf_auto": "Automático (más ligero en móvil/tablet)",
   "perf_full": "Efectos completos",
-  "perf_lite": "Ligero (sin burbujas, olas ni brillos)"
+  "perf_lite": "Ligero (sin burbujas, olas ni brillos)",
+  "lbl_view": "Vista",
+  "view_full": "Tarjeta completa",
+  "view_screen": "Solo pantalla JK",
+  "lbl_vpage": "Página de la pantalla",
+  "vpage_group": "Pantalla principal",
+  "vpage_cells": "Pantalla de celdas"
 }

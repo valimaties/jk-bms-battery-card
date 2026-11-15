@@ -2336,6 +2336,35 @@ export const CSS = `
   .pk2 .dsp .gl {
     pointer-events: none;
   }
+  :host(.screenview) ha-card {
+    background: none;
+    border: 0;
+    box-shadow: none;
+    padding: 0;
+    overflow: visible;
+  }
+  .scronly {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .scrbox .scrmini {
+    width: 100%;
+    background: none;
+    border: 0;
+    padding: 0;
+    container-type: normal;
+  }
+  .scrbox .scrsel {
+    margin: 0 0 8px;
+    width: 100%;
+    padding: 8px 10px;
+    border-radius: 10px;
+    border: 1px solid var(--line);
+    background: var(--glass);
+    color: var(--txt);
+    font: inherit;
+  }
   .dpopbk {
     position: fixed;
     inset: 0;

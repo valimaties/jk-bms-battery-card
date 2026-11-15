@@ -167,5 +167,11 @@
   "lbl_perf": "Leistung",
   "perf_auto": "Automatisch (schlanker auf Handy/Tablet)",
   "perf_full": "Alle Effekte",
-  "perf_lite": "Leicht (ohne Blasen, Wellen und Leuchten)"
+  "perf_lite": "Leicht (ohne Blasen, Wellen und Leuchten)",
+  "lbl_view": "Ansicht",
+  "view_full": "Komplette Karte",
+  "view_screen": "Nur JK-Bildschirm",
+  "lbl_vpage": "Bildschirmseite",
+  "vpage_group": "Hauptbildschirm",
+  "vpage_cells": "Zellenbildschirm"
 }
