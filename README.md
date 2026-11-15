@@ -130,6 +130,19 @@ batteries:
 - The round button still switches the display on and off; its tooltip says what a click will do. `button_all_pages: false` draws it only on the main screen.
 - The **SETTING** tab opens a page with the display mode (full card / screen only), the name of the battery, the number of cells, the cell layout (8 cells, full card), the button option and the cells screen under the main one. **Save to dashboard** asks for a second click and then writes the change into the dashboard configuration: it needs a dashboard edited in the user interface (not YAML mode) and an administrator account; otherwise use the card editor. The name and the cells can only be saved for a battery that is written in the card (not an auto-detected one).
 
+#### Layout in a sections dashboard
+
+With several batteries the screens follow the **width of the section** the card is in (*Section configuration → Appearance → Width*); each screen needs about 340 px:
+
+| Section width | Screens |
+|---|---|
+| **Single** | one under the other |
+| **Double** | two columns |
+| **Triple** | three columns |
+| **Full width** | side by side over the whole width (one column per battery; the rest wrap to the next row) |
+
+A narrow screen (a phone) always stacks them. The full card (`view: full`) puts at most two batteries in a row.
+
 #### Balancing on the cells screen
 
 While the balancer works, the highest cell **gives** energy to the lowest one: the two cells are outlined, a band falls in the highest cell and a band rises in the lowest one, and a moving line runs from the first to the second. The sensor `balancing_current` only sets the colour: **red** when it is positive, **blue** when it is negative.

@@ -3967,9 +3967,12 @@
     overflow: visible;
   }
   .scronly {
-    display: flex;
-    flex-direction: column;
+    /* the screens follow the width of the card (so of the dashboard section): one column in a narrow section, two in a
+       double one, three in a triple one, as many as there are batteries in a full-width one */
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr));
     gap: 12px;
+    align-items: start;
   }
   .scrbox {
     display: flex;
