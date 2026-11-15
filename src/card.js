@@ -2,7 +2,7 @@ import { CARDS, I18N, inPreview, loadLang, loadLangList, pickLang, tt } from "./
 import { GRN, PK, packOverlay, packSvg } from "./pack.js";
 import { ST } from "./state.js";
 import { CSS } from "./styles.js";
-import { clamp, fmt, fmtW, grpOrder, html, num, socColor } from "./util.js";
+import { clamp, fitLabel, fmt, fmtW, grpOrder, html, num, socColor } from "./util.js";
 import { VIC_TILES, discoverBatteries, discoverVictron, title } from "./victron.js";
 
 export const setH = (el, h) => {
@@ -220,6 +220,7 @@ export class JkBatteryCard extends HTMLElement {
       const [k, suf] = el.getAttribute("data-tr").split("|");
       const t = tt(k) + (suf || "");
       if (el.textContent !== t) el.textContent = t;
+      fitLabel(el);
     });
   }
   _afterClose() {
@@ -399,7 +400,7 @@ export class JkBatteryCard extends HTMLElement {
   /* ------------------------------------------------------------ data */
   _nOf(b) {
     const n = +b.cells || +this._cfg.cells || 16;
-    return n <= 8 ? 8 : 16;   // only 8 or 16 cells are supported (same as the editor)
+    return n <= 8 ? 8 : 16; // only 8 or 16 cells are supported (same as the editor)
   }
   // 8 cells can be drawn in two rows of 4 (default) or in one row of 8 (rows: 1)
   _rowsOf(b) {
@@ -549,12 +550,14 @@ export class JkBatteryCard extends HTMLElement {
         };
       {
         const s0 = q("bccells") || (this._pp && this._pp.i === i ? this._pp.strip : null),
-          sg0 = n + "/" + (grp ? grp.order.length : 1) + "/" + lay + "/" + rw;
+          sg0 = n + "/" + (grp ? grp.order.length : 1) + "/" + lay + "/" + rw + "/" + this._tOf(bcfg);
         if (s0 && s0._n !== sg0) {
           s0._n = sg0;
           s0.innerHTML =
-            packSvg(n, i, grp ? grp.order.length : 1, lay, rw) + packOverlay(!!grp, bcfg.name || bcfg.entity_base);
+            packSvg(n, i, grp ? grp.order.length : 1, lay, rw, this._tOf(bcfg)) +
+            packOverlay(!!grp, bcfg.name || bcfg.entity_base);
           this._elInit(s0);
+          s0.querySelectorAll("[data-mw]").forEach(fitLabel);
           s0.addEventListener("click", (e) => {
             if (e.target.closest(".dsp")) {
               if (e.target.closest(".pwr")) this._toggleDisp(i);
@@ -608,12 +611,14 @@ export class JkBatteryCard extends HTMLElement {
       q("bcd").style.color = dmv < 15 ? "var(--grn)" : dmv < 45 ? "var(--gold)" : "var(--red)";
       const strip = q("bccells") || (this._pp && this._pp.i === i ? this._pp.strip : null),
         st = b.state === "offline" ? "idle" : b.state;
-      const sig = n + "/" + (grp ? grp.order.length : 1) + "/" + lay + "/" + rw;
+      const sig = n + "/" + (grp ? grp.order.length : 1) + "/" + lay + "/" + rw + "/" + this._tOf(bcfg);
       if (strip._n !== sig) {
         strip._n = sig;
         strip.innerHTML =
-          packSvg(n, i, grp ? grp.order.length : 1, lay, rw) + packOverlay(!!grp, bcfg.name || bcfg.entity_base);
+          packSvg(n, i, grp ? grp.order.length : 1, lay, rw, this._tOf(bcfg)) +
+          packOverlay(!!grp, bcfg.name || bcfg.entity_base);
         this._elInit(strip);
+        strip.querySelectorAll("[data-mw]").forEach(fitLabel);
         strip.addEventListener("click", (e) => {
           if (e.target.closest(".dsp")) {
             if (e.target.closest(".pwr")) this._toggleDisp(i);
@@ -751,7 +756,8 @@ export class JkBatteryCard extends HTMLElement {
         T("pct2", fmt(b.soc, 0) + "%");
         T("vd", fmt(b.mx - b.mn, 3) + "V");
         T("a2", fmt(b.I, 1) + "A");
-        T("tp2", isNaN(b.mos) ? "–" : String(Math.round(b.mos)));
+        T("tp2", isNaN(b.mos) ? "–" : Math.round(b.mos) + " °C");
+        b.temps.forEach((t, k) => T("ts" + k, isNaN(t) ? "–" : fmt(t, 1) + "°C"));
         T("alm2", b.err ? tt("scr_alarmv") : tt("scr_normal"), b.err ? "#ff4d4d" : GRN);
         T("chg2", b.sw.charging ? tt("scr_on") : tt("scr_off"), b.sw.charging ? GRN : "#e0705f");
         T("dch2", b.sw.discharging ? tt("scr_on") : tt("scr_off"), b.sw.discharging ? GRN : "#e0705f");
@@ -831,10 +837,10 @@ export class JkBatteryCard extends HTMLElement {
       setH(
         q("tmpw"),
         `<div class="tmp"><span>${tt("temperature")}</span><b>${[
-            ...b.temps.map((t, i) =>
-              E(`<small>T${i + 1}</small>${isNaN(t) ? "–" : fmt(t, 1) + " °C"}`, `temperature_sensor_${i + 1}`),
-            ),
-            E(`<small>MOS</small>${fmt(b.mos, 0)} °C`, "power_tube_temperature"),
+          ...b.temps.map((t, i) =>
+            E(`<small>T${i + 1}</small>${isNaN(t) ? "–" : fmt(t, 1) + " °C"}`, `temperature_sensor_${i + 1}`),
+          ),
+          E(`<small>MOS</small>${fmt(b.mos, 0)} °C`, "power_tube_temperature"),
         ].join("")}</b></div>`,
       );
       const ct = q("ctrl");

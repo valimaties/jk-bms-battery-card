@@ -1,6 +1,6 @@
 (() => {
   // src/version.js
-  var VERSION = true ? "1.0.2" : "dev";
+  var VERSION = true ? "1.0.3" : "dev";
 
   // src/state.js
   var ST = { lang: "en", editing: 0, langList: null };
@@ -1107,7 +1107,7 @@
   </div>
   </div>`;
   }
-  function packSvg(n, id, np = 1, layout = "top-left", rows = 2) {
+  function packSvg(n, id, np = 1, layout = "top-left", rows = 2, nt = 0) {
     const { W, H, wh } = PK, per = rows === 1 ? n : Math.ceil(n / 2), xl = 236, xr = 834, slot = (xr - xl) / Math.max(8, per), xe = xl + per * slot, cw = slot * 0.9, ch = 165, dep = 40, f = 0.94, vx = (xl + xe) / 2, rowY = rows === 1 ? [H / 2 - (ch + 33 - dep) / 2] : [58, 314];
     const startRow = rows === 1 ? 0 : /^bottom/.test(layout) ? 1 : 0, fromLeft = rows === 1 || !/right$/.test(layout);
     const kOf = (row, j) => row === startRow ? fromLeft ? j : per - 1 - j : per + (fromLeft ? per - 1 - j : j);
@@ -1211,7 +1211,8 @@
     <circle cx="${e[0]}" cy="${e[1]}" r="1.6" fill="#2b2f36"/>`
     ).join("")}`;
     const BLK = "#1b1e23", RED = "#a8453c";
-    for (let row = 0; row < rows; row++) for (let j = 0; j < per - 1; j++) cables += bar(row, j, mirrored(j) ? FRONT : BACK);
+    for (let row = 0; row < rows; row++)
+      for (let j = 0; j < per - 1; j++) cables += bar(row, j, mirrored(j) ? FRONT : BACK);
     const PERS = [0.93, -0.07, 0.075, 1];
     const bs = 0.75, K = bs / (270 / 490), bcx = 112, bcy = H / 2, bt = (px, py) => [bcx - (px - 80) * bs, bcy - (py - 245) * bs];
     const cellSide = [bt(17.5, 191.5), bt(17.5, 225)], outSide = [bt(123.5, 185), bt(123.5, 224)], led = [bt(35, 147.5), bt(70, 147.5), bt(105, 147.5)], hb = bt(120, 22);
@@ -1284,6 +1285,7 @@
     <text x="${pt[0] - 4}" y="${pt[1] - 13}" font-size="16" font-weight="700" fill="${plus ? "#b5594f" : "var(--dim)"}">${plus ? "+" : "\u2212"}</text>`;
     const lcd = bt(146, 333), dsc = (l, x, y, fs, fill, extra = "") => `<text x="${x}" y="${y}" font-size="${fs}" fill="${fill}" ${extra}>${l}</text>`, dt = (key, suf, x, y, fs, fill, extra = "") => dsc(tt(key) + suf, x, y, fs, fill, `data-tr="${key}|${suf}" ${extra}`), GR = "#5cf08a", WT = "#e6ece8";
     const dv = (k, x, y, fs, anchor = "start") => `<text data-d="${k}" x="${x}" y="${y}" font-size="${fs}" font-weight="700" fill="${GR}" text-anchor="${anchor}">\u2013</text>`;
+    const row2 = (key, vk, x, xe2, y, mw, vfs = 14, lfs = 12) => dt(key, ":", x, y, lfs, WT, `data-mw="${mw}" data-fs="${lfs}"`) + dv(vk, xe2, y, vfs, "end");
     const tab = (c, key, dark, go) => `<polygon points="${c - 52},221 ${c + 52},221 ${c + 44},238.6 ${c - 44},238.6" fill="${dark ? "#03060a" : "#f2f4f5"}"/>${dt(key, "", c, 234.4, 11, dark ? "#fff" : "#111", 'font-weight="700" text-anchor="middle"')}${go ? `<polygon class="hit" data-go="${go}" points="${c - 52},221 ${c + 52},221 ${c + 44},238.6 ${c - 44},238.6" fill="#000" fill-opacity="0"/>` : ""}`;
     const outline = "M4 4 H429 V221 H" + [355, 216, 76].map((c) => `${c + 52} L${c + 44} 238.6 H${c - 44} L${c - 52} 221`).join(" H") + " H4 Z";
     const ico = (cx, ch2) => `<circle cx="${cx}" cy="46" r="10" fill="none" stroke="${GR}" stroke-width="2"/>${dsc(ch2, cx, 50.5, 12, GR, 'text-anchor="middle" font-weight="700"')}`;
@@ -1311,14 +1313,25 @@
     <g class="batg">
       <rect class="bo bcap" x="42" y="152" width="16" height="5" rx="1" fill="#e0302f"/>
       <rect class="bo" x="28" y="156" width="44" height="76" rx="5" fill="none" stroke="#e0302f" stroke-width="2.2"/>${[0, 1, 2, 3, 4].map((k) => `<rect class="bb" x="33" y="${(215.8 - 13.4 * k).toFixed(1)}" width="34" height="10" fill="#2a0d0d"/>`).join("")}</g>
-    <rect x="105" y="34" width="318" height="62" rx="8" fill="none" stroke="#8d9aa3" stroke-width="1"/>${gic(52, "\u25D4")}${dt("scr_voldiff", ":", 133, 56, 11, cl)}${dv("vd", 177, 56, 12.5)}${dt("scr_chg", ":", 250, 56, 11, cl)}${dv("chg2", 279, 56, 12)}${dt("scr_temp", ":", 340, 56, 11, cl)}${dv("tp2", 372, 56, 12)}
-    ${gic(78, "A")}${dt("scr_cur", ":", 133, 82, 11, cl)}${dv("a2", 160, 82, 12.5)}${dt("scr_dch", ":", 250, 82, 11, cl)}${dv("dch2", 279, 82, 12)}${dt("scr_alarm", ":", 340, 82, 11, cl)}${dv("alm2", 376, 82, 11)}
-    <rect x="105" y="108" width="318" height="128" rx="8" fill="none" stroke="#8d9aa3" stroke-width="1"/>
-    <rect x="226" y="102" width="76" height="12" fill="#03060a"/>${dt("scr_cellsv", "", 264, 112, 10.5, cl, 'text-anchor="middle"')}
-    ${Array.from({ length: n }, (_, k) => {
-      const x = 115 + k % 4 * 78, y = 135 + Math.floor(k / 4) * 26;
-      return `${dsc(k + 1, x + 15, y, 11, cl, 'text-anchor="end"')}${dv("cv" + k, x + 21, y, 12.5)}`;
-    }).join("")}`;
+    ${(() => {
+      const three = nt > 0, ry = three ? [49, 71, 93] : [56, 82], by = three ? 30 : 34, bh = three ? 76 : 62, cy0 = three ? 114 : 108, ch0 = three ? 124 : 128, g0 = three ? 140 : 135, gp = three ? 24 : 26, p2 = (key, vk, x, xe2, y, mw, vfs = 12) => dt(key, ":", x, y, 11, cl, `data-mw="${mw}" data-fs="11"`) + dv(vk, xe2, y, vfs, "end");
+      let o = `<rect x="105" y="${by}" width="318" height="${bh}" rx="8" fill="none" stroke="#8d9aa3" stroke-width="1"/>`;
+      o += gic(ry[0] - 4, "\u25D4") + p2("scr_voldiff", "vd", 133, 238, ry[0], 57, 12.5) + p2("scr_chg", "chg2", 250, 326, ry[0], 46) + p2("scr_temp", "tp2", 334, 419, ry[0], 43);
+      o += gic(ry[1] - 4, "A") + p2("scr_cur", "a2", 133, 238, ry[1], 57, 12.5) + p2("scr_dch", "dch2", 250, 326, ry[1], 46) + p2("scr_alarm", "alm2", 334, 419, ry[1], 43, 11);
+      if (three) {
+        o += gic(ry[2] - 4, "T");
+        const sw = 286 / nt;
+        for (let i = 0; i < nt; i++)
+          o += dsc("T" + (i + 1), 133 + i * sw, ry[2], 11, cl) + dv("ts" + i, 133 + (i + 1) * sw - 12, ry[2], 11.5, "end");
+      }
+      o += `<rect x="105" y="${cy0}" width="318" height="${ch0}" rx="8" fill="none" stroke="#8d9aa3" stroke-width="1"/>`;
+      o += `<rect x="226" y="${cy0 - 6}" width="76" height="12" fill="#03060a"/>` + dt("scr_cellsv", "", 264, cy0 + 4, 10.5, cl, 'text-anchor="middle"');
+      o += Array.from({ length: n }, (_, k) => {
+        const x = 115 + k % 4 * 78, y = g0 + Math.floor(k / 4) * gp;
+        return dsc(k + 1, x + 15, y, 11, cl, 'text-anchor="end"') + dv("cv" + k, x + 21, y, 12.5);
+      }).join("");
+      return o;
+    })()}`;
     const dsp = `<g class="dsp" data-d="dsp" transform="translate(-246 44) scale(.4)">
     <title>${tt("screen_tip")}</title><clipPath id="dc${id}">
       <rect x="1.5" y="1.5" width="607" height="420" rx="34.5"/>
@@ -1329,7 +1342,7 @@
     <g class="pg pg-group">
       <path d="${outline}" fill="#03060a" stroke="#8d9aa3" stroke-width="1.3" stroke-linejoin="round"/>
       <image href="${LOGO}" x="6" y="9" width="38" height="22"/>${dsc("\u6781\u7A7A", 50, 26, 17, "#f2f6fa", 'font-weight="700"')}${dsc("JIKONG", 51, 33, 5.4, "#9fd2f2", 'letter-spacing="1.4"')}${[0, 1, 2, 3].map((k) => `<path class="chv chv${k}" d="M${201 + k * 12} 11 L${207 + k * 12} 17.5 L${201 + k * 12} 24"/>`).join("")}${dt("scr_language", " \u25BE", 352, 21, 12, "#fff")}<rect class="hit" data-go="lang" x="338" y="4" width="92" height="24" fill="#000" fill-opacity="0"/>
-    ${ico(49, "V")}${dt("scr_vtg", ":", 66, 53, 15, WT)}${dv("v", 111, 53, 22)}${ico(266, "A")}${dt("scr_cur", ":", 283, 53, 15, WT)}${dv("a", 327, 53, 22)}
+    ${ico(49, "V")}${dt("scr_vtg", ":", 66, 53, 15, WT, 'data-mw="64" data-fs="15"')}${dv("v", 135, 53, 22)}${ico(266, "A")}${dt("scr_cur", ":", 283, 53, 15, WT, 'data-mw="55" data-fs="15"')}${dv("a", 343, 53, 22)}
     <circle cx="87" cy="114" r="47" fill="none" stroke="#4ee07e" stroke-width="1.6"/>
     <circle cx="87" cy="114" r="39" fill="none" stroke="#1d3a2a" stroke-width="11"/>
     <circle class="rng" cx="87" cy="114" r="39" fill="none" stroke="#4ee07e" stroke-width="11" stroke-dasharray="0 245" transform="rotate(-90 87 114)"/>
@@ -1340,10 +1353,10 @@
     <circle cx="87" cy="114" r="31" fill="none" stroke="#4ee07e" stroke-width="1.6"/>
     <text data-d="soc" x="87" y="121" font-size="20" font-weight="700" fill="#fff" text-anchor="middle">\u2013</text>
     ${dv("cap", 235, 115, 25, "middle")}${dt("scr_batcap", "", 235, 131, 9.5, WT, 'text-anchor="middle"')}${dv("rem", 363, 115, 25, "middle")}${dt("scr_remcap", "", 363, 131, 9.5, WT, 'text-anchor="middle"')}
-    ${dt("scr_maxcell", ":", 13, 189, 12, WT)}${dv("mx", 79, 189, 14)}${dt("scr_mincell", ":", 13, 211, 12, WT)}${dv("mn", 79, 211, 14)}
-    ${dt("scr_temp", ":", 150, 189, 12, WT)}${dv("tp", 193, 189, 14)}${dt("scr_pwr", ":", 150, 211, 12, WT)}${dv("pw", 219, 211, 14)}
-    ${dt("scr_alarm", ":", 266, 189, 12, WT)}${dv("alm", 316, 189, 12)}${dt("scr_packs", ":", 266, 211, 12, WT)}${dv("np", 308, 211, 14)}
-    ${dt("scr_chg", ":", 364, 189, 12, WT)}${dv("chg", 396, 189, 13)}${dt("scr_dch", ":", 364, 211, 12, WT)}${dv("dch", 396, 211, 13)}${tab(76, "scr_tab_group", true)}${tab(216, "scr_tab_packs", false, "packs")}${tab(355, "scr_tab_setting", false)}</g>
+    ${row2("scr_maxcell", "mx", 13, 135, 189, 72)}${row2("scr_mincell", "mn", 13, 135, 211, 72)}
+    ${row2("scr_temp", "tp", 150, 256, 189, 60)}${row2("scr_pwr", "pw", 150, 256, 211, 60)}
+    ${row2("scr_alarm", "alm", 262, 354, 189, 44, 11)}${row2("scr_packs", "np", 262, 354, 211, 44)}
+    ${row2("scr_chg", "chg", 360, 424, 189, 36)}${row2("scr_dch", "dch", 360, 424, 211, 36)}${tab(76, "scr_tab_group", true)}${tab(216, "scr_tab_packs", false, "packs")}${tab(355, "scr_tab_setting", false)}</g>
     <g class="pg pg-packs">${packsPage}</g>
     <g class="pg pg-cells">${cellsPage}</g>
     </g>
@@ -3984,6 +3997,16 @@
       ...bs.map((_, i) => i).filter((i) => i !== mi).sort((a, b) => (bs[a].slave || 999) - (bs[b].slave || 999) || a - b)
     ];
   }
+  var measure = null;
+  var fitLabel = (el) => {
+    const mw = +el.getAttribute("data-mw");
+    if (!mw) return;
+    const fs = +el.getAttribute("data-fs") || 12;
+    measure = measure || document.createElement("canvas").getContext("2d");
+    measure.font = `${fs}px Roboto, Arial, sans-serif`;
+    const w = measure.measureText(el.textContent).width;
+    el.setAttribute("font-size", w > mw ? Math.max(fs * 0.6, fs * mw / w).toFixed(2) : String(fs));
+  };
 
   // src/victron.js
   var VIC_TILES = [
@@ -4310,6 +4333,7 @@
         const [k, suf] = el.getAttribute("data-tr").split("|");
         const t = tt(k) + (suf || "");
         if (el.textContent !== t) el.textContent = t;
+        fitLabel(el);
       });
     }
     _afterClose() {
@@ -4564,11 +4588,12 @@
           if (el && !el.dataset.m) el.dataset.m = this._id(bcfg, key, dom);
         };
         {
-          const s0 = q("bccells") || (this._pp && this._pp.i === i ? this._pp.strip : null), sg0 = n + "/" + (grp ? grp.order.length : 1) + "/" + lay + "/" + rw;
+          const s0 = q("bccells") || (this._pp && this._pp.i === i ? this._pp.strip : null), sg0 = n + "/" + (grp ? grp.order.length : 1) + "/" + lay + "/" + rw + "/" + this._tOf(bcfg);
           if (s0 && s0._n !== sg0) {
             s0._n = sg0;
-            s0.innerHTML = packSvg(n, i, grp ? grp.order.length : 1, lay, rw) + packOverlay(!!grp, bcfg.name || bcfg.entity_base);
+            s0.innerHTML = packSvg(n, i, grp ? grp.order.length : 1, lay, rw, this._tOf(bcfg)) + packOverlay(!!grp, bcfg.name || bcfg.entity_base);
             this._elInit(s0);
+            s0.querySelectorAll("[data-mw]").forEach(fitLabel);
             s0.addEventListener("click", (e) => {
               if (e.target.closest(".dsp")) {
                 if (e.target.closest(".pwr")) this._toggleDisp(i);
@@ -4614,11 +4639,12 @@
         setH(q("bcd"), fmt(dmv, 0) + "<small>mV</small>");
         q("bcd").style.color = dmv < 15 ? "var(--grn)" : dmv < 45 ? "var(--gold)" : "var(--red)";
         const strip = q("bccells") || (this._pp && this._pp.i === i ? this._pp.strip : null), st = b.state === "offline" ? "idle" : b.state;
-        const sig = n + "/" + (grp ? grp.order.length : 1) + "/" + lay + "/" + rw;
+        const sig = n + "/" + (grp ? grp.order.length : 1) + "/" + lay + "/" + rw + "/" + this._tOf(bcfg);
         if (strip._n !== sig) {
           strip._n = sig;
-          strip.innerHTML = packSvg(n, i, grp ? grp.order.length : 1, lay, rw) + packOverlay(!!grp, bcfg.name || bcfg.entity_base);
+          strip.innerHTML = packSvg(n, i, grp ? grp.order.length : 1, lay, rw, this._tOf(bcfg)) + packOverlay(!!grp, bcfg.name || bcfg.entity_base);
           this._elInit(strip);
+          strip.querySelectorAll("[data-mw]").forEach(fitLabel);
           strip.addEventListener("click", (e) => {
             if (e.target.closest(".dsp")) {
               if (e.target.closest(".pwr")) this._toggleDisp(i);
@@ -4710,7 +4736,8 @@
           T("pct2", fmt(b.soc, 0) + "%");
           T("vd", fmt(b.mx - b.mn, 3) + "V");
           T("a2", fmt(b.I, 1) + "A");
-          T("tp2", isNaN(b.mos) ? "\u2013" : String(Math.round(b.mos)));
+          T("tp2", isNaN(b.mos) ? "\u2013" : Math.round(b.mos) + " \xB0C");
+          b.temps.forEach((t, k) => T("ts" + k, isNaN(t) ? "\u2013" : fmt(t, 1) + "\xB0C"));
           T("alm2", b.err ? tt("scr_alarmv") : tt("scr_normal"), b.err ? "#ff4d4d" : GRN);
           T("chg2", b.sw.charging ? tt("scr_on") : tt("scr_off"), b.sw.charging ? GRN : "#e0705f");
           T("dch2", b.sw.discharging ? tt("scr_on") : tt("scr_off"), b.sw.discharging ? GRN : "#e0705f");

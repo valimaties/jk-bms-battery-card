@@ -44,3 +44,15 @@ export function grpOrder(bs, mi) {
       .sort((a, b) => (bs[a].slave || 999) - (bs[b].slave || 999) || a - b),
   ];
 }
+
+// a label of the BMS screen shrinks (down to 60 %) when its translation is wider than the room before its value
+let measure = null;
+export const fitLabel = (el) => {
+  const mw = +el.getAttribute("data-mw");
+  if (!mw) return;
+  const fs = +el.getAttribute("data-fs") || 12;
+  measure = measure || document.createElement("canvas").getContext("2d");
+  measure.font = `${fs}px Roboto, Arial, sans-serif`;
+  const w = measure.measureText(el.textContent).width;
+  el.setAttribute("font-size", w > mw ? Math.max(fs * 0.6, (fs * mw) / w).toFixed(2) : String(fs));
+};
