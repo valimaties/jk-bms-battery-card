@@ -80,6 +80,7 @@ batteries:
 | `batteries[].role` | – | `master` for one battery, `slave` for the others: one card with a pack selector |
 | `view` | `full` | `full` (the whole card) or `screen` (only the JK display: no BMS, cells, numbers or texts) |
 | `view_page` | `group` | With `view: screen`: `group` (main screen) or `cells` (screen with the cell voltages). Add the card twice to show both |
+| `button_all_pages` | `true` | `false` draws the round display button only on the main page of the screen (not on the cells page) |
 | `glare` | `true` | Light reflection on the BMS screen |
 | `language` | `auto` | `auto` (Home Assistant language) or `en` `fr` `de` `it` `es` `ro` |
 | `performance` | `auto` | `auto` (light on touch / weak devices), `full`, `lite` |

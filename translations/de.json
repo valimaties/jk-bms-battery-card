@@ -131,6 +131,7 @@
   "ek_charge_status": "Ladestatus",
   "ek_operation_status": "Betriebsstatus",
   "lbl_glare": "Lichtreflexion auf dem BMS-Display",
+  "lbl_btnall": "Runden Display-Knopf auf allen Seiten des Bildschirms zeigen (sonst nur auf der Hauptseite)",
   "ed_advanced": "Erweiterte Einstellungen",
   "lbl_language": "Sprache",
   "lang_auto": "Automatisch (Home Assistant)",

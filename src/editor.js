@@ -586,11 +586,18 @@ export class JkBatteryCardEditor extends HTMLElement {
         <option value="lite">${tt("perf_lite")}</option>
       </select>
     </label>
-    <label class="chk"><input class="f-glare" type="checkbox"> ${tt("lbl_glare")}</label>`;
+    <label class="chk"><input class="f-glare" type="checkbox"> ${tt("lbl_glare")}</label>
+    <label class="chk"><input class="f-btnall" type="checkbox"> ${tt("lbl_btnall")}</label>`;
     const q2 = (k) => slot.querySelector(k);
     q2(".f-title").value = c0.title || "";
     q2(".f-lang").value = c0.language || "auto";
     q2(".f-glare").checked = c0.glare !== false;
+    q2(".f-btnall").checked = c0.button_all_pages !== false;
+    q2(".f-btnall").onchange = (ev) => {
+      if (ev.target.checked) delete this._config.button_all_pages;
+      else this._config.button_all_pages = false;
+      this._emit();
+    };
     q2(".f-perf").value = c0.performance || "auto";
     q2(".f-view").value = c0.view === "screen" ? "screen" : "full";
     q2(".f-view").onchange = (e) => {

@@ -264,6 +264,7 @@ export class JkBatteryCard extends HTMLElement {
     this._closeDisp();
     this._closePack(true);
     this.classList.toggle("noglare", c.glare === false);
+    this.classList.toggle("btnmain", c.button_all_pages === false);
     this.classList.toggle("lite", this._isLite());
     this._dsig = null;
 
@@ -889,18 +890,23 @@ export class JkBatteryCard extends HTMLElement {
             [a, z] = I < -0.005 ? [rec, don] : [don, rec];
           let d = "";
           if (on) {
-            // the line runs in the free bands between the texts: it never crosses a number
+            // the line runs in the free bands between the texts: it never crosses a number and never doubles back
             const ra = Math.floor(a / 4),
               rb = Math.floor(z / 4),
               xa = cx(a),
-              xb = cx(z);
-            if (ra === rb) d = `M${xa} ${ty(a) + 3} V${gy(ra)} H${xb} V${ty(z) + 3}`;
+              xb = cx(z),
+              down = ra < rb,
+              y0 = down || ra === rb ? ty(a) + 3 : ty(a) - 10, // leaves the cell by its bottom / top edge
+              y1 = down ? ty(z) - 10 : ty(z) + 3, // and arrives at the facing edge of the other one
+              bandA = down || ra === rb ? gy(ra) : gy(ra - 1),
+              bandB = ra === rb ? gy(ra) : down ? gy(rb - 1) : gy(rb);
+            if (bandA === bandB) d = `M${xa} ${y0} V${bandA} H${xb} V${y1}`;
             else {
-              const xv = [116, 190, 268, 346].reduce((p, q) => (Math.abs(q - xa) < Math.abs(p - xa) ? q : p));
-              d =
-                ra < rb
-                  ? `M${xa} ${ty(a) + 3} V${gy(ra)} H${xv} V${gy(rb - 1)} H${xb} V${ty(z) - 10}`
-                  : `M${xa} ${ty(a) - 10} V${gy(ra - 1)} H${xv} V${gy(rb)} H${xb} V${ty(z) + 3}`;
+              // rows further apart: go down a vertical lane between two columns (the one with the smallest detour)
+              const xv = [116, 190, 268, 346].reduce((p, q) =>
+                Math.abs(q - xa) + Math.abs(q - xb) < Math.abs(p - xa) + Math.abs(p - xb) ? q : p,
+              );
+              d = `M${xa} ${y0} V${bandA} H${xv} V${bandB} H${xb} V${y1}`;
             }
           }
           const sign = I > 0.005 ? "pos" : I < -0.005 ? "neg" : "unk";
@@ -1015,6 +1021,9 @@ export class JkBatteryCard extends HTMLElement {
           if (e.target.closest(".pwr")) this._toggleDisp(ci);
         });
       }
+      const nm = strip.querySelector(".scrname");
+      if (nm && nm.textContent !== (bcfg.name || bcfg.entity_base || ""))
+        nm.textContent = bcfg.name || bcfg.entity_base || "";
       const dsp = strip.querySelector(".dsp"),
         okV = b.cells.filter((x) => !isNaN(x)),
         vmax = Math.max(...okV),

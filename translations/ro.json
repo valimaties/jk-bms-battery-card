@@ -131,6 +131,7 @@
   "ek_charge_status": "Stare încărcare",
   "ek_operation_status": "Stare funcționare",
   "lbl_glare": "Reflexia de lumină pe ecranul BMS",
+  "lbl_btnall": "Arată butonul rotund al display-ului pe toate paginile ecranului (altfel doar pe pagina principală)",
   "ed_advanced": "Setări avansate",
   "lbl_language": "Limbă",
   "lang_auto": "Automat (Home Assistant)",

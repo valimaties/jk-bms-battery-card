@@ -131,6 +131,7 @@
   "ek_charge_status": "Stato di carica (stato)",
   "ek_operation_status": "Stato di funzionamento",
   "lbl_glare": "Riflesso di luce sullo schermo BMS",
+  "lbl_btnall": "Mostra il pulsante rotondo dello schermo in tutte le pagine (altrimenti solo nella principale)",
   "ed_advanced": "Impostazioni avanzate",
   "lbl_language": "Lingua",
   "lang_auto": "Automatica (Home Assistant)",

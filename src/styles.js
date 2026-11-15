@@ -2365,6 +2365,10 @@ export const CSS = `
     color: var(--txt);
     font: inherit;
   }
+  :host(.btnmain) .pk2 .dsp[data-pg="cells"] .pwr,
+  :host(.btnmain) .pk2 .dsp[data-pg="packs"] .pwr {
+    display: none;
+  }
   .dpopbk {
     position: fixed;
     inset: 0;

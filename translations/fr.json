@@ -131,6 +131,7 @@
   "ek_charge_status": "État de charge (statut)",
   "ek_operation_status": "État de fonctionnement",
   "lbl_glare": "Reflet de lumière sur l'écran BMS",
+  "lbl_btnall": "Afficher le bouton rond de l'écran sur toutes les pages (sinon seulement sur la page principale)",
   "ed_advanced": "Réglages avancés",
   "lbl_language": "Langue",
   "lang_auto": "Automatique (Home Assistant)",

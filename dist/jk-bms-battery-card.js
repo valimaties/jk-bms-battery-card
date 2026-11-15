@@ -139,6 +139,7 @@
     ek_charge_status: "Ladestatus",
     ek_operation_status: "Betriebsstatus",
     lbl_glare: "Lichtreflexion auf dem BMS-Display",
+    lbl_btnall: "Runden Display-Knopf auf allen Seiten des Bildschirms zeigen (sonst nur auf der Hauptseite)",
     ed_advanced: "Erweiterte Einstellungen",
     lbl_language: "Sprache",
     lang_auto: "Automatisch (Home Assistant)",
@@ -318,6 +319,7 @@
     ek_charge_status: "Charge status",
     ek_operation_status: "Operation status",
     lbl_glare: "Light reflection on the BMS screen",
+    lbl_btnall: "Show the round display button on every page of the screen (otherwise only on the main page)",
     ed_advanced: "Advanced settings",
     lbl_language: "Language",
     lang_auto: "Automatic (Home Assistant)",
@@ -497,6 +499,7 @@
     ek_charge_status: "Estado de carga (estado)",
     ek_operation_status: "Estado de funcionamiento",
     lbl_glare: "Reflejo de luz en la pantalla BMS",
+    lbl_btnall: "Mostrar el bot\xF3n redondo de la pantalla en todas las p\xE1ginas (si no, solo en la principal)",
     ed_advanced: "Ajustes avanzados",
     lbl_language: "Idioma",
     lang_auto: "Autom\xE1tico (Home Assistant)",
@@ -676,6 +679,7 @@
     ek_charge_status: "\xC9tat de charge (statut)",
     ek_operation_status: "\xC9tat de fonctionnement",
     lbl_glare: "Reflet de lumi\xE8re sur l'\xE9cran BMS",
+    lbl_btnall: "Afficher le bouton rond de l'\xE9cran sur toutes les pages (sinon seulement sur la page principale)",
     ed_advanced: "R\xE9glages avanc\xE9s",
     lbl_language: "Langue",
     lang_auto: "Automatique (Home Assistant)",
@@ -855,6 +859,7 @@
     ek_charge_status: "Stato di carica (stato)",
     ek_operation_status: "Stato di funzionamento",
     lbl_glare: "Riflesso di luce sullo schermo BMS",
+    lbl_btnall: "Mostra il pulsante rotondo dello schermo in tutte le pagine (altrimenti solo nella principale)",
     ed_advanced: "Impostazioni avanzate",
     lbl_language: "Lingua",
     lang_auto: "Automatica (Home Assistant)",
@@ -1034,6 +1039,7 @@
     ek_charge_status: "Stare \xEEnc\u0103rcare",
     ek_operation_status: "Stare func\u021Bionare",
     lbl_glare: "Reflexia de lumin\u0103 pe ecranul BMS",
+    lbl_btnall: "Arat\u0103 butonul rotund al display-ului pe toate paginile ecranului (altfel doar pe pagina principal\u0103)",
     ed_advanced: "Set\u0103ri avansate",
     lbl_language: "Limb\u0103",
     lang_auto: "Automat (Home Assistant)",
@@ -1455,7 +1461,7 @@
     <stop offset="1" stop-color="#fff" stop-opacity=".005"/>
   </linearGradient>`;
     if (screenOnly)
-      return `<svg class="dpsvg" viewBox="0 0 610 423"><defs>${gg}</defs>${dsp.replace(' transform="translate(-246 44) scale(.4)"', "")}</svg>`;
+      return `<svg class="dpsvg" viewBox="0 0 610 423"><defs>${gg}</defs>${dsp.replace(' transform="translate(-246 44) scale(.4)"', "")}<text class="scrname" x="305" y="62" text-anchor="middle" font-size="24" letter-spacing="1.2" fill="#69727d" font-family="Roboto,Arial,sans-serif"></text></svg>`;
     const defs = gg + `<filter id="sh${id}" x="-20%" y="-20%" width="140%" height="140%">
     <feGaussianBlur stdDeviation="5"/>
   </filter><filter id="zg${id}" x="-30%" y="-80%" width="160%" height="260%">
@@ -3839,6 +3845,10 @@
     color: var(--txt);
     font: inherit;
   }
+  :host(.btnmain) .pk2 .dsp[data-pg="cells"] .pwr,
+  :host(.btnmain) .pk2 .dsp[data-pg="packs"] .pwr {
+    display: none;
+  }
   .dpopbk {
     position: fixed;
     inset: 0;
@@ -4510,6 +4520,7 @@
       this._closeDisp();
       this._closePack(true);
       this.classList.toggle("noglare", c.glare === false);
+      this.classList.toggle("btnmain", c.button_all_pages === false);
       this.classList.toggle("lite", this._isLite());
       this._dsig = null;
       clearTimeout(this._tm);
@@ -4970,11 +4981,13 @@
             const g0 = +ln.dataset.g0, gp = +ln.dataset.gp, cx = (k) => 115 + k % 4 * 78 + 44, ty = (k) => g0 + Math.floor(k / 4) * gp, gy = (r) => g0 + r * gp + gp / 2 - 3, [a, z] = I < -5e-3 ? [rec, don] : [don, rec];
             let d = "";
             if (on) {
-              const ra = Math.floor(a / 4), rb = Math.floor(z / 4), xa = cx(a), xb = cx(z);
-              if (ra === rb) d = `M${xa} ${ty(a) + 3} V${gy(ra)} H${xb} V${ty(z) + 3}`;
+              const ra = Math.floor(a / 4), rb = Math.floor(z / 4), xa = cx(a), xb = cx(z), down = ra < rb, y0 = down || ra === rb ? ty(a) + 3 : ty(a) - 10, y1 = down ? ty(z) - 10 : ty(z) + 3, bandA = down || ra === rb ? gy(ra) : gy(ra - 1), bandB = ra === rb ? gy(ra) : down ? gy(rb - 1) : gy(rb);
+              if (bandA === bandB) d = `M${xa} ${y0} V${bandA} H${xb} V${y1}`;
               else {
-                const xv = [116, 190, 268, 346].reduce((p, q) => Math.abs(q - xa) < Math.abs(p - xa) ? q : p);
-                d = ra < rb ? `M${xa} ${ty(a) + 3} V${gy(ra)} H${xv} V${gy(rb - 1)} H${xb} V${ty(z) - 10}` : `M${xa} ${ty(a) - 10} V${gy(ra - 1)} H${xv} V${gy(rb)} H${xb} V${ty(z) + 3}`;
+                const xv = [116, 190, 268, 346].reduce(
+                  (p, q) => Math.abs(q - xa) + Math.abs(q - xb) < Math.abs(p - xa) + Math.abs(p - xb) ? q : p
+                );
+                d = `M${xa} ${y0} V${bandA} H${xv} V${bandB} H${xb} V${y1}`;
               }
             }
             const sign = I > 5e-3 ? "pos" : I < -5e-3 ? "neg" : "unk";
@@ -5069,6 +5082,9 @@
             if (e.target.closest(".pwr")) this._toggleDisp(ci);
           });
         }
+        const nm = strip.querySelector(".scrname");
+        if (nm && nm.textContent !== (bcfg.name || bcfg.entity_base || ""))
+          nm.textContent = bcfg.name || bcfg.entity_base || "";
         const dsp = strip.querySelector(".dsp"), okV = b.cells.filter((x) => !isNaN(x)), vmax = Math.max(...okV), vmin = Math.min(...okV), sIdx = (x) => !isNaN(x) && x >= 1 && x <= b.cells.length ? x - 1 : -1, imx = sIdx(b.mxI) >= 0 ? sIdx(b.mxI) : vmax > vmin ? b.cells.indexOf(vmax) : -1, imn = sIdx(b.mnI) >= 0 ? sIdx(b.mnI) : vmax > vmin ? b.cells.indexOf(vmin) : -1;
         let don = -1, rec = -1;
         if (b.balMask) {
@@ -6217,11 +6233,18 @@
         <option value="lite">${tt("perf_lite")}</option>
       </select>
     </label>
-    <label class="chk"><input class="f-glare" type="checkbox"> ${tt("lbl_glare")}</label>`;
+    <label class="chk"><input class="f-glare" type="checkbox"> ${tt("lbl_glare")}</label>
+    <label class="chk"><input class="f-btnall" type="checkbox"> ${tt("lbl_btnall")}</label>`;
       const q2 = (k) => slot.querySelector(k);
       q2(".f-title").value = c0.title || "";
       q2(".f-lang").value = c0.language || "auto";
       q2(".f-glare").checked = c0.glare !== false;
+      q2(".f-btnall").checked = c0.button_all_pages !== false;
+      q2(".f-btnall").onchange = (ev) => {
+        if (ev.target.checked) delete this._config.button_all_pages;
+        else this._config.button_all_pages = false;
+        this._emit();
+      };
       q2(".f-perf").value = c0.performance || "auto";
       q2(".f-view").value = c0.view === "screen" ? "screen" : "full";
       q2(".f-view").onchange = (e) => {

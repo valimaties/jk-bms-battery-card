@@ -131,6 +131,7 @@
   "ek_charge_status": "Estado de carga (estado)",
   "ek_operation_status": "Estado de funcionamiento",
   "lbl_glare": "Reflejo de luz en la pantalla BMS",
+  "lbl_btnall": "Mostrar el botón redondo de la pantalla en todas las páginas (si no, solo en la principal)",
   "ed_advanced": "Ajustes avanzados",
   "lbl_language": "Idioma",
   "lang_auto": "Automático (Home Assistant)",

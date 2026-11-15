@@ -499,7 +499,7 @@ export function packSvg(n, id, np = 1, layout = "top-left", rows = 2, nt = 0, sc
     <stop offset="1" stop-color="#fff" stop-opacity=".005"/>
   </linearGradient>`;
   if (screenOnly)
-    return `<svg class="dpsvg" viewBox="0 0 610 423"><defs>${gg}</defs>${dsp.replace(' transform="translate(-246 44) scale(.4)"', "")}</svg>`;
+    return `<svg class="dpsvg" viewBox="0 0 610 423"><defs>${gg}</defs>${dsp.replace(' transform="translate(-246 44) scale(.4)"', "")}<text class="scrname" x="305" y="62" text-anchor="middle" font-size="24" letter-spacing="1.2" fill="#69727d" font-family="Roboto,Arial,sans-serif"></text></svg>`;
   const defs =
     gg +
     `<filter id="sh${id}" x="-20%" y="-20%" width="140%" height="140%">
