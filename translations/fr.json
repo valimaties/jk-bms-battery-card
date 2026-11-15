@@ -159,6 +159,7 @@
   "scr_st_cells": "Cellules",
   "scr_st_rows": "Disposition des cellules",
   "scr_st_btn": "Bouton sur toutes les pages",
+  "scr_st_cells2": "Écran des cellules dessous",
   "scr_st_save": "Enregistrer dans le tableau de bord",
   "scr_st_confirm": "Confirmer l'enregistrement",
   "scr_st_saving": "Enregistrement…",
@@ -192,5 +193,6 @@
   "view_screen": "Écran JK seulement",
   "lbl_vpage": "Page de l'écran",
   "vpage_group": "Écran principal",
-  "vpage_cells": "Écran des cellules"
+  "vpage_cells": "Écran des cellules",
+  "lbl_scells": "Écran des cellules sous l'écran principal (la page PACKS est alors désactivée)"
 }

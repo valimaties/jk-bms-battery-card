@@ -883,8 +883,8 @@ export class JkBatteryCard extends HTMLElement {
       T("tp2", isNaN(b.mos) ? "–" : Math.round(b.mos) + " °C");
       b.temps.forEach((t, k) => T("ts" + k, isNaN(t) ? "–" : fmt(t, 1) + "°C"));
       {
-        // balancing current: positive = the LOWEST cell receives energy (from the pack, drawn from the battery icon), red;
-        // negative = the HIGHEST cell gives energy to the lowest one, blue. The cell that is charged / discharged is marked.
+        // balancing current: positive = the LOWEST cell receives energy (red), negative = the HIGHEST cell gives energy away (blue);
+        // the line always joins the two cells, the cell that is charged / discharged is outlined and filled by a moving band
         const I = b.balI,
           on = don >= 0 && rec >= 0,
           pos = I > 0.005,
@@ -899,12 +899,8 @@ export class JkBatteryCard extends HTMLElement {
             ty = (k) => g0 + Math.floor(k / 4) * gp, // baseline of the voltage text
             gy = (r) => g0 + r * gp + gp / 2 - 3; // the free band under row r
           let d = "";
-          if (on && pos) {
-            // from the battery icon, along the lane on the left, to the top of the lowest cell
-            const rz = Math.floor(rec / 4);
-            d = `M74 194 H116 V${rz > 0 ? gy(rz - 1) : gy(-1)} H${cx(rec)} V${ty(rec) - 10}`;
-          } else if (on) {
-            // highest cell -> lowest cell (the same line when the sign is not known)
+          if (on) {
+            // between the highest and the lowest cell (the highlighted cell tells which one gives and which one receives)
             // the line runs in the free bands between the texts: it never crosses a number and never doubles back
             const a = don,
               z = rec,
@@ -988,7 +984,7 @@ export class JkBatteryCard extends HTMLElement {
       .map(
         () => `<div class="scrbox">
         ${grp ? `<select class="pksel scrsel" data-k="pksel" title="${tt("pick_battery")}"></select>` : ""}
-        <div class="pk2 scrmini" data-k="bccells"></div></div>`,
+        <div class="pk2 scrmini" data-k="bccells"></div>${c.screen_cells ? '<div class="pk2 scrmini scrmini2"></div>' : ""}</div>`,
       )
       .join("")}</ha-card>`;
     if (!root._mc) {
@@ -1011,7 +1007,8 @@ export class JkBatteryCard extends HTMLElement {
   }
   _updScreens(d) {
     const r = this.shadowRoot,
-      grp = (this._grp = this._groupInfo());
+      grp = (this._grp = this._groupInfo()),
+      two = !!this._cfg.screen_cells; // the cells screen under the main one: then there is no PACKS page
     if (grp) this._sel = Math.min(this._sel || 0, grp.order.length - 1);
     const view = grp
       ? [{ b: d.bats[grp.order[this._sel || 0]], ci: grp.order[this._sel || 0] }]
@@ -1026,9 +1023,7 @@ export class JkBatteryCard extends HTMLElement {
             )
           : b,
         bcfg = this._cfg.batteries[ci],
-        n = this._nOf(bcfg),
-        strip = box.querySelector(".scrmini"),
-        sg = n + "/" + (grp ? grp.order.length : 1) + "/" + this._tOf(bcfg) + "/" + this._cfg.view_page;
+        n = this._nOf(bcfg);
       const sl = box.querySelector(".pksel");
       if (grp && sl) {
         const html2 = grp.order
@@ -1040,35 +1035,7 @@ export class JkBatteryCard extends HTMLElement {
         }
         sl.value = String(this._sel || 0);
       }
-      if (strip._n !== sg) {
-        strip._n = sg;
-        strip.innerHTML = packSvg(n, i, grp ? grp.order.length : 1, "top-left", 2, this._tOf(bcfg), true);
-        const svg = strip.querySelector("svg");
-        svg.querySelectorAll("title").forEach((t) => !t.closest(".pwr") && t.remove());
-        svg.querySelectorAll("clipPath rect, .dsp > rect:first-of-type").forEach((e) => {
-          e.setAttribute("rx", 15);
-          e.setAttribute("ry", 15);
-        });
-        const dsp0 = svg.querySelector(".dsp");
-        dsp0.setAttribute("data-pg", this._cfg.view_page === "cells" ? "cells" : "group");
-        svg.querySelectorAll("[data-mw]").forEach(fitLabel);
-        strip.addEventListener("click", (e) => {
-          if (e.target.closest(".pwr")) return this._toggleDisp(ci);
-          const go = e.target.closest("[data-go]");
-          if (!go || go.dataset.go === "lang") return;
-          if (go.dataset.pk !== undefined) {
-            this._sel = +go.dataset.pk;
-            this._vOff = false;
-            if (this._data) this._updSimple(this._data);
-          }
-          strip.querySelector(".dsp").setAttribute("data-pg", go.dataset.go);
-        });
-      }
-      const nm = strip.querySelector(".scrname");
-      if (nm && nm.textContent !== (bcfg.name || bcfg.entity_base || ""))
-        nm.textContent = bcfg.name || bcfg.entity_base || "";
-      const dsp = strip.querySelector(".dsp"),
-        okV = b.cells.filter((x) => !isNaN(x)),
+      const okV = b.cells.filter((x) => !isNaN(x)),
         vmax = Math.max(...okV),
         vmin = Math.min(...okV),
         sIdx = (x) => (!isNaN(x) && x >= 1 && x <= b.cells.length ? x - 1 : -1),
@@ -1081,7 +1048,41 @@ export class JkBatteryCard extends HTMLElement {
         rec = imn >= 0 ? imn : b.cells.indexOf(vmin);
       }
       if (don === rec) don = rec = -1;
-      this._paintScreen(dsp, { ci, b, G0, grp, imx, imn, don, rec });
+      [box.querySelector(".scrmini"), box.querySelector(".scrmini2")].forEach((strip, si) => {
+        if (!strip) return;
+        const page = si === 1 ? "cells" : two ? "group" : this._cfg.view_page === "cells" ? "cells" : "group",
+          sg = n + "/" + (grp ? grp.order.length : 1) + "/" + this._tOf(bcfg) + "/" + page + "/" + si + "/" + two;
+        if (strip._n !== sg) {
+          strip._n = sg;
+          strip.innerHTML = packSvg(n, i * 2 + si, grp ? grp.order.length : 1, "top-left", 2, this._tOf(bcfg), true);
+          const svg = strip.querySelector("svg");
+          svg.querySelectorAll("title").forEach((t) => !t.closest(".pwr") && t.remove());
+          svg.querySelectorAll("clipPath rect, .dsp > rect:first-of-type").forEach((e) => {
+            e.setAttribute("rx", 15);
+            e.setAttribute("ry", 15);
+          });
+          const dsp0 = svg.querySelector(".dsp");
+          dsp0.setAttribute("data-pg", page);
+          if (two) dsp0.classList.add("nopacks");
+          svg.querySelectorAll("[data-mw]").forEach(fitLabel);
+          strip.addEventListener("click", (e) => {
+            if (e.target.closest(".pwr")) return this._toggleDisp(ci);
+            const go = e.target.closest("[data-go]");
+            if (!go || go.dataset.go === "lang") return;
+            if (two && (go.dataset.go === "packs" || go.dataset.pk !== undefined)) return;
+            if (go.dataset.pk !== undefined) {
+              this._sel = +go.dataset.pk;
+              this._vOff = false;
+              if (this._data) this._updSimple(this._data);
+            }
+            strip.querySelector(".dsp").setAttribute("data-pg", go.dataset.go);
+          });
+        }
+        const nm = strip.querySelector(".scrname"),
+          label = si === 0 ? bcfg.name || bcfg.entity_base || "" : "";
+        if (nm && nm.textContent !== label) nm.textContent = label;
+        this._paintScreen(strip.querySelector(".dsp"), { ci, b, G0, grp, imx, imn, don, rec });
+      });
     });
     this._ringTick();
   }
@@ -1129,6 +1130,8 @@ export class JkBatteryCard extends HTMLElement {
     set("cells", cells);
     set("rows", v("rows", bc.rows === 1 ? 1 : 2));
     set("btn", v("btn", raw.button_all_pages !== false));
+    set("cells2", v("cells2", !!raw.screen_cells));
+    f.querySelector('[data-s-row="cells2"]').style.display = view === "screen" ? "" : "none";
     f.querySelector('[data-s-row="rows"]').style.display = cells === 8 && view !== "screen" ? "" : "none";
   }
   async _stgSave(btn) {
@@ -1164,6 +1167,11 @@ export class JkBatteryCard extends HTMLElement {
         delete next.view;
         delete next.view_page;
       }
+    }
+    if (next.view !== "screen") delete next.screen_cells;
+    else if ("cells2" in p) {
+      if (p.cells2) next.screen_cells = true;
+      else delete next.screen_cells;
     }
     if ("btn" in p) {
       if (p.btn) delete next.button_all_pages;

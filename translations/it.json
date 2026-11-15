@@ -159,6 +159,7 @@
   "scr_st_cells": "Celle",
   "scr_st_rows": "Disposizione delle celle",
   "scr_st_btn": "Pulsante su tutte le pagine",
+  "scr_st_cells2": "Schermata celle sotto",
   "scr_st_save": "Salva nella dashboard",
   "scr_st_confirm": "Conferma il salvataggio",
   "scr_st_saving": "Salvataggio…",
@@ -192,5 +193,6 @@
   "view_screen": "Solo schermo JK",
   "lbl_vpage": "Pagina dello schermo",
   "vpage_group": "Schermata principale",
-  "vpage_cells": "Schermata celle"
+  "vpage_cells": "Schermata celle",
+  "lbl_scells": "Schermata celle sotto la principale (la pagina PACKS viene disattivata)"
 }

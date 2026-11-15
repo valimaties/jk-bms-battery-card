@@ -159,6 +159,7 @@
   "scr_st_cells": "Zellen",
   "scr_st_rows": "Zellenanordnung",
   "scr_st_btn": "Knopf auf allen Seiten",
+  "scr_st_cells2": "Zellenbildschirm darunter",
   "scr_st_save": "Im Dashboard speichern",
   "scr_st_confirm": "Speichern bestätigen",
   "scr_st_saving": "Speichern…",
@@ -192,5 +193,6 @@
   "view_screen": "Nur JK-Bildschirm",
   "lbl_vpage": "Bildschirmseite",
   "vpage_group": "Hauptbildschirm",
-  "vpage_cells": "Zellenbildschirm"
+  "vpage_cells": "Zellenbildschirm",
+  "lbl_scells": "Zellenbildschirm unter dem Hauptbildschirm (die Seite PACKS ist dann aus)"
 }

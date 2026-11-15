@@ -167,6 +167,7 @@
     scr_st_cells: "Zellen",
     scr_st_rows: "Zellenanordnung",
     scr_st_btn: "Knopf auf allen Seiten",
+    scr_st_cells2: "Zellenbildschirm darunter",
     scr_st_save: "Im Dashboard speichern",
     scr_st_confirm: "Speichern best\xE4tigen",
     scr_st_saving: "Speichern\u2026",
@@ -200,7 +201,8 @@
     view_screen: "Nur JK-Bildschirm",
     lbl_vpage: "Bildschirmseite",
     vpage_group: "Hauptbildschirm",
-    vpage_cells: "Zellenbildschirm"
+    vpage_cells: "Zellenbildschirm",
+    lbl_scells: "Zellenbildschirm unter dem Hauptbildschirm (die Seite PACKS ist dann aus)"
   };
 
   // translations/en.json
@@ -365,6 +367,7 @@
     scr_st_cells: "Cells",
     scr_st_rows: "Cell layout",
     scr_st_btn: "Button on every page",
+    scr_st_cells2: "Cells screen below",
     scr_st_save: "Save to dashboard",
     scr_st_confirm: "Confirm save",
     scr_st_saving: "Saving\u2026",
@@ -398,7 +401,8 @@
     view_screen: "JK screen only",
     lbl_vpage: "Screen page",
     vpage_group: "Main screen",
-    vpage_cells: "Cells screen"
+    vpage_cells: "Cells screen",
+    lbl_scells: "Cells screen under the main screen (the PACKS page is then off)"
   };
 
   // translations/es.json
@@ -563,6 +567,7 @@
     scr_st_cells: "Celdas",
     scr_st_rows: "Disposici\xF3n de las celdas",
     scr_st_btn: "Bot\xF3n en todas las p\xE1ginas",
+    scr_st_cells2: "Pantalla de celdas debajo",
     scr_st_save: "Guardar en el panel",
     scr_st_confirm: "Confirmar guardado",
     scr_st_saving: "Guardando\u2026",
@@ -596,7 +601,8 @@
     view_screen: "Solo pantalla JK",
     lbl_vpage: "P\xE1gina de la pantalla",
     vpage_group: "Pantalla principal",
-    vpage_cells: "Pantalla de celdas"
+    vpage_cells: "Pantalla de celdas",
+    lbl_scells: "Pantalla de celdas bajo la principal (la p\xE1gina PACKS se desactiva)"
   };
 
   // translations/fr.json
@@ -761,6 +767,7 @@
     scr_st_cells: "Cellules",
     scr_st_rows: "Disposition des cellules",
     scr_st_btn: "Bouton sur toutes les pages",
+    scr_st_cells2: "\xC9cran des cellules dessous",
     scr_st_save: "Enregistrer dans le tableau de bord",
     scr_st_confirm: "Confirmer l'enregistrement",
     scr_st_saving: "Enregistrement\u2026",
@@ -794,7 +801,8 @@
     view_screen: "\xC9cran JK seulement",
     lbl_vpage: "Page de l'\xE9cran",
     vpage_group: "\xC9cran principal",
-    vpage_cells: "\xC9cran des cellules"
+    vpage_cells: "\xC9cran des cellules",
+    lbl_scells: "\xC9cran des cellules sous l'\xE9cran principal (la page PACKS est alors d\xE9sactiv\xE9e)"
   };
 
   // translations/it.json
@@ -959,6 +967,7 @@
     scr_st_cells: "Celle",
     scr_st_rows: "Disposizione delle celle",
     scr_st_btn: "Pulsante su tutte le pagine",
+    scr_st_cells2: "Schermata celle sotto",
     scr_st_save: "Salva nella dashboard",
     scr_st_confirm: "Conferma il salvataggio",
     scr_st_saving: "Salvataggio\u2026",
@@ -992,7 +1001,8 @@
     view_screen: "Solo schermo JK",
     lbl_vpage: "Pagina dello schermo",
     vpage_group: "Schermata principale",
-    vpage_cells: "Schermata celle"
+    vpage_cells: "Schermata celle",
+    lbl_scells: "Schermata celle sotto la principale (la pagina PACKS viene disattivata)"
   };
 
   // translations/ro.json
@@ -1157,6 +1167,7 @@
     scr_st_cells: "Celule",
     scr_st_rows: "Aranjarea celulelor",
     scr_st_btn: "Buton pe toate paginile",
+    scr_st_cells2: "Ecran cu celule dedesubt",
     scr_st_save: "Salveaz\u0103 \xEEn dashboard",
     scr_st_confirm: "Confirm\u0103 salvarea",
     scr_st_saving: "Se salveaz\u0103\u2026",
@@ -1190,7 +1201,8 @@
     view_screen: "Doar ecranul JK",
     lbl_vpage: "Pagina ecranului",
     vpage_group: "Ecranul principal",
-    vpage_cells: "Ecranul cu celule"
+    vpage_cells: "Ecranul cu celule",
+    lbl_scells: "Ecranul cu celule sub ecranul principal (pagina PACHETE se dezactiveaz\u0103)"
   };
 
   // src/i18n.js
@@ -1442,7 +1454,7 @@
     const lcd = bt(146, 333), dsc = (l, x, y, fs, fill, extra = "") => `<text x="${x}" y="${y}" font-size="${fs}" fill="${fill}" ${extra}>${l}</text>`, dt = (key, suf, x, y, fs, fill, extra = "") => dsc(tt(key) + suf, x, y, fs, fill, `data-tr="${key}|${suf}" ${extra}`), GR = "#5cf08a", WT = "#e6ece8";
     const dv = (k, x, y, fs, anchor = "start") => `<text data-d="${k}" x="${x}" y="${y}" font-size="${fs}" font-weight="700" fill="${GR}" text-anchor="${anchor}">\u2013</text>`;
     const row2 = (key, vk, x, xe2, y, mw, vfs = 14, lfs = 12) => dt(key, ":", x, y, lfs, WT, `data-mw="${mw}" data-fs="${lfs}"`) + dv(vk, xe2, y, vfs, "end");
-    const tab = (c, key, dark, go) => `<polygon points="${c - 52},221 ${c + 52},221 ${c + 44},238.6 ${c - 44},238.6" fill="${dark ? "#03060a" : "#f2f4f5"}"/>${dt(key, "", c, 234.4, 11, dark ? "#fff" : "#111", 'font-weight="700" text-anchor="middle"')}${go ? `<polygon class="hit" data-go="${go}" points="${c - 52},221 ${c + 52},221 ${c + 44},238.6 ${c - 44},238.6" fill="#000" fill-opacity="0"/>` : ""}`;
+    const tab = (c, key, dark, go) => `<g class="tab" data-tab="${go || ""}"><polygon points="${c - 52},221 ${c + 52},221 ${c + 44},238.6 ${c - 44},238.6" fill="${dark ? "#03060a" : "#f2f4f5"}"/>${dt(key, "", c, 234.4, 11, dark ? "#fff" : "#111", 'font-weight="700" text-anchor="middle"')}${go ? `<polygon class="hit" data-go="${go}" points="${c - 52},221 ${c + 52},221 ${c + 44},238.6 ${c - 44},238.6" fill="#000" fill-opacity="0"/>` : ""}</g>`;
     const outline = "M4 4 H429 V221 H" + [355, 216, 76].map((c) => `${c + 52} L${c + 44} 238.6 H${c - 44} L${c - 52} 221`).join(" H") + " H4 Z";
     const ico = (cx, ch2) => `<circle cx="${cx}" cy="46" r="10" fill="none" stroke="${GR}" stroke-width="2"/>${dsc(ch2, cx, 50.5, 12, GR, 'text-anchor="middle" font-weight="700"')}`;
     const logo = `<image href="${LOGO}" x="6" y="9" width="38" height="22"/>${dsc("\u6781\u7A7A", 50, 26, 17, "#f2f6fa", 'font-weight="700"')}${dsc("JIKONG", 51, 33, 5.4, "#9fd2f2", 'letter-spacing="1.4"')}`;
@@ -1509,6 +1521,7 @@
       <label><span data-tr="scr_st_cells|">${tt("scr_st_cells")}</span><select data-s="cells"><option value="16">16</option><option value="8">8</option></select></label>
       <label data-s-row="rows"><span data-tr="scr_st_rows|">${tt("scr_st_rows")}</span><select data-s="rows"><option value="2">${tt("ed_rows_2")}</option><option value="1">${tt("ed_rows_1")}</option></select></label>
       <label class="stgc"><input data-s="btn" type="checkbox"><span data-tr="scr_st_btn|">${tt("scr_st_btn")}</span></label>
+      <label class="stgc" data-s-row="cells2"><input data-s="cells2" type="checkbox"><span data-tr="scr_st_cells2|">${tt("scr_st_cells2")}</span></label>
       <div class="stgb"><button data-s="save" type="button" data-tr="scr_st_save|">${tt("scr_st_save")}</button><span class="stgm" data-s="msg"></span></div>
     </div>
   </foreignObject>`;
@@ -3956,6 +3969,21 @@
     flex-direction: column;
     gap: 12px;
   }
+  .scrbox {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .pk2 .dsp.nopacks .tab[data-tab="packs"] {
+    opacity: 0.3;
+    pointer-events: none;
+  }
+  .pk2 .dsp.nopacks [data-go="packs"] {
+    pointer-events: none;
+  }
+  .pk2 .dsp.nopacks .pg-cells g[data-go="packs"] {
+    display: none;
+  }
   .scrbox .scrmini {
     width: 100%;
     background: none;
@@ -5250,10 +5278,7 @@
           if (ln) {
             const g0 = +ln.dataset.g0, gp = +ln.dataset.gp, cx = (k) => 115 + k % 4 * 78 + 44, ty = (k) => g0 + Math.floor(k / 4) * gp, gy = (r) => g0 + r * gp + gp / 2 - 3;
             let d = "";
-            if (on && pos) {
-              const rz = Math.floor(rec / 4);
-              d = `M74 194 H116 V${rz > 0 ? gy(rz - 1) : gy(-1)} H${cx(rec)} V${ty(rec) - 10}`;
-            } else if (on) {
+            if (on) {
               const a = don, z = rec, ra = Math.floor(a / 4), rb = Math.floor(z / 4), xa = cx(a), xb = cx(z), down = ra < rb, y0 = down || ra === rb ? ty(a) + 3 : ty(a) - 10, y1 = down ? ty(z) - 10 : ty(z) + 3, bandA = down || ra === rb ? gy(ra) : gy(ra - 1), bandB = ra === rb ? gy(ra) : down ? gy(rb - 1) : gy(rb);
               if (bandA === bandB) d = `M${xa} ${y0} V${bandA} H${xb} V${y1}`;
               else {
@@ -5311,7 +5336,7 @@
       root.innerHTML = `<style>${CSS}</style><ha-card class="scronly">${list.map(
         () => `<div class="scrbox">
         ${grp ? `<select class="pksel scrsel" data-k="pksel" title="${tt("pick_battery")}"></select>` : ""}
-        <div class="pk2 scrmini" data-k="bccells"></div></div>`
+        <div class="pk2 scrmini" data-k="bccells"></div>${c.screen_cells ? '<div class="pk2 scrmini scrmini2"></div>' : ""}</div>`
       ).join("")}</ha-card>`;
       if (!root._mc) {
         root._mc = 1;
@@ -5332,7 +5357,7 @@
       if (this._hass) this._update();
     }
     _updScreens(d) {
-      const r = this.shadowRoot, grp = this._grp = this._groupInfo();
+      const r = this.shadowRoot, grp = this._grp = this._groupInfo(), two = !!this._cfg.screen_cells;
       if (grp) this._sel = Math.min(this._sel || 0, grp.order.length - 1);
       const view = grp ? [{ b: d.bats[grp.order[this._sel || 0]], ci: grp.order[this._sel || 0] }] : d.bats.map((b, ci) => ({ b, ci }));
       view.forEach(({ b, ci }, i) => {
@@ -5341,7 +5366,7 @@
         const G0 = grp ? this._aggr(
           grp.order.map((x) => d.bats[x]),
           grp
-        ) : b, bcfg = this._cfg.batteries[ci], n = this._nOf(bcfg), strip = box.querySelector(".scrmini"), sg = n + "/" + (grp ? grp.order.length : 1) + "/" + this._tOf(bcfg) + "/" + this._cfg.view_page;
+        ) : b, bcfg = this._cfg.batteries[ci], n = this._nOf(bcfg);
         const sl = box.querySelector(".pksel");
         if (grp && sl) {
           const html2 = grp.order.map((x, k) => `<option value="${k}">${k === 0 ? "Master" : "Slave " + k} \xB7 ${d.bats[x].name}</option>`).join("");
@@ -5351,41 +5376,46 @@
           }
           sl.value = String(this._sel || 0);
         }
-        if (strip._n !== sg) {
-          strip._n = sg;
-          strip.innerHTML = packSvg(n, i, grp ? grp.order.length : 1, "top-left", 2, this._tOf(bcfg), true);
-          const svg = strip.querySelector("svg");
-          svg.querySelectorAll("title").forEach((t) => !t.closest(".pwr") && t.remove());
-          svg.querySelectorAll("clipPath rect, .dsp > rect:first-of-type").forEach((e) => {
-            e.setAttribute("rx", 15);
-            e.setAttribute("ry", 15);
-          });
-          const dsp0 = svg.querySelector(".dsp");
-          dsp0.setAttribute("data-pg", this._cfg.view_page === "cells" ? "cells" : "group");
-          svg.querySelectorAll("[data-mw]").forEach(fitLabel);
-          strip.addEventListener("click", (e) => {
-            if (e.target.closest(".pwr")) return this._toggleDisp(ci);
-            const go = e.target.closest("[data-go]");
-            if (!go || go.dataset.go === "lang") return;
-            if (go.dataset.pk !== void 0) {
-              this._sel = +go.dataset.pk;
-              this._vOff = false;
-              if (this._data) this._updSimple(this._data);
-            }
-            strip.querySelector(".dsp").setAttribute("data-pg", go.dataset.go);
-          });
-        }
-        const nm = strip.querySelector(".scrname");
-        if (nm && nm.textContent !== (bcfg.name || bcfg.entity_base || ""))
-          nm.textContent = bcfg.name || bcfg.entity_base || "";
-        const dsp = strip.querySelector(".dsp"), okV = b.cells.filter((x) => !isNaN(x)), vmax = Math.max(...okV), vmin = Math.min(...okV), sIdx = (x) => !isNaN(x) && x >= 1 && x <= b.cells.length ? x - 1 : -1, imx = sIdx(b.mxI) >= 0 ? sIdx(b.mxI) : vmax > vmin ? b.cells.indexOf(vmax) : -1, imn = sIdx(b.mnI) >= 0 ? sIdx(b.mnI) : vmax > vmin ? b.cells.indexOf(vmin) : -1;
+        const okV = b.cells.filter((x) => !isNaN(x)), vmax = Math.max(...okV), vmin = Math.min(...okV), sIdx = (x) => !isNaN(x) && x >= 1 && x <= b.cells.length ? x - 1 : -1, imx = sIdx(b.mxI) >= 0 ? sIdx(b.mxI) : vmax > vmin ? b.cells.indexOf(vmax) : -1, imn = sIdx(b.mnI) >= 0 ? sIdx(b.mnI) : vmax > vmin ? b.cells.indexOf(vmin) : -1;
         let don = -1, rec = -1;
         if (b.balMask) {
           don = imx >= 0 ? imx : b.cells.indexOf(vmax);
           rec = imn >= 0 ? imn : b.cells.indexOf(vmin);
         }
         if (don === rec) don = rec = -1;
-        this._paintScreen(dsp, { ci, b, G0, grp, imx, imn, don, rec });
+        [box.querySelector(".scrmini"), box.querySelector(".scrmini2")].forEach((strip, si) => {
+          if (!strip) return;
+          const page = si === 1 ? "cells" : two ? "group" : this._cfg.view_page === "cells" ? "cells" : "group", sg = n + "/" + (grp ? grp.order.length : 1) + "/" + this._tOf(bcfg) + "/" + page + "/" + si + "/" + two;
+          if (strip._n !== sg) {
+            strip._n = sg;
+            strip.innerHTML = packSvg(n, i * 2 + si, grp ? grp.order.length : 1, "top-left", 2, this._tOf(bcfg), true);
+            const svg = strip.querySelector("svg");
+            svg.querySelectorAll("title").forEach((t) => !t.closest(".pwr") && t.remove());
+            svg.querySelectorAll("clipPath rect, .dsp > rect:first-of-type").forEach((e) => {
+              e.setAttribute("rx", 15);
+              e.setAttribute("ry", 15);
+            });
+            const dsp0 = svg.querySelector(".dsp");
+            dsp0.setAttribute("data-pg", page);
+            if (two) dsp0.classList.add("nopacks");
+            svg.querySelectorAll("[data-mw]").forEach(fitLabel);
+            strip.addEventListener("click", (e) => {
+              if (e.target.closest(".pwr")) return this._toggleDisp(ci);
+              const go = e.target.closest("[data-go]");
+              if (!go || go.dataset.go === "lang") return;
+              if (two && (go.dataset.go === "packs" || go.dataset.pk !== void 0)) return;
+              if (go.dataset.pk !== void 0) {
+                this._sel = +go.dataset.pk;
+                this._vOff = false;
+                if (this._data) this._updSimple(this._data);
+              }
+              strip.querySelector(".dsp").setAttribute("data-pg", go.dataset.go);
+            });
+          }
+          const nm = strip.querySelector(".scrname"), label = si === 0 ? bcfg.name || bcfg.entity_base || "" : "";
+          if (nm && nm.textContent !== label) nm.textContent = label;
+          this._paintScreen(strip.querySelector(".dsp"), { ci, b, G0, grp, imx, imn, don, rec });
+        });
       });
       this._ringTick();
     }
@@ -5424,6 +5454,8 @@
       set("cells", cells);
       set("rows", v("rows", bc.rows === 1 ? 1 : 2));
       set("btn", v("btn", raw.button_all_pages !== false));
+      set("cells2", v("cells2", !!raw.screen_cells));
+      f.querySelector('[data-s-row="cells2"]').style.display = view === "screen" ? "" : "none";
       f.querySelector('[data-s-row="rows"]').style.display = cells === 8 && view !== "screen" ? "" : "none";
     }
     async _stgSave(btn) {
@@ -5453,6 +5485,11 @@
           delete next.view;
           delete next.view_page;
         }
+      }
+      if (next.view !== "screen") delete next.screen_cells;
+      else if ("cells2" in p) {
+        if (p.cells2) next.screen_cells = true;
+        else delete next.screen_cells;
       }
       if ("btn" in p) {
         if (p.btn) delete next.button_all_pages;
@@ -6637,12 +6674,12 @@
         <option value="full">${tt("view_full")}</option>
         <option value="screen">${tt("view_screen")}</option>
       </select>
-    </label>${c0.view === "screen" ? `<label class="fld"><span>${tt("lbl_vpage")}</span>
+    </label>${c0.view === "screen" ? `<label class="chk"><input class="f-scells" type="checkbox"> ${tt("lbl_scells")}</label>` + (c0.screen_cells ? "" : `<label class="fld"><span>${tt("lbl_vpage")}</span>
       <select class="f-vpage">
         <option value="group">${tt("vpage_group")}</option>
         <option value="cells">${tt("vpage_cells")}</option>
       </select>
-    </label>` : ""}
+    </label>`) : ""}
     <label class="fld"><span>${tt("lbl_perf")}</span>
       <select class="f-perf">
         <option value="auto">${tt("perf_auto")}</option>
@@ -6669,10 +6706,20 @@
         else {
           delete this._config.view;
           delete this._config.view_page;
+          delete this._config.screen_cells;
         }
         this._emit();
         this._render();
       };
+      if (q2(".f-scells")) {
+        q2(".f-scells").checked = !!c0.screen_cells;
+        q2(".f-scells").onchange = (ev) => {
+          if (ev.target.checked) this._config.screen_cells = true;
+          else delete this._config.screen_cells;
+          this._emit();
+          this._render();
+        };
+      }
       if (q2(".f-vpage")) {
         q2(".f-vpage").value = c0.view_page === "cells" ? "cells" : "group";
         q2(".f-vpage").onchange = (e) => {

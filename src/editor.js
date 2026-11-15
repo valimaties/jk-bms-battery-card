@@ -571,12 +571,15 @@ export class JkBatteryCardEditor extends HTMLElement {
       </select>
     </label>${
       c0.view === "screen"
-        ? `<label class="fld"><span>${tt("lbl_vpage")}</span>
+        ? `<label class="chk"><input class="f-scells" type="checkbox"> ${tt("lbl_scells")}</label>` +
+          (c0.screen_cells
+            ? ""
+            : `<label class="fld"><span>${tt("lbl_vpage")}</span>
       <select class="f-vpage">
         <option value="group">${tt("vpage_group")}</option>
         <option value="cells">${tt("vpage_cells")}</option>
       </select>
-    </label>`
+    </label>`)
         : ""
     }
     <label class="fld"><span>${tt("lbl_perf")}</span>
@@ -605,10 +608,20 @@ export class JkBatteryCardEditor extends HTMLElement {
       else {
         delete this._config.view;
         delete this._config.view_page;
+        delete this._config.screen_cells;
       }
       this._emit();
       this._render();
     };
+    if (q2(".f-scells")) {
+      q2(".f-scells").checked = !!c0.screen_cells;
+      q2(".f-scells").onchange = (ev) => {
+        if (ev.target.checked) this._config.screen_cells = true;
+        else delete this._config.screen_cells;
+        this._emit();
+        this._render();
+      };
+    }
     if (q2(".f-vpage")) {
       q2(".f-vpage").value = c0.view_page === "cells" ? "cells" : "group";
       q2(".f-vpage").onchange = (e) => {

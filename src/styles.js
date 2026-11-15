@@ -2348,6 +2348,21 @@ export const CSS = `
     flex-direction: column;
     gap: 12px;
   }
+  .scrbox {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .pk2 .dsp.nopacks .tab[data-tab="packs"] {
+    opacity: 0.3;
+    pointer-events: none;
+  }
+  .pk2 .dsp.nopacks [data-go="packs"] {
+    pointer-events: none;
+  }
+  .pk2 .dsp.nopacks .pg-cells g[data-go="packs"] {
+    display: none;
+  }
   .scrbox .scrmini {
     width: 100%;
     background: none;

@@ -159,6 +159,7 @@
   "scr_st_cells": "Celule",
   "scr_st_rows": "Aranjarea celulelor",
   "scr_st_btn": "Buton pe toate paginile",
+  "scr_st_cells2": "Ecran cu celule dedesubt",
   "scr_st_save": "Salvează în dashboard",
   "scr_st_confirm": "Confirmă salvarea",
   "scr_st_saving": "Se salvează…",
@@ -192,5 +193,6 @@
   "view_screen": "Doar ecranul JK",
   "lbl_vpage": "Pagina ecranului",
   "vpage_group": "Ecranul principal",
-  "vpage_cells": "Ecranul cu celule"
+  "vpage_cells": "Ecranul cu celule",
+  "lbl_scells": "Ecranul cu celule sub ecranul principal (pagina PACHETE se dezactivează)"
 }

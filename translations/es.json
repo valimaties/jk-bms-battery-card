@@ -159,6 +159,7 @@
   "scr_st_cells": "Celdas",
   "scr_st_rows": "Disposición de las celdas",
   "scr_st_btn": "Botón en todas las páginas",
+  "scr_st_cells2": "Pantalla de celdas debajo",
   "scr_st_save": "Guardar en el panel",
   "scr_st_confirm": "Confirmar guardado",
   "scr_st_saving": "Guardando…",
@@ -192,5 +193,6 @@
   "view_screen": "Solo pantalla JK",
   "lbl_vpage": "Página de la pantalla",
   "vpage_group": "Pantalla principal",
-  "vpage_cells": "Pantalla de celdas"
+  "vpage_cells": "Pantalla de celdas",
+  "lbl_scells": "Pantalla de celdas bajo la principal (la página PACKS se desactiva)"
 }

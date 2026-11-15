@@ -341,7 +341,7 @@ export function packSvg(n, id, np = 1, layout = "top-left", rows = 2, nt = 0, sc
   const row2 = (key, vk, x, xe, y, mw, vfs = 14, lfs = 12) =>
     dt(key, ":", x, y, lfs, WT, `data-mw="${mw}" data-fs="${lfs}"`) + dv(vk, xe, y, vfs, "end");
   const tab = (c, key, dark, go) =>
-    `<polygon points="${c - 52},221 ${c + 52},221 ${c + 44},238.6 ${c - 44},238.6" fill="${dark ? "#03060a" : "#f2f4f5"}"/>${dt(key, "", c, 234.4, 11, dark ? "#fff" : "#111", 'font-weight="700" text-anchor="middle"')}${go ? `<polygon class="hit" data-go="${go}" points="${c - 52},221 ${c + 52},221 ${c + 44},238.6 ${c - 44},238.6" fill="#000" fill-opacity="0"/>` : ""}`;
+    `<g class="tab" data-tab="${go || ""}"><polygon points="${c - 52},221 ${c + 52},221 ${c + 44},238.6 ${c - 44},238.6" fill="${dark ? "#03060a" : "#f2f4f5"}"/>${dt(key, "", c, 234.4, 11, dark ? "#fff" : "#111", 'font-weight="700" text-anchor="middle"')}${go ? `<polygon class="hit" data-go="${go}" points="${c - 52},221 ${c + 52},221 ${c + 44},238.6 ${c - 44},238.6" fill="#000" fill-opacity="0"/>` : ""}</g>`;
   const outline =
     "M4 4 H429 V221 H" +
     [355, 216, 76].map((c) => `${c + 52} L${c + 44} 238.6 H${c - 44} L${c - 52} 221`).join(" H") +
@@ -439,6 +439,7 @@ export function packSvg(n, id, np = 1, layout = "top-left", rows = 2, nt = 0, sc
       <label><span data-tr="scr_st_cells|">${tt("scr_st_cells")}</span><select data-s="cells"><option value="16">16</option><option value="8">8</option></select></label>
       <label data-s-row="rows"><span data-tr="scr_st_rows|">${tt("scr_st_rows")}</span><select data-s="rows"><option value="2">${tt("ed_rows_2")}</option><option value="1">${tt("ed_rows_1")}</option></select></label>
       <label class="stgc"><input data-s="btn" type="checkbox"><span data-tr="scr_st_btn|">${tt("scr_st_btn")}</span></label>
+      <label class="stgc" data-s-row="cells2"><input data-s="cells2" type="checkbox"><span data-tr="scr_st_cells2|">${tt("scr_st_cells2")}</span></label>
       <div class="stgb"><button data-s="save" type="button" data-tr="scr_st_save|">${tt("scr_st_save")}</button><span class="stgm" data-s="msg"></span></div>
     </div>
   </foreignObject>`;

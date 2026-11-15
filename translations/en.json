@@ -159,6 +159,7 @@
   "scr_st_cells": "Cells",
   "scr_st_rows": "Cell layout",
   "scr_st_btn": "Button on every page",
+  "scr_st_cells2": "Cells screen below",
   "scr_st_save": "Save to dashboard",
   "scr_st_confirm": "Confirm save",
   "scr_st_saving": "Saving…",
@@ -192,5 +193,6 @@
   "view_screen": "JK screen only",
   "lbl_vpage": "Screen page",
   "vpage_group": "Main screen",
-  "vpage_cells": "Cells screen"
+  "vpage_cells": "Cells screen",
+  "lbl_scells": "Cells screen under the main screen (the PACKS page is then off)"
 }
