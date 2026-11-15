@@ -180,7 +180,7 @@ export class JkBatteryCard extends HTMLElement {
       const b = e.target.closest("[data-lc]");
       if (b) this._pickLang(b.dataset.lc);
     };
-    const host = bk.querySelector(".dp");
+    const host = bk.querySelector(".dp") || (bk.classList.contains("scrmini") ? bk : null);
     if (host) host.appendChild(m);
   }
   _rebuild() {
@@ -1072,8 +1072,11 @@ export class JkBatteryCard extends HTMLElement {
           svg.querySelectorAll("[data-mw]").forEach(fitLabel);
           strip.addEventListener("click", (e) => {
             if (e.target.closest(".pwr")) return this._toggleDisp(ci);
-            const go = e.target.closest("[data-go]");
-            if (!go || go.dataset.go === "lang") return;
+            const go = e.target.closest("[data-go]"),
+              lm = strip.querySelector(".lmenu");
+            if (lm && !e.target.closest(".lmenu") && !(go && go.dataset.go === "lang")) lm.remove();
+            if (!go) return;
+            if (go.dataset.go === "lang") return this._langMenu(strip);
             if (two && (go.dataset.go === "packs" || go.dataset.pk !== undefined)) return;
             if (go.dataset.pk !== undefined) {
               this._sel = +go.dataset.pk;
@@ -1139,7 +1142,7 @@ export class JkBatteryCard extends HTMLElement {
       if (!s || s.dataset.s === "save" || s.dataset.s === "msg") return;
       const v = this._stgv || (this._stgv = {}),
         k = s.dataset.s;
-      v[k] = s.type === "checkbox" ? s.checked : k === "name" ? s.value : k === "view" ? s.value : +s.value;
+      v[k] = s.type === "checkbox" ? s.checked : k === "name" || k === "view" || k === "lang" ? s.value : +s.value;
       this.shadowRoot.querySelectorAll(".dsp").forEach((d) => this._stgFill(d));
     };
     root.addEventListener("input", on);
@@ -1176,6 +1179,7 @@ export class JkBatteryCard extends HTMLElement {
     set("cells", cells);
     set("rows", v("rows", bc.rows === 1 ? 1 : 2));
     set("btn", v("btn", raw.button_all_pages !== false));
+    set("lang", v("lang", raw.language || "auto"));
     set("cells2", v("cells2", !!raw.screen_cells));
     f.querySelector('[data-s-row="cells2"]').style.display = view === "screen" ? "" : "none";
     f.querySelector('[data-s-row="rows"]').style.display = cells === 8 && view !== "screen" ? "" : "none";
@@ -1219,6 +1223,10 @@ export class JkBatteryCard extends HTMLElement {
       if (p.cells2) next.screen_cells = true;
       else delete next.screen_cells;
     }
+    if ("lang" in p) {
+      if (p.lang === "auto") delete next.language;
+      else next.language = p.lang;
+    }
     if ("btn" in p) {
       if (p.btn) delete next.button_all_pages;
       else next.button_all_pages = false;
@@ -1240,6 +1248,13 @@ export class JkBatteryCard extends HTMLElement {
     say("scr_st_saving");
     try {
       await this._dashSave(old, next);
+      if ("lang" in p) {
+        // the language saved in the dashboard replaces the one chosen on the screen in this browser
+        this._langOverride = null;
+        try {
+          localStorage.removeItem("jk-bms-lang");
+        } catch (e2) {}
+      }
       this._stgv = null;
       say("scr_st_ok", "ok");
       this.setConfig(next);

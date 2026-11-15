@@ -2402,6 +2402,7 @@ export const CSS = `
     display: none;
   }
   .scrbox .scrmini {
+    position: relative;
     width: 100%;
     background: none;
     border: 0;
