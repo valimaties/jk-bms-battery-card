@@ -790,9 +790,18 @@ export class JkBatteryCard extends HTMLElement {
                     : `M${xa} ${ty(a) - 10} V${gy(ra - 1)} H${xv} V${gy(rb)} H${xb} V${ty(z) + 3}`;
               }
             }
-            if (ln.getAttribute("d") !== d) ln.setAttribute("d", d);
-            const cls = "balline" + (on ? " on " : " ") + (I > 0.005 ? "pos" : I < -0.005 ? "neg" : "unk");
-            if (ln.getAttribute("class") !== cls) ln.setAttribute("class", cls);
+            const sign = I > 0.005 ? "pos" : I < -0.005 ? "neg" : "unk";
+            [
+              ["bal", "balline"],
+              ["balt", "baltail"],
+              ["balh", "balhead"],
+            ].forEach(([k, base]) => {
+              const p = D(k);
+              if (!p) return;
+              if (p.getAttribute("d") !== d) p.setAttribute("d", d);
+              const cls = base + (on ? " on " : " ") + sign;
+              if (p.getAttribute("class") !== cls) p.setAttribute("class", cls);
+            });
           }
         }
         T("chg2", b.sw.charging ? tt("scr_on") : tt("scr_off"), b.sw.charging ? GRN : "#e0705f");
@@ -1366,7 +1375,7 @@ export class JkBatteryCard extends HTMLElement {
       const d = dst.querySelector(`[data-d="${e.dataset.d}"]`);
       if (!d) return;
       if (d.textContent !== e.textContent) d.textContent = e.textContent;
-      (e.dataset.d === "bal"
+      (/^bal[th]?$/.test(e.dataset.d)
         ? ["fill", "stroke", "stroke-dasharray", "d", "class"]
         : ["fill", "stroke", "stroke-dasharray"]
       ).forEach((a) => {

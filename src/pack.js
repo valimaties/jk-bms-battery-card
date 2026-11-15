@@ -410,7 +410,11 @@ export function packSvg(n, id, np = 1, layout = "top-left", rows = 2, nt = 0) {
         `<rect x="226" y="${cy0 - 6}" width="76" height="12" fill="#03060a"/>` +
         dt("scr_cellsv", "", 264, cy0 + 4, 10.5, cl, 'text-anchor="middle"');
       // the line between the two cells that exchange charge (moved and coloured by the card): below the voltages
-      o += `<path class="balline" data-d="bal" data-g0="${g0}" data-gp="${gp}" d="" fill="none" stroke-width="2.2" stroke-linecap="round"/>`;
+      o += `<g fill="none" stroke-linecap="round" stroke-linejoin="round" pathLength="100">
+        <path class="balline" data-d="bal" data-g0="${g0}" data-gp="${gp}" d="" pathLength="100" stroke-width="1.6"/>
+        <path class="baltail" data-d="balt" d="" pathLength="100" stroke-width="3"/>
+        <path class="balhead" data-d="balh" d="" pathLength="100" stroke-width="4.2"/>
+      </g>`;
       o += Array.from({ length: n }, (_, k) => {
         const x = 115 + (k % 4) * 78,
           y = g0 + Math.floor(k / 4) * gp;

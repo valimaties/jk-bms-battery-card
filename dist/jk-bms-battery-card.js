@@ -1332,7 +1332,11 @@
       }
       o += `<rect x="105" y="${cy0}" width="318" height="${ch0}" rx="8" fill="none" stroke="#8d9aa3" stroke-width="1"/>`;
       o += `<rect x="226" y="${cy0 - 6}" width="76" height="12" fill="#03060a"/>` + dt("scr_cellsv", "", 264, cy0 + 4, 10.5, cl, 'text-anchor="middle"');
-      o += `<path class="balline" data-d="bal" data-g0="${g0}" data-gp="${gp}" d="" fill="none" stroke-width="2.2" stroke-linecap="round"/>`;
+      o += `<g fill="none" stroke-linecap="round" stroke-linejoin="round" pathLength="100">
+        <path class="balline" data-d="bal" data-g0="${g0}" data-gp="${gp}" d="" pathLength="100" stroke-width="1.6"/>
+        <path class="baltail" data-d="balt" d="" pathLength="100" stroke-width="3"/>
+        <path class="balhead" data-d="balh" d="" pathLength="100" stroke-width="4.2"/>
+      </g>`;
       o += Array.from({ length: n }, (_, k) => {
         const x = 115 + k % 4 * 78, y = g0 + Math.floor(k / 4) * gp;
         return dsc(k + 1, x + 15, y, 11, cl, 'text-anchor="end"') + dv("cv" + k, x + 21, y, 12.5);
@@ -3966,34 +3970,62 @@
       opacity: 0.12;
     }
   }
-  .balline {
+  .balline,
+  .baltail,
+  .balhead {
     opacity: 0;
-    stroke-dasharray: 7 6;
-    stroke-linejoin: round;
-    transition: opacity 0.35s;
     pointer-events: none;
+    transition: opacity 0.35s;
   }
   .balline.on {
-    opacity: 0.95;
-    animation: balflow 0.7s linear infinite;
+    opacity: 0.3;
   }
-  .balline.pos {
+  .baltail.on {
+    opacity: 0.5;
+    stroke-dasharray: 40 300;
+    animation: balsnake-t 1.8s linear infinite;
+  }
+  .balhead.on {
+    opacity: 1;
+    stroke-dasharray: 12 300;
+    animation: balsnake-h 1.8s linear infinite;
+  }
+  .balline.pos,
+  .baltail.pos,
+  .balhead.pos {
     stroke: #ff5a4d;
   }
-  .balline.neg {
+  .balline.neg,
+  .baltail.neg,
+  .balhead.neg {
     stroke: #4da3ff;
   }
-  .balline.unk {
+  .balline.unk,
+  .baltail.unk,
+  .balhead.unk {
     stroke: #5cf08a;
   }
-  @keyframes balflow {
+  @keyframes balsnake-t {
+    from {
+      stroke-dashoffset: 40;
+    }
     to {
-      stroke-dashoffset: -13;
+      stroke-dashoffset: -100;
+    }
+  }
+  @keyframes balsnake-h {
+    from {
+      stroke-dashoffset: 12;
+    }
+    to {
+      stroke-dashoffset: -128;
     }
   }
   @media (prefers-reduced-motion: reduce) {
-    .balline.on {
+    .baltail.on,
+    .balhead.on {
       animation: none;
+      stroke-dasharray: none;
     }
   }
   .pk2 .dsp.off .dsc {
@@ -4790,9 +4822,18 @@
                   d2 = ra < rb ? `M${xa} ${ty(a) + 3} V${gy(ra)} H${xv} V${gy(rb - 1)} H${xb} V${ty(z) - 10}` : `M${xa} ${ty(a) - 10} V${gy(ra - 1)} H${xv} V${gy(rb)} H${xb} V${ty(z) + 3}`;
                 }
               }
-              if (ln.getAttribute("d") !== d2) ln.setAttribute("d", d2);
-              const cls2 = "balline" + (on ? " on " : " ") + (I > 5e-3 ? "pos" : I < -5e-3 ? "neg" : "unk");
-              if (ln.getAttribute("class") !== cls2) ln.setAttribute("class", cls2);
+              const sign = I > 5e-3 ? "pos" : I < -5e-3 ? "neg" : "unk";
+              [
+                ["bal", "balline"],
+                ["balt", "baltail"],
+                ["balh", "balhead"]
+              ].forEach(([k, base]) => {
+                const p = D(k);
+                if (!p) return;
+                if (p.getAttribute("d") !== d2) p.setAttribute("d", d2);
+                const cls2 = base + (on ? " on " : " ") + sign;
+                if (p.getAttribute("class") !== cls2) p.setAttribute("class", cls2);
+              });
             }
           }
           T("chg2", b.sw.charging ? tt("scr_on") : tt("scr_off"), b.sw.charging ? GRN : "#e0705f");
@@ -5271,7 +5312,7 @@
         const d = dst.querySelector(`[data-d="${e.dataset.d}"]`);
         if (!d) return;
         if (d.textContent !== e.textContent) d.textContent = e.textContent;
-        (e.dataset.d === "bal" ? ["fill", "stroke", "stroke-dasharray", "d", "class"] : ["fill", "stroke", "stroke-dasharray"]).forEach((a) => {
+        (/^bal[th]?$/.test(e.dataset.d) ? ["fill", "stroke", "stroke-dasharray", "d", "class"] : ["fill", "stroke", "stroke-dasharray"]).forEach((a) => {
           const v = e.getAttribute(a);
           if (v !== null && v !== d.getAttribute(a)) d.setAttribute(a, v);
         });

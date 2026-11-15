@@ -2535,34 +2535,62 @@ export const CSS = `
       opacity: 0.12;
     }
   }
-  .balline {
+  .balline,
+  .baltail,
+  .balhead {
     opacity: 0;
-    stroke-dasharray: 7 6;
-    stroke-linejoin: round;
-    transition: opacity 0.35s;
     pointer-events: none;
+    transition: opacity 0.35s;
   }
   .balline.on {
-    opacity: 0.95;
-    animation: balflow 0.7s linear infinite;
+    opacity: 0.3;
   }
-  .balline.pos {
+  .baltail.on {
+    opacity: 0.5;
+    stroke-dasharray: 40 300;
+    animation: balsnake-t 1.8s linear infinite;
+  }
+  .balhead.on {
+    opacity: 1;
+    stroke-dasharray: 12 300;
+    animation: balsnake-h 1.8s linear infinite;
+  }
+  .balline.pos,
+  .baltail.pos,
+  .balhead.pos {
     stroke: #ff5a4d;
   }
-  .balline.neg {
+  .balline.neg,
+  .baltail.neg,
+  .balhead.neg {
     stroke: #4da3ff;
   }
-  .balline.unk {
+  .balline.unk,
+  .baltail.unk,
+  .balhead.unk {
     stroke: #5cf08a;
   }
-  @keyframes balflow {
+  @keyframes balsnake-t {
+    from {
+      stroke-dashoffset: 40;
+    }
     to {
-      stroke-dashoffset: -13;
+      stroke-dashoffset: -100;
+    }
+  }
+  @keyframes balsnake-h {
+    from {
+      stroke-dashoffset: 12;
+    }
+    to {
+      stroke-dashoffset: -128;
     }
   }
   @media (prefers-reduced-motion: reduce) {
-    .balline.on {
+    .baltail.on,
+    .balhead.on {
       animation: none;
+      stroke-dasharray: none;
     }
   }
   .pk2 .dsp.off .dsc {
