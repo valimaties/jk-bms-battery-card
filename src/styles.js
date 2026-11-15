@@ -2628,30 +2628,44 @@ export const CSS = `
     opacity: 1;
     animation: balpulse 1.2s ease-in-out infinite;
   }
-  .balbadge {
+  .balfx {
     opacity: 0;
     pointer-events: none;
   }
-  .balbadge.on {
+  .balfx.on {
     opacity: 1;
   }
-  .balbadge circle {
-    fill: #06101a;
-    stroke-width: 1.4;
+  .balband {
+    fill-opacity: 0.5;
   }
-  .balbadge path {
-    fill: none;
-    stroke-width: 1.8;
-    stroke-linecap: round;
+  .balfx.pos .balband {
+    fill: #ff5a4d;
+    animation: balrise 1.2s linear infinite;
   }
-  .balhl.pos,
-  .balbadge.pos circle,
-  .balbadge.pos path {
+  .balfx.neg .balband {
+    fill: #4da3ff;
+    animation: balfall 1.2s linear infinite;
+  }
+  @keyframes balrise {
+    from {
+      transform: translateY(17px);
+    }
+    to {
+      transform: translateY(-9px);
+    }
+  }
+  @keyframes balfall {
+    from {
+      transform: translateY(-9px);
+    }
+    to {
+      transform: translateY(17px);
+    }
+  }
+  .balhl.pos {
     stroke: #ff5a4d;
   }
-  .balhl.neg,
-  .balbadge.neg circle,
-  .balbadge.neg path {
+  .balhl.neg {
     stroke: #4da3ff;
   }
   @keyframes balpulse {
@@ -2666,6 +2680,9 @@ export const CSS = `
   @media (prefers-reduced-motion: reduce) {
     .balhl.on {
       animation: none;
+    }
+    .balfx .balband {
+      animation: none !important;
     }
     .baltail.on,
     .balhead.on {

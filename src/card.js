@@ -940,21 +940,21 @@ export class JkBatteryCard extends HTMLElement {
             set(p, "d", d);
             set(p, "class", base + (on ? " on " : " ") + sign);
           });
-          // the cell that takes part in the exchange: highlighted, with + (it is charged) or - (it is discharged)
+          // the cell that takes part in the exchange: outlined, with a band that rises in it while it is charged
+          // (positive current) and falls while it is discharged (negative current)
           const hl = D("balhl"),
-            bd = D("balbd"),
+            fx = D("balfx"),
             tgt = on && (pos || neg) ? (pos ? rec : don) : -1;
-          if (hl && bd) {
+          if (hl && fx) {
             if (tgt >= 0) {
-              const x0 = 115 + (tgt % 4) * 78,
+              const x0 = 115 + (tgt % 4) * 78 - 1,
                 y0 = ty(tgt) - 13;
-              set(hl, "x", x0 - 1);
+              set(hl, "x", x0);
               set(hl, "y", y0);
-              set(bd, "transform", `translate(${x0 + 71} ${y0})`);
-              set(D("balbp"), "d", pos ? "M-3 0H3M0 -3V3" : "M-3 0H3");
+              set(fx, "transform", `translate(${x0} ${y0})`);
             }
             set(hl, "class", "balhl" + (tgt >= 0 ? " on " : " ") + sign);
-            set(bd, "class", "balbadge" + (tgt >= 0 ? " on " : " ") + sign);
+            set(fx, "class", "balfx" + (tgt >= 0 ? " on " : " ") + sign);
           }
         }
       }
@@ -1676,7 +1676,7 @@ export class JkBatteryCard extends HTMLElement {
       const d = dst.querySelector(`[data-d="${e.dataset.d}"]`);
       if (!d) return;
       if (d.textContent !== e.textContent) d.textContent = e.textContent;
-      (/^bal(hl|bd|bp|[th])?$/.test(e.dataset.d)
+      (/^bal(hl|fx|band|[th])?$/.test(e.dataset.d)
         ? ["fill", "stroke", "stroke-dasharray", "d", "class", "x", "y", "transform"]
         : ["fill", "stroke", "stroke-dasharray"]
       ).forEach((a) => {

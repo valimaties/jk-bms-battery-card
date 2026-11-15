@@ -1487,8 +1487,9 @@
         <path class="baltail" data-d="balt" d="" pathLength="100" stroke-width="3"/>
         <path class="balhead" data-d="balh" d="" pathLength="100" stroke-width="4.2"/>
       </g>
-      <rect class="balhl" data-d="balhl" x="0" y="0" width="72" height="17" rx="5" fill="none"/>
-      <g class="balbadge" data-d="balbd" transform="translate(0 0)"><circle r="6.5"/><path data-d="balbp" d=""/></g>`;
+      <clipPath id="bfc${id}"><rect width="72" height="17" rx="5"/></clipPath>
+      <g class="balfx" data-d="balfx" transform="translate(0 0)" clip-path="url(#bfc${id})"><rect class="balband" data-d="balband" width="72" height="9"/></g>
+      <rect class="balhl" data-d="balhl" x="0" y="0" width="72" height="17" rx="5" fill="none"/>`;
       o += Array.from({ length: n }, (_, k) => {
         const x = 115 + k % 4 * 78, y = g0 + Math.floor(k / 4) * gp;
         return dsc(k + 1, x + 15, y, 11, cl, 'text-anchor="end"') + dv("cv" + k, x + 21, y, 12.5);
@@ -4235,30 +4236,44 @@
     opacity: 1;
     animation: balpulse 1.2s ease-in-out infinite;
   }
-  .balbadge {
+  .balfx {
     opacity: 0;
     pointer-events: none;
   }
-  .balbadge.on {
+  .balfx.on {
     opacity: 1;
   }
-  .balbadge circle {
-    fill: #06101a;
-    stroke-width: 1.4;
+  .balband {
+    fill-opacity: 0.5;
   }
-  .balbadge path {
-    fill: none;
-    stroke-width: 1.8;
-    stroke-linecap: round;
+  .balfx.pos .balband {
+    fill: #ff5a4d;
+    animation: balrise 1.2s linear infinite;
   }
-  .balhl.pos,
-  .balbadge.pos circle,
-  .balbadge.pos path {
+  .balfx.neg .balband {
+    fill: #4da3ff;
+    animation: balfall 1.2s linear infinite;
+  }
+  @keyframes balrise {
+    from {
+      transform: translateY(17px);
+    }
+    to {
+      transform: translateY(-9px);
+    }
+  }
+  @keyframes balfall {
+    from {
+      transform: translateY(-9px);
+    }
+    to {
+      transform: translateY(17px);
+    }
+  }
+  .balhl.pos {
     stroke: #ff5a4d;
   }
-  .balhl.neg,
-  .balbadge.neg circle,
-  .balbadge.neg path {
+  .balhl.neg {
     stroke: #4da3ff;
   }
   @keyframes balpulse {
@@ -4273,6 +4288,9 @@
   @media (prefers-reduced-motion: reduce) {
     .balhl.on {
       animation: none;
+    }
+    .balfx .balband {
+      animation: none !important;
     }
     .baltail.on,
     .balhead.on {
@@ -5258,17 +5276,16 @@
               set(p, "d", d);
               set(p, "class", base + (on ? " on " : " ") + sign);
             });
-            const hl = D("balhl"), bd = D("balbd"), tgt = on && (pos || neg) ? pos ? rec : don : -1;
-            if (hl && bd) {
+            const hl = D("balhl"), fx = D("balfx"), tgt = on && (pos || neg) ? pos ? rec : don : -1;
+            if (hl && fx) {
               if (tgt >= 0) {
-                const x0 = 115 + tgt % 4 * 78, y0 = ty(tgt) - 13;
-                set(hl, "x", x0 - 1);
+                const x0 = 115 + tgt % 4 * 78 - 1, y0 = ty(tgt) - 13;
+                set(hl, "x", x0);
                 set(hl, "y", y0);
-                set(bd, "transform", `translate(${x0 + 71} ${y0})`);
-                set(D("balbp"), "d", pos ? "M-3 0H3M0 -3V3" : "M-3 0H3");
+                set(fx, "transform", `translate(${x0} ${y0})`);
               }
               set(hl, "class", "balhl" + (tgt >= 0 ? " on " : " ") + sign);
-              set(bd, "class", "balbadge" + (tgt >= 0 ? " on " : " ") + sign);
+              set(fx, "class", "balfx" + (tgt >= 0 ? " on " : " ") + sign);
             }
           }
         }
@@ -5881,7 +5898,7 @@
         const d = dst.querySelector(`[data-d="${e.dataset.d}"]`);
         if (!d) return;
         if (d.textContent !== e.textContent) d.textContent = e.textContent;
-        (/^bal(hl|bd|bp|[th])?$/.test(e.dataset.d) ? ["fill", "stroke", "stroke-dasharray", "d", "class", "x", "y", "transform"] : ["fill", "stroke", "stroke-dasharray"]).forEach((a) => {
+        (/^bal(hl|fx|band|[th])?$/.test(e.dataset.d) ? ["fill", "stroke", "stroke-dasharray", "d", "class", "x", "y", "transform"] : ["fill", "stroke", "stroke-dasharray"]).forEach((a) => {
           const v = e.getAttribute(a);
           if (v !== null && v !== d.getAttribute(a)) d.setAttribute(a, v);
         });
