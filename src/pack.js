@@ -26,7 +26,7 @@ export function packOverlay(grouped, name) {
   </div>
   </div>`;
 }
-export function packSvg(n, id, np = 1, layout = "top-left", rows = 2) {
+export function packSvg(n, id, np = 1, layout = "top-left", rows = 2, nt = 0, screenOnly = false) {
   const { W, H, wh } = PK,
     per = rows === 1 ? n : Math.ceil(n / 2), // rows = 1: all the cells in one row (8 cells), centred on the BMS
     xl = 236,
@@ -201,7 +201,8 @@ export function packSvg(n, id, np = 1, layout = "top-left", rows = 2) {
       .join("")}`;
   const BLK = "#1b1e23",
     RED = "#a8453c";
-  for (let row = 0; row < rows; row++) for (let j = 0; j < per - 1; j++) cables += bar(row, j, mirrored(j) ? FRONT : BACK);
+  for (let row = 0; row < rows; row++)
+    for (let j = 0; j < per - 1; j++) cables += bar(row, j, mirrored(j) ? FRONT : BACK);
   const PERS = [0.93, -0.07, 0.075, 1]; // matrix(a b c d): width foreshortening, slope of the horizontal edges, lean of the vertical edges
   const bs = 0.75,
     K = bs / (270 / 490),
@@ -337,8 +338,10 @@ export function packSvg(n, id, np = 1, layout = "top-left", rows = 2) {
     WT = "#e6ece8";
   const dv = (k, x, y, fs, anchor = "start") =>
     `<text data-d="${k}" x="${x}" y="${y}" font-size="${fs}" font-weight="700" fill="${GR}" text-anchor="${anchor}">–</text>`;
+  const row2 = (key, vk, x, xe, y, mw, vfs = 14, lfs = 12) =>
+    dt(key, ":", x, y, lfs, WT, `data-mw="${mw}" data-fs="${lfs}"`) + dv(vk, xe, y, vfs, "end");
   const tab = (c, key, dark, go) =>
-    `<polygon points="${c - 52},221 ${c + 52},221 ${c + 44},238.6 ${c - 44},238.6" fill="${dark ? "#03060a" : "#f2f4f5"}"/>${dt(key, "", c, 234.4, 11, dark ? "#fff" : "#111", 'font-weight="700" text-anchor="middle"')}${go ? `<polygon class="hit" data-go="${go}" points="${c - 52},221 ${c + 52},221 ${c + 44},238.6 ${c - 44},238.6" fill="#000" fill-opacity="0"/>` : ""}`;
+    `<g class="tab" data-tab="${go || ""}"><polygon points="${c - 52},221 ${c + 52},221 ${c + 44},238.6 ${c - 44},238.6" fill="${dark ? "#03060a" : "#f2f4f5"}"/>${dt(key, "", c, 234.4, 11, dark ? "#fff" : "#111", 'font-weight="700" text-anchor="middle"')}${go ? `<polygon class="hit" data-go="${go}" points="${c - 52},221 ${c + 52},221 ${c + 44},238.6 ${c - 44},238.6" fill="#000" fill-opacity="0"/>` : ""}</g>`;
   const outline =
     "M4 4 H429 V221 H" +
     [355, 216, 76].map((c) => `${c + 52} L${c + 44} 238.6 H${c - 44} L${c - 52} 221`).join(" H") +
@@ -356,7 +359,7 @@ export function packSvg(n, id, np = 1, layout = "top-left", rows = 2) {
       <path d="M${cx + 2} ${top + 9} L${cx - 7} ${top + 24} H${cx - 1} L${cx - 3} ${top + 36} L${cx + 7} ${top + 19} H${cx + 1} Z" fill="#fff"/>
       <circle cx="${cx}" cy="${top + 57}" r="7" fill="none" stroke="#e6ece8" stroke-width="1"/>${dsc(i, cx, top + 60.5, 9, WT, 'text-anchor="middle"')}${on ? `<rect x="${cx - 18}" y="${top - 2}" width="36" height="72" fill="#000" fill-opacity="0"/>` : ""}</g>`;
   };
-  const packsPage = `<path d="${outline}" fill="#03060a" stroke="#8d9aa3" stroke-width="1.3" stroke-linejoin="round"/>${logo}${[0, 1, 2, 3].map((k) => `<path class="chv chv${k}" d="M${201 + k * 12} 11 L${207 + k * 12} 17.5 L${201 + k * 12} 24"/>`).join("")}${Array.from({ length: 16 }, (_, i) => pkIco(i)).join("")}${tab(76, "scr_tab_group", false, "group")}${tab(216, "scr_tab_packs", true)}${tab(355, "scr_tab_setting", false)}`;
+  const packsPage = `<path d="${outline}" fill="#03060a" stroke="#8d9aa3" stroke-width="1.3" stroke-linejoin="round"/>${logo}${[0, 1, 2, 3].map((k) => `<path class="chv chv${k}" d="M${201 + k * 12} 11 L${207 + k * 12} 17.5 L${201 + k * 12} 24"/>`).join("")}${Array.from({ length: 16 }, (_, i) => pkIco(i)).join("")}${tab(76, "scr_tab_group", false, "group")}${tab(216, "scr_tab_packs", true)}${tab(355, "scr_tab_setting", false, "settings")}`;
   const cl = "#e6ece8",
     gic = (cy, ch) =>
       `<circle cx="121" cy="${cy}" r="7" fill="none" stroke="${GR}" stroke-width="1.4"/>${dsc(ch, 121, cy + 3.6, 9.5, GR, 'text-anchor="middle" font-weight="700"')}`;
@@ -373,15 +376,70 @@ export function packSvg(n, id, np = 1, layout = "top-left", rows = 2) {
     <g class="batg">
       <rect class="bo bcap" x="42" y="152" width="16" height="5" rx="1" fill="#e0302f"/>
       <rect class="bo" x="28" y="156" width="44" height="76" rx="5" fill="none" stroke="#e0302f" stroke-width="2.2"/>${[0, 1, 2, 3, 4].map((k) => `<rect class="bb" x="33" y="${(215.8 - 13.4 * k).toFixed(1)}" width="34" height="10" fill="#2a0d0d"/>`).join("")}</g>
-    <rect x="105" y="34" width="318" height="62" rx="8" fill="none" stroke="#8d9aa3" stroke-width="1"/>${gic(52, "◔")}${dt("scr_voldiff", ":", 133, 56, 11, cl)}${dv("vd", 177, 56, 12.5)}${dt("scr_chg", ":", 250, 56, 11, cl)}${dv("chg2", 279, 56, 12)}${dt("scr_temp", ":", 340, 56, 11, cl)}${dv("tp2", 372, 56, 12)}
-    ${gic(78, "A")}${dt("scr_cur", ":", 133, 82, 11, cl)}${dv("a2", 160, 82, 12.5)}${dt("scr_dch", ":", 250, 82, 11, cl)}${dv("dch2", 279, 82, 12)}${dt("scr_alarm", ":", 340, 82, 11, cl)}${dv("alm2", 376, 82, 11)}
-    <rect x="105" y="108" width="318" height="128" rx="8" fill="none" stroke="#8d9aa3" stroke-width="1"/>
-    <rect x="226" y="102" width="76" height="12" fill="#03060a"/>${dt("scr_cellsv", "", 264, 112, 10.5, cl, 'text-anchor="middle"')}
-    ${Array.from({ length: n }, (_, k) => {
-      const x = 115 + (k % 4) * 78,
-        y = 135 + Math.floor(k / 4) * 26;
-      return `${dsc(k + 1, x + 15, y, 11, cl, 'text-anchor="end"')}${dv("cv" + k, x + 21, y, 12.5)}`;
-    }).join("")}`;
+    ${(() => {
+      const three = nt > 0,
+        ry = three ? [49, 71, 93] : [56, 82],
+        by = three ? 30 : 34,
+        bh = three ? 76 : 62,
+        cy0 = three ? 114 : 108,
+        ch0 = three ? 124 : 128,
+        g0 = three ? 140 : 135,
+        gp = three ? 24 : 26,
+        p2 = (key, vk, x, xe, y, mw, vfs = 12) =>
+          dt(key, ":", x, y, 11, cl, `data-mw="${mw}" data-fs="11"`) + dv(vk, xe, y, vfs, "end");
+      let o = `<rect x="105" y="${by}" width="318" height="${bh}" rx="8" fill="none" stroke="#8d9aa3" stroke-width="1"/>`;
+      o +=
+        gic(ry[0] - 4, "◔") +
+        p2("scr_voldiff", "vd", 133, 238, ry[0], 57, 12.5) +
+        p2("scr_chg", "chg2", 250, 326, ry[0], 46) +
+        p2("scr_temp", "tp2", 334, 419, ry[0], 43);
+      o +=
+        gic(ry[1] - 4, "A") +
+        p2("scr_cur", "a2", 133, 238, ry[1], 57, 12.5) +
+        p2("scr_dch", "dch2", 250, 326, ry[1], 46) +
+        p2("scr_balcur", "bal2", 334, 419, ry[1], 43, 11);
+      if (three) {
+        o += gic(ry[2] - 4, "T");
+        const sw = 286 / nt;
+        for (let i = 0; i < nt; i++)
+          o +=
+            dsc("T" + (i + 1), 133 + i * sw, ry[2], 11, cl) + dv("ts" + i, 133 + (i + 1) * sw - 12, ry[2], 11.5, "end");
+      }
+      o += `<rect x="105" y="${cy0}" width="318" height="${ch0}" rx="8" fill="none" stroke="#8d9aa3" stroke-width="1"/>`;
+      o +=
+        `<rect x="226" y="${cy0 - 6}" width="76" height="12" fill="#03060a"/>` +
+        dt("scr_cellsv", "", 264, cy0 + 4, 10.5, cl, 'text-anchor="middle"');
+      // the line between the two cells that exchange charge (moved and coloured by the card): below the voltages
+      o += `<g fill="none" stroke-linecap="round" stroke-linejoin="round" pathLength="100">
+        <path class="balline" data-d="bal" data-g0="${g0}" data-gp="${gp}" d="" pathLength="100" stroke-width="1.6"/>
+        <path class="baltail" data-d="balt" d="" pathLength="100" stroke-width="3"/>
+        <path class="balhead" data-d="balh" d="" pathLength="100" stroke-width="4.2"/>
+      </g>`;
+      o += Array.from({ length: n }, (_, k) => {
+        const x = 115 + (k % 4) * 78,
+          y = g0 + Math.floor(k / 4) * gp;
+        return dsc(k + 1, x + 15, y, 11, cl, 'text-anchor="end"') + dv("cv" + k, x + 21, y, 12.5);
+      }).join("");
+      return o;
+    })()}`;
+  // SETTINGS page: a part of the editor on the screen; the values are saved in the dashboard configuration (see _stgSave)
+  const settingsPage = `<rect width="433" height="243" fill="#03060a"/>
+  <g data-go="group">
+    <circle cx="22" cy="21" r="9" fill="none" stroke="${cl}" stroke-width="1.4"/>
+    <path d="M27 21 H17 M20.5 17 L16.5 21 L20.5 25" fill="none" stroke="${cl}" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="22" cy="21" r="12" fill="#000" fill-opacity="0"/>
+  </g>${dt("scr_tab_setting", "", 216, 26, 14, WT, 'font-weight="700" text-anchor="middle"')}
+  <foreignObject x="10" y="38" width="413" height="200">
+    <div class="stg">
+      <label><span data-tr="scr_st_view|">${tt("scr_st_view")}</span><select data-s="view"><option value="full">${tt("view_full")}</option><option value="screen">${tt("view_screen")}</option></select></label>
+      <label><span data-tr="scr_st_name|">${tt("scr_st_name")}</span><input data-s="name" type="text"></label>
+      <label><span data-tr="scr_st_cells|">${tt("scr_st_cells")}</span><select data-s="cells"><option value="16">16</option><option value="8">8</option></select></label>
+      <label data-s-row="rows"><span data-tr="scr_st_rows|">${tt("scr_st_rows")}</span><select data-s="rows"><option value="2">${tt("ed_rows_2")}</option><option value="1">${tt("ed_rows_1")}</option></select></label>
+      <label class="stgc"><input data-s="btn" type="checkbox"><span data-tr="scr_st_btn|">${tt("scr_st_btn")}</span></label>
+      <label class="stgc" data-s-row="cells2"><input data-s="cells2" type="checkbox"><span data-tr="scr_st_cells2|">${tt("scr_st_cells2")}</span></label>
+      <div class="stgb"><button data-s="save" type="button" data-tr="scr_st_save|">${tt("scr_st_save")}</button><span class="stgm" data-s="msg"></span></div>
+    </div>
+  </foreignObject>`;
   const dsp = `<g class="dsp" data-d="dsp" transform="translate(-246 44) scale(.4)">
     <title>${tt("screen_tip")}</title><clipPath id="dc${id}">
       <rect x="1.5" y="1.5" width="607" height="420" rx="34.5"/>
@@ -392,7 +450,7 @@ export function packSvg(n, id, np = 1, layout = "top-left", rows = 2) {
     <g class="pg pg-group">
       <path d="${outline}" fill="#03060a" stroke="#8d9aa3" stroke-width="1.3" stroke-linejoin="round"/>
       <image href="${LOGO}" x="6" y="9" width="38" height="22"/>${dsc("极空", 50, 26, 17, "#f2f6fa", 'font-weight="700"')}${dsc("JIKONG", 51, 33, 5.4, "#9fd2f2", 'letter-spacing="1.4"')}${[0, 1, 2, 3].map((k) => `<path class="chv chv${k}" d="M${201 + k * 12} 11 L${207 + k * 12} 17.5 L${201 + k * 12} 24"/>`).join("")}${dt("scr_language", " ▾", 352, 21, 12, "#fff")}<rect class="hit" data-go="lang" x="338" y="4" width="92" height="24" fill="#000" fill-opacity="0"/>
-    ${ico(49, "V")}${dt("scr_vtg", ":", 66, 53, 15, WT)}${dv("v", 111, 53, 22)}${ico(266, "A")}${dt("scr_cur", ":", 283, 53, 15, WT)}${dv("a", 327, 53, 22)}
+    ${ico(49, "V")}${dt("scr_vtg", ":", 66, 53, 15, WT, 'data-mw="64" data-fs="15"')}${dv("v", 135, 53, 22)}${ico(266, "A")}${dt("scr_cur", ":", 283, 53, 15, WT, 'data-mw="55" data-fs="15"')}${dv("a", 343, 53, 22)}
     <circle cx="87" cy="114" r="47" fill="none" stroke="#4ee07e" stroke-width="1.6"/>
     <circle cx="87" cy="114" r="39" fill="none" stroke="#1d3a2a" stroke-width="11"/>
     <circle class="rng" cx="87" cy="114" r="39" fill="none" stroke="#4ee07e" stroke-width="11" stroke-dasharray="0 245" transform="rotate(-90 87 114)"/>
@@ -404,12 +462,13 @@ export function packSvg(n, id, np = 1, layout = "top-left", rows = 2) {
     <circle cx="87" cy="114" r="31" fill="none" stroke="#4ee07e" stroke-width="1.6"/>
     <text data-d="soc" x="87" y="121" font-size="20" font-weight="700" fill="#fff" text-anchor="middle">–</text>
     ${dv("cap", 235, 115, 25, "middle")}${dt("scr_batcap", "", 235, 131, 9.5, WT, 'text-anchor="middle"')}${dv("rem", 363, 115, 25, "middle")}${dt("scr_remcap", "", 363, 131, 9.5, WT, 'text-anchor="middle"')}
-    ${dt("scr_maxcell", ":", 13, 189, 12, WT)}${dv("mx", 79, 189, 14)}${dt("scr_mincell", ":", 13, 211, 12, WT)}${dv("mn", 79, 211, 14)}
-    ${dt("scr_temp", ":", 150, 189, 12, WT)}${dv("tp", 193, 189, 14)}${dt("scr_pwr", ":", 150, 211, 12, WT)}${dv("pw", 219, 211, 14)}
-    ${dt("scr_alarm", ":", 266, 189, 12, WT)}${dv("alm", 316, 189, 12)}${dt("scr_packs", ":", 266, 211, 12, WT)}${dv("np", 308, 211, 14)}
-    ${dt("scr_chg", ":", 364, 189, 12, WT)}${dv("chg", 396, 189, 13)}${dt("scr_dch", ":", 364, 211, 12, WT)}${dv("dch", 396, 211, 13)}${tab(76, "scr_tab_group", true)}${tab(216, "scr_tab_packs", false, "packs")}${tab(355, "scr_tab_setting", false)}</g>
+    ${row2("scr_maxcell", "mx", 13, 135, 189, 72)}${row2("scr_mincell", "mn", 13, 135, 211, 72)}
+    ${row2("scr_temp", "tp", 150, 256, 189, 60)}${row2("scr_pwr", "pw", 150, 256, 211, 60)}
+    ${row2("scr_alarm", "alm", 262, 354, 189, 44, 11)}${row2("scr_packs", "np", 262, 354, 211, 44)}
+    ${row2("scr_chg", "chg", 360, 424, 189, 36)}${row2("scr_dch", "dch", 360, 424, 211, 36)}${tab(76, "scr_tab_group", true)}${tab(216, "scr_tab_packs", false, "packs")}${tab(355, "scr_tab_setting", false, "settings")}</g>
     <g class="pg pg-packs">${packsPage}</g>
     <g class="pg pg-cells">${cellsPage}</g>
+    <g class="pg pg-settings">${settingsPage}</g>
     </g>
   <g class="pwr">
     <title>${tt("pwr_tip")}</title>
@@ -453,11 +512,16 @@ export function packSvg(n, id, np = 1, layout = "top-left", rows = 2) {
   <path d="${wire}" fill="none" stroke="#9aa3b0" stroke-opacity=".5" stroke-width=".9" stroke-linecap="round" transform="translate(-.8 -.8)"/>
   <rect x="-47" y="209" width="14" height="5" rx="1.2" fill="#e4e6ea" stroke="#7a7f88" stroke-width=".6"/>
   <rect x="${(lcd[0] - 5).toFixed(1)}" y="${(lcd[1] - 3).toFixed(1)}" width="9" height="6" rx="1.2" fill="#e4e6ea" stroke="#7a7f88" stroke-width=".6"/>`;
-  const defs = `<linearGradient id="gg${id}" gradientUnits="userSpaceOnUse" x1="295" y1="211" x2="610" y2="423">
+  const gg = `<linearGradient id="gg${id}" gradientUnits="userSpaceOnUse" x1="295" y1="211" x2="610" y2="423">
     <stop offset="0" stop-color="#fff" stop-opacity=".11"/>
     <stop offset=".55" stop-color="#fff" stop-opacity=".03"/>
     <stop offset="1" stop-color="#fff" stop-opacity=".005"/>
-  </linearGradient><filter id="sh${id}" x="-20%" y="-20%" width="140%" height="140%">
+  </linearGradient>`;
+  if (screenOnly)
+    return `<svg class="dpsvg" viewBox="0 0 610 423"><defs>${gg}</defs>${dsp.replace(' transform="translate(-246 44) scale(.4)"', "")}<text class="scrname" x="305" y="62" text-anchor="middle" font-size="24" letter-spacing="1.2" fill="#69727d" font-family="Roboto,Arial,sans-serif"></text></svg>`;
+  const defs =
+    gg +
+    `<filter id="sh${id}" x="-20%" y="-20%" width="140%" height="140%">
     <feGaussianBlur stdDeviation="5"/>
   </filter><filter id="zg${id}" x="-30%" y="-80%" width="160%" height="260%">
     <feGaussianBlur stdDeviation="2.6"/>

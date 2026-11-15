@@ -2336,6 +2336,93 @@ export const CSS = `
   .pk2 .dsp .gl {
     pointer-events: none;
   }
+  :host(.screenview) ha-card {
+    background: none;
+    border: 0;
+    box-shadow: none;
+    padding: 0;
+    overflow: visible;
+  }
+  .scronly {
+    /* the screens follow the width of the card (so of the dashboard section): one column in a narrow section, two in a
+       double one, three in a triple one, as many as there are batteries in a full-width one */
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr));
+    gap: 12px;
+    align-items: start;
+  }
+  .scrnote {
+    display: none;
+    grid-column: 1 / -1;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    padding: 8px 12px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 179, 71, 0.5);
+    background: rgba(255, 179, 71, 0.08);
+    color: var(--txt);
+    font-size: 13px;
+  }
+  .scrnote.on {
+    display: flex;
+  }
+  .scrnote button {
+    background: #1f4d35;
+    color: #e6ffee;
+    border: 1px solid #5cf08a;
+    border-radius: 8px;
+    padding: 4px 12px;
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .scrnote button:disabled {
+    opacity: 0.5;
+  }
+  .scrnote .stgm.err {
+    color: #ff8a7a;
+  }
+  .scrnote .stgm.ok {
+    color: #5cf08a;
+  }
+  .scrbox {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .pk2 .dsp.nopacks .tab[data-tab="packs"] {
+    opacity: 0.3;
+    pointer-events: none;
+  }
+  .pk2 .dsp.nopacks [data-go="packs"] {
+    pointer-events: none;
+  }
+  .pk2 .dsp.nopacks .pg-cells g[data-go="packs"] {
+    display: none;
+  }
+  .scrbox .scrmini {
+    position: relative;
+    width: 100%;
+    background: none;
+    border: 0;
+    padding: 0;
+    container-type: normal;
+  }
+  .scrbox .scrsel {
+    margin: 0 0 8px;
+    width: 100%;
+    padding: 8px 10px;
+    border-radius: 10px;
+    border: 1px solid var(--line);
+    background: var(--glass);
+    color: var(--txt);
+    font: inherit;
+  }
+  :host(.btnmain) .pk2 .dsp[data-pg="cells"] .pwr,
+  :host(.btnmain) .pk2 .dsp[data-pg="packs"] .pwr {
+    display: none;
+  }
   .dpopbk {
     position: fixed;
     inset: 0;
@@ -2535,6 +2622,64 @@ export const CSS = `
       opacity: 0.12;
     }
   }
+  .balline,
+  .baltail,
+  .balhead {
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.35s;
+  }
+  .balline.on {
+    opacity: 0.3;
+  }
+  .baltail.on {
+    opacity: 0.5;
+    stroke-dasharray: 40 300;
+    animation: balsnake-t 1s linear infinite;
+  }
+  .balhead.on {
+    opacity: 1;
+    stroke-dasharray: 12 300;
+    animation: balsnake-h 1s linear infinite;
+  }
+  .balline.pos,
+  .baltail.pos,
+  .balhead.pos {
+    stroke: #ff5a4d;
+  }
+  .balline.neg,
+  .baltail.neg,
+  .balhead.neg {
+    stroke: #4da3ff;
+  }
+  .balline.unk,
+  .baltail.unk,
+  .balhead.unk {
+    stroke: #5cf08a;
+  }
+  @keyframes balsnake-t {
+    from {
+      stroke-dashoffset: 40;
+    }
+    to {
+      stroke-dashoffset: -100;
+    }
+  }
+  @keyframes balsnake-h {
+    from {
+      stroke-dashoffset: 12;
+    }
+    to {
+      stroke-dashoffset: -128;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .baltail.on,
+    .balhead.on {
+      animation: none;
+      stroke-dasharray: none;
+    }
+  }
   .pk2 .dsp.off .dsc {
     display: none;
   }
@@ -2544,8 +2689,72 @@ export const CSS = `
   .pk2 .dsp:not([data-pg]) .pg-group,
   .pk2 .dsp[data-pg="group"] .pg-group,
   .pk2 .dsp[data-pg="packs"] .pg-packs,
-  .pk2 .dsp[data-pg="cells"] .pg-cells {
+  .pk2 .dsp[data-pg="cells"] .pg-cells,
+  .pk2 .dsp[data-pg="settings"] .pg-settings {
     display: inline;
+  }
+  .pk2 .dsp .stg {
+    display: grid;
+    gap: 4px;
+    font-family: Roboto, Arial, sans-serif;
+    font-size: 12px;
+    color: #e6ece8;
+    padding: 2px 6px;
+  }
+  .pk2 .dsp .stg label {
+    display: grid;
+    grid-template-columns: 150px 1fr;
+    align-items: center;
+    gap: 8px;
+  }
+  .pk2 .dsp .stg label.stgc {
+    grid-template-columns: 18px 1fr;
+  }
+  .pk2 .dsp .stg select,
+  .pk2 .dsp .stg input[type="text"] {
+    background: #0b1420;
+    color: #e6ece8;
+    border: 1px solid #5a6672;
+    border-radius: 5px;
+    padding: 3px 6px;
+    font: inherit;
+    min-width: 0;
+  }
+  .pk2 .dsp .stg input[type="checkbox"] {
+    width: 14px;
+    height: 14px;
+    accent-color: #5cf08a;
+  }
+  .pk2 .dsp .stg .stgb {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 2px;
+  }
+  .pk2 .dsp .stg button {
+    background: #1f4d35;
+    color: #e6ffee;
+    border: 1px solid #5cf08a;
+    border-radius: 6px;
+    padding: 4px 12px;
+    font: inherit;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .pk2 .dsp .stg button.confirm {
+    background: #7a3a14;
+    border-color: #ffb347;
+    color: #fff;
+  }
+  .pk2 .dsp .stg .stgm {
+    font-size: 11px;
+    color: #9fb3c8;
+  }
+  .pk2 .dsp .stg .stgm.err {
+    color: #ff8a7a;
+  }
+  .pk2 .dsp .stg .stgm.ok {
+    color: #5cf08a;
   }
   .dpopbk [data-go] {
     cursor: pointer;

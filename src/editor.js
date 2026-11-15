@@ -31,13 +31,49 @@ const BAT_DOM = {
 const batDom = (k) => BAT_DOM[k] || "sensor";
 const batSel = (k) => ({ entity: { domain: BAT_DOM[k] ? [BAT_DOM[k]] : NUMD } });
 export const batGroups = (n, t) => [
-  ["eg_main", ["total_voltage", "current", "power", "state_of_charge", "state_of_health", "capacity_remaining", "total_battery_capacity", "charging_cycles"]],
-  ["eg_cellsum", ["max_cell_voltage", "min_cell_voltage", "max_voltage_cell", "min_voltage_cell", "delta_cell_voltage", "average_cell_voltage", "balancer_bitmask"]],
+  [
+    "eg_main",
+    [
+      "total_voltage",
+      "current",
+      "power",
+      "state_of_charge",
+      "state_of_health",
+      "capacity_remaining",
+      "total_battery_capacity",
+      "charging_cycles",
+    ],
+  ],
+  [
+    "eg_cellsum",
+    [
+      "max_cell_voltage",
+      "min_cell_voltage",
+      "max_voltage_cell",
+      "min_voltage_cell",
+      "delta_cell_voltage",
+      "average_cell_voltage",
+      "balancer_bitmask",
+    ],
+  ],
   ["eg_temps", [...Array.from({ length: t }, (_, i) => "temperature_sensor_" + (i + 1)), "power_tube_temperature"]],
   ["eg_cellv", Array.from({ length: n }, (_, i) => "cell_voltage_" + (i + 1))],
   ["eg_cellr", Array.from({ length: n }, (_, i) => "cell_resistance_" + (i + 1))],
   ["eg_switches", ["charging", "discharging", "balancer", "heating"]],
-  ["eg_other", ["balance_starting_voltage", "balance_trigger_voltage", "online_status", "errors", "hardware_version", "software_version", "total_runtime_formatted", "charge_status", "operation_status"]],
+  [
+    "eg_other",
+    [
+      "balance_starting_voltage",
+      "balance_trigger_voltage",
+      "online_status",
+      "errors",
+      "hardware_version",
+      "software_version",
+      "total_runtime_formatted",
+      "charge_status",
+      "operation_status",
+    ],
+  ],
 ];
 const batLabel = (k) => {
   const m = /^(cell_voltage|cell_resistance|temperature_sensor)_(\d+)$/.exec(k);
@@ -200,12 +236,21 @@ export class JkBatteryCardEditor extends HTMLElement {
     const plainFields = (box, keys) => {
       const ids = this._hass ? Object.keys(this._hass.states) : [],
         list = (k) => (batDom(k) === "switch" ? "s" : batDom(k) === "binary_sensor" ? "b" : "n"),
-        dl = (id, pre) => `<datalist id="${id}">${ids.filter((x) => pre.some((p) => x.startsWith(p))).map((x) => `<option value="${x}">`).join("")}</datalist>`;
+        dl = (id, pre) =>
+          `<datalist id="${id}">${ids
+            .filter((x) => pre.some((p) => x.startsWith(p)))
+            .map((x) => `<option value="${x}">`)
+            .join("")}</datalist>`;
       box.innerHTML =
         dl(`bl${i}n`, ["sensor.", "number."]) +
         dl(`bl${i}s`, ["switch."]) +
         dl(`bl${i}b`, ["binary_sensor."]) +
-        keys.map((k) => `<label class="fld"><span>${batLabel(k)}</span><input class="bsi" data-k="${k}" list="bl${i}${list(k)}" placeholder="${dflt(k)}"></label>`).join("");
+        keys
+          .map(
+            (k) =>
+              `<label class="fld"><span>${batLabel(k)}</span><input class="bsi" data-k="${k}" list="bl${i}${list(k)}" placeholder="${dflt(k)}"></label>`,
+          )
+          .join("");
       box.querySelectorAll(".bsi").forEach((inp) => {
         inp.value = all[inp.dataset.k] || "";
         inp.onchange = () => {
@@ -215,7 +260,11 @@ export class JkBatteryCardEditor extends HTMLElement {
       });
     };
     const build = (usePlain) => {
-      all = Object.fromEntries(dims().flatMap((g) => g[1]).map((k) => [k, cur(k)]));
+      all = Object.fromEntries(
+        dims()
+          .flatMap((g) => g[1])
+          .map((k) => [k, cur(k)]),
+      );
       slot().innerHTML = "";
       dims().forEach(([t, keys]) => {
         const g = document.createElement("details");
@@ -268,7 +317,8 @@ export class JkBatteryCardEditor extends HTMLElement {
       try {
         if (!customElements.get("ha-form") && window.loadCardHelpers) {
           const h = await Promise.race([window.loadCardHelpers(), sleep(3000)]);
-          if (h && h.createCardElement) await Promise.race([h.createCardElement({ type: "entities", entities: [] }), sleep(3000)]);
+          if (h && h.createCardElement)
+            await Promise.race([h.createCardElement({ type: "entities", entities: [] }), sleep(3000)]);
         }
         if (customElements.get("ha-form")) await Promise.race([customElements.whenDefined("ha-form"), sleep(1000)]);
       } catch (e) {}
@@ -338,9 +388,7 @@ export class JkBatteryCardEditor extends HTMLElement {
           <option value="">${tt("ed_choose")}</option>${opts.map((d) => `<option value="${d.entity_base}">${d.entity_base}</option>`).join("")}</select>
       </label>
       </div>
-      <div class="fg"><label class="fld"><span>${tt("lbl_cells")}</span><select class="b-cells">${[
-        ...new Set([8, 16]),
-      ]
+      <div class="fg"><label class="fld"><span>${tt("lbl_cells")}</span><select class="b-cells">${[...new Set([8, 16])]
         .sort((x, y) => x - y)
         .map((v) => `<option value="${v}">${v}</option>`)
         .join("")}</select>
@@ -516,7 +564,24 @@ export class JkBatteryCardEditor extends HTMLElement {
     )
       .map(([v, l]) => `<option value="${v}">${l}</option>`)
       .join("")}</select></label></div>
-    
+    <label class="fld"><span>${tt("lbl_view")}</span>
+      <select class="f-view">
+        <option value="full">${tt("view_full")}</option>
+        <option value="screen">${tt("view_screen")}</option>
+      </select>
+    </label>${
+      c0.view === "screen"
+        ? `<label class="chk"><input class="f-scells" type="checkbox"> ${tt("lbl_scells")}</label>` +
+          (c0.screen_cells
+            ? ""
+            : `<label class="fld"><span>${tt("lbl_vpage")}</span>
+      <select class="f-vpage">
+        <option value="group">${tt("vpage_group")}</option>
+        <option value="cells">${tt("vpage_cells")}</option>
+      </select>
+    </label>`)
+        : ""
+    }
     <label class="fld"><span>${tt("lbl_perf")}</span>
       <select class="f-perf">
         <option value="auto">${tt("perf_auto")}</option>
@@ -524,12 +589,47 @@ export class JkBatteryCardEditor extends HTMLElement {
         <option value="lite">${tt("perf_lite")}</option>
       </select>
     </label>
-    <label class="chk"><input class="f-glare" type="checkbox"> ${tt("lbl_glare")}</label>`;
+    <label class="chk"><input class="f-glare" type="checkbox"> ${tt("lbl_glare")}</label>
+    <label class="chk"><input class="f-btnall" type="checkbox"> ${tt("lbl_btnall")}</label>`;
     const q2 = (k) => slot.querySelector(k);
     q2(".f-title").value = c0.title || "";
     q2(".f-lang").value = c0.language || "auto";
     q2(".f-glare").checked = c0.glare !== false;
+    q2(".f-btnall").checked = c0.button_all_pages !== false;
+    q2(".f-btnall").onchange = (ev) => {
+      if (ev.target.checked) delete this._config.button_all_pages;
+      else this._config.button_all_pages = false;
+      this._emit();
+    };
     q2(".f-perf").value = c0.performance || "auto";
+    q2(".f-view").value = c0.view === "screen" ? "screen" : "full";
+    q2(".f-view").onchange = (e) => {
+      if (e.target.value === "screen") this._config.view = "screen";
+      else {
+        delete this._config.view;
+        delete this._config.view_page;
+        delete this._config.screen_cells;
+      }
+      this._emit();
+      this._render();
+    };
+    if (q2(".f-scells")) {
+      q2(".f-scells").checked = !!c0.screen_cells;
+      q2(".f-scells").onchange = (ev) => {
+        if (ev.target.checked) this._config.screen_cells = true;
+        else delete this._config.screen_cells;
+        this._emit();
+        this._render();
+      };
+    }
+    if (q2(".f-vpage")) {
+      q2(".f-vpage").value = c0.view_page === "cells" ? "cells" : "group";
+      q2(".f-vpage").onchange = (e) => {
+        if (e.target.value === "cells") this._config.view_page = "cells";
+        else delete this._config.view_page;
+        this._emit();
+      };
+    }
     q2(".f-perf").onchange = (e) => {
       if (e.target.value === "auto") delete this._config.performance;
       else this._config.performance = e.target.value;

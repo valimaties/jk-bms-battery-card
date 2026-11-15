@@ -2,7 +2,7 @@ import { CARDS, I18N, inPreview, loadLang, loadLangList, pickLang, tt } from "./
 import { GRN, PK, packOverlay, packSvg } from "./pack.js";
 import { ST } from "./state.js";
 import { CSS } from "./styles.js";
-import { clamp, fmt, fmtW, grpOrder, html, num, socColor } from "./util.js";
+import { canon, clamp, fitLabel, fmt, fmtW, grpOrder, html, num, socColor } from "./util.js";
 import { VIC_TILES, discoverBatteries, discoverVictron, title } from "./victron.js";
 
 export const setH = (el, h) => {
@@ -40,7 +40,8 @@ export class JkBatteryCard extends HTMLElement {
     return 12;
   }
   getGridOptions() {
-    return { columns: 12, min_columns: 6 };
+    // sections dashboard: the whole width of the section (12 columns would be only half of a Double section)
+    return { columns: "full", min_columns: 6 };
   }
 
   setConfig(config) {
@@ -48,6 +49,7 @@ export class JkBatteryCard extends HTMLElement {
     if (this._built && key === this._cfgKey) return; // HA may call setConfig again with the same config: rebuilding would collapse the card and make the page jump
     this._cfgKey = key;
     if (this._built) this.style.minHeight = this.offsetHeight + "px"; // keep the height while rebuilding, so the scroll position survives
+    this._raw = JSON.parse(JSON.stringify(config)); // as it is stored in the dashboard (the SETTINGS page saves a changed copy of it)
     this._cfg = { cells: 16, temps: 4, batteries: [], victron: {}, ...config };
     this._lang = null;
     this._setLang(this._wantLang(this._hass));
@@ -178,7 +180,7 @@ export class JkBatteryCard extends HTMLElement {
       const b = e.target.closest("[data-lc]");
       if (b) this._pickLang(b.dataset.lc);
     };
-    const host = bk.querySelector(".dp");
+    const host = bk.querySelector(".dp") || (bk.classList.contains("scrmini") ? bk : null);
     if (host) host.appendChild(m);
   }
   _rebuild() {
@@ -220,6 +222,7 @@ export class JkBatteryCard extends HTMLElement {
       const [k, suf] = el.getAttribute("data-tr").split("|");
       const t = tt(k) + (suf || "");
       if (el.textContent !== t) el.textContent = t;
+      fitLabel(el);
     });
   }
   _afterClose() {
@@ -263,12 +266,20 @@ export class JkBatteryCard extends HTMLElement {
     this._closeDisp();
     this._closePack(true);
     this.classList.toggle("noglare", c.glare === false);
+    this.classList.toggle("btnmain", c.button_all_pages === false);
     this.classList.toggle("lite", this._isLite());
     this._dsig = null;
 
     clearTimeout(this._tm);
     this._selB = c.batteries.map(() => -1);
     this._sel = 0;
+    this._wireSettings(root);
+    this._screenView = c.view === "screen";
+    root.host.classList.toggle("screenview", this._screenView);
+    if (this._screenView) {
+      this._buildScreens(root);
+      return;
+    }
     const card = (b) => `<div class="bc">
     <div class="pkw">
       <div class="pk2" data-k="bccells">
@@ -399,7 +410,7 @@ export class JkBatteryCard extends HTMLElement {
   /* ------------------------------------------------------------ data */
   _nOf(b) {
     const n = +b.cells || +this._cfg.cells || 16;
-    return n <= 8 ? 8 : 16;   // only 8 or 16 cells are supported (same as the editor)
+    return n <= 8 ? 8 : 16; // only 8 or 16 cells are supported (same as the editor)
   }
   // 8 cells can be drawn in two rows of 4 (default) or in one row of 8 (rows: 1)
   _rowsOf(b) {
@@ -464,6 +475,7 @@ export class JkBatteryCard extends HTMLElement {
         mx,
         mn,
         mxI: g("max_voltage_cell"),
+        balI: g("balancing_current"),
         mnI: g("min_voltage_cell"),
         av: g("average_cell_voltage"),
         cells,
@@ -508,6 +520,7 @@ export class JkBatteryCard extends HTMLElement {
   }
 
   _updSimple(d) {
+    if (this._screenView) return this._updScreens(d);
     const r = this.shadowRoot,
       $ = (k) => r.querySelector(`.main [data-k="${k}"]`),
       V = this._cfg.victron || {};
@@ -549,12 +562,14 @@ export class JkBatteryCard extends HTMLElement {
         };
       {
         const s0 = q("bccells") || (this._pp && this._pp.i === i ? this._pp.strip : null),
-          sg0 = n + "/" + (grp ? grp.order.length : 1) + "/" + lay + "/" + rw;
+          sg0 = n + "/" + (grp ? grp.order.length : 1) + "/" + lay + "/" + rw + "/" + this._tOf(bcfg);
         if (s0 && s0._n !== sg0) {
           s0._n = sg0;
           s0.innerHTML =
-            packSvg(n, i, grp ? grp.order.length : 1, lay, rw) + packOverlay(!!grp, bcfg.name || bcfg.entity_base);
+            packSvg(n, i, grp ? grp.order.length : 1, lay, rw, this._tOf(bcfg)) +
+            packOverlay(!!grp, bcfg.name || bcfg.entity_base);
           this._elInit(s0);
+          s0.querySelectorAll("[data-mw]").forEach(fitLabel);
           s0.addEventListener("click", (e) => {
             if (e.target.closest(".dsp")) {
               if (e.target.closest(".pwr")) this._toggleDisp(i);
@@ -608,12 +623,14 @@ export class JkBatteryCard extends HTMLElement {
       q("bcd").style.color = dmv < 15 ? "var(--grn)" : dmv < 45 ? "var(--gold)" : "var(--red)";
       const strip = q("bccells") || (this._pp && this._pp.i === i ? this._pp.strip : null),
         st = b.state === "offline" ? "idle" : b.state;
-      const sig = n + "/" + (grp ? grp.order.length : 1) + "/" + lay + "/" + rw;
+      const sig = n + "/" + (grp ? grp.order.length : 1) + "/" + lay + "/" + rw + "/" + this._tOf(bcfg);
       if (strip._n !== sig) {
         strip._n = sig;
         strip.innerHTML =
-          packSvg(n, i, grp ? grp.order.length : 1, lay, rw) + packOverlay(!!grp, bcfg.name || bcfg.entity_base);
+          packSvg(n, i, grp ? grp.order.length : 1, lay, rw, this._tOf(bcfg)) +
+          packOverlay(!!grp, bcfg.name || bcfg.entity_base);
         this._elInit(strip);
+        strip.querySelectorAll("[data-mw]").forEach(fitLabel);
         strip.addEventListener("click", (e) => {
           if (e.target.closest(".dsp")) {
             if (e.target.closest(".pwr")) this._toggleDisp(i);
@@ -685,94 +702,8 @@ export class JkBatteryCard extends HTMLElement {
         don >= 0
           ? { a: [+cls[don].dataset.lx, +cls[don].dataset.ly], b: [+cls[rec].dataset.lx, +cls[rec].dataset.ly] }
           : null;
-      const dsp = strip.querySelector(".dsp"),
-        D = (k) => dsp.querySelector(`[data-d="${k}"]`),
-        swOff = this._dpv(ci, b.dsp) === "off",
-        dOn = grp ? !this._vOff : !swOff;
-      dsp.classList.toggle("off", !dOn);
-      dsp.classList.toggle("pwroff", swOff);
-      dsp.classList.toggle("act", G0.I > 0.04);
-      if (dOn) {
-        const T = (k, s, col) => {
-            const e = D(k);
-            if (e.textContent !== s) e.textContent = s;
-            if (col) e.setAttribute("fill", col);
-          },
-          soc = clamp(G0.soc || 0, 0, 100),
-          L = soc * 2.4504,
-          mn_ = Math.min,
-          mx_ = Math.max,
-          red = soc <= 10,
-          st = dsp.style,
-          f1 = (x) => x.toFixed(1),
-          tot = !isNaN(G0.capTot) && G0.capTot > 0 ? G0.capTot : soc > 0 && !isNaN(G0.rem) ? (G0.rem / soc) * 100 : NaN,
-          pct = tot > 0 && !isNaN(G0.rem) ? clamp((G0.rem / tot) * 100, 0, 100) : soc,
-          rn = Math.ceil(pct / 5),
-          Lc = mn_(245, rn * 12.25);
-        T("v", fmt(G0.V, 2) + "V");
-        T("a", fmt(G0.I, 1) + "A");
-        T("soc", fmt(G0.soc, 0) + "%");
-        T("np", String(grp ? grp.order.length : 1));
-        T("pn", String(grp ? this._sel || 0 : 0));
-
-        const full = 1.75 * Math.exp(-mx_(0, G0.I - 30) / 60),
-          rst = String(Math.round(mx_(30, (full * 1000) / 20)));
-        {
-          const n1 = Math.max(0, rn);
-          if (st.getPropertyValue("--rn") !== String(n1)) st.setProperty("--rn", n1);
-          if (st.getPropertyValue("--rst") !== rst) st.setProperty("--rst", rst);
-        } // ring: sectors to draw / ms per step (drawn by _ringTick)
-        // Bat-Capacity = number.<bms>_total_battery_capacity (estimated from remaining / SoC only when that entity is missing)
-        T(
-          "cap",
-          !isNaN(G0.capTot)
-            ? G0.capTot.toFixed(1)
-            : G0.soc > 0 && !isNaN(G0.rem)
-              ? ((G0.rem / G0.soc) * 100).toFixed(1)
-              : "–",
-        );
-        T("rem", fmt(G0.rem, 1));
-        T("mx", fmt(G0.mx, 3) + "V");
-        T("mn", fmt(G0.mn, 3) + "V");
-        T("tp", isNaN(G0.mos) ? "–" : Math.round(G0.mos) + " °C");
-        T("pw", fmt(Math.abs(G0.P) / 1000, 1));
-        T("alm", G0.err ? tt("scr_alarmv") : tt("scr_normal"), G0.err ? "#ff4d4d" : GRN);
-        T("chg", b.sw.charging ? tt("scr_on") : tt("scr_off"), b.sw.charging ? GRN : "#e0705f");
-        T("dch", b.sw.discharging ? tt("scr_on") : tt("scr_off"), b.sw.discharging ? GRN : "#e0705f");
-        T(
-          "cap2",
-          (!isNaN(b.capTot)
-            ? b.capTot.toFixed(1)
-            : b.soc > 0 && !isNaN(b.rem)
-              ? ((b.rem / b.soc) * 100).toFixed(1)
-              : "–") + "AH",
-        );
-        T("rem2", fmt(b.rem, 1) + "AH");
-        T("pct2", fmt(b.soc, 0) + "%");
-        T("vd", fmt(b.mx - b.mn, 3) + "V");
-        T("a2", fmt(b.I, 1) + "A");
-        T("tp2", isNaN(b.mos) ? "–" : String(Math.round(b.mos)));
-        T("alm2", b.err ? tt("scr_alarmv") : tt("scr_normal"), b.err ? "#ff4d4d" : GRN);
-        T("chg2", b.sw.charging ? tt("scr_on") : tt("scr_off"), b.sw.charging ? GRN : "#e0705f");
-        T("dch2", b.sw.discharging ? tt("scr_on") : tt("scr_off"), b.sw.discharging ? GRN : "#e0705f");
-        {
-          const totB =
-              !isNaN(b.capTot) && b.capTot > 0 ? b.capTot : b.soc > 0 && !isNaN(b.rem) ? (b.rem / b.soc) * 100 : NaN,
-            pctB = totB > 0 && !isNaN(b.rem) ? clamp((b.rem / totB) * 100, 0, 100) : clamp(b.soc || 0, 0, 100),
-            bn = Math.ceil(pctB / 20);
-          if (dsp._bk !== bn) {
-            dsp._bk = bn;
-            const bcol = bn <= 2 ? "#e0302f" : bn <= 4 ? "#2f8cff" : "#2fd24a";
-            dsp.querySelectorAll(".bb").forEach((e, k) => e.setAttribute("fill", k < bn ? bcol : "#1a0d0d"));
-            dsp
-              .querySelectorAll(".bo")
-              .forEach((e) => e.setAttribute(e.classList.contains("bcap") ? "fill" : "stroke", bcol));
-          }
-        } // battery icon of the pack page (Rem-Capacity / Bat-Capacity in fifths); it flashes through CSS while charging
-        b.cells.forEach((v, k) =>
-          T("cv" + k, isNaN(v) ? "–" : fmt(v, 3) + "V", k === imx ? "#6f8cff" : k === imn ? "#ff4d4d" : GRN),
-        );
-      }
+      const dsp = strip.querySelector(".dsp");
+      this._paintScreen(dsp, { ci, b, G0, grp, imx, imn, don, rec });
       if (this._pop && this._pop.i === i) this._syncPop(dsp);
       const avgV = okV.reduce((a, x) => a + x, 0) / (okV.length || 1),
         rv = b.res.filter((x) => !isNaN(x)),
@@ -831,10 +762,10 @@ export class JkBatteryCard extends HTMLElement {
       setH(
         q("tmpw"),
         `<div class="tmp"><span>${tt("temperature")}</span><b>${[
-            ...b.temps.map((t, i) =>
-              E(`<small>T${i + 1}</small>${isNaN(t) ? "–" : fmt(t, 1) + " °C"}`, `temperature_sensor_${i + 1}`),
-            ),
-            E(`<small>MOS</small>${fmt(b.mos, 0)} °C`, "power_tube_temperature"),
+          ...b.temps.map((t, i) =>
+            E(`<small>T${i + 1}</small>${isNaN(t) ? "–" : fmt(t, 1) + " °C"}`, `temperature_sensor_${i + 1}`),
+          ),
+          E(`<small>MOS</small>${fmt(b.mos, 0)} °C`, "power_tube_temperature"),
         ].join("")}</b></div>`,
       );
       const ct = q("ctrl");
@@ -876,6 +807,457 @@ export class JkBatteryCard extends HTMLElement {
   /* ------------------------------------------------------------ electrons along the conductors */
   // every conductor already carries a hidden path (class "fl") drawn in the direction of the series string, B- -> B+. Electrons run along it with a
   // little random wobble: B- -> B+ while charging, B+ -> B- while discharging (opposite to the conventional current).
+  // paints the values of one JK display (the live one of the card, or the only thing of the "screen" view)
+  _paintScreen(dsp, { ci, b, G0, grp, imx, imn, don, rec }) {
+    dsp._ci = ci;
+    this._stgFill(dsp);
+    const D = (k) => dsp.querySelector(`[data-d="${k}"]`),
+      swOff = this._dpv(ci, b.dsp) === "off",
+      dOn = grp ? !this._vOff : !swOff;
+    dsp.classList.toggle("off", !dOn);
+    dsp.classList.toggle("pwroff", swOff);
+    {
+      // tooltip of the round button: what a click will do
+      const tip = dsp.querySelector(".pwr title");
+      if (tip && tip.textContent !== tt(dOn ? "pwr_off" : "pwr_on")) tip.textContent = tt(dOn ? "pwr_off" : "pwr_on");
+    }
+    dsp.classList.toggle("act", G0.I > 0.04);
+    if (dOn) {
+      const T = (k, s, col) => {
+          const e = D(k);
+          if (e.textContent !== s) e.textContent = s;
+          if (col) e.setAttribute("fill", col);
+        },
+        soc = clamp(G0.soc || 0, 0, 100),
+        L = soc * 2.4504,
+        mn_ = Math.min,
+        mx_ = Math.max,
+        red = soc <= 10,
+        st = dsp.style,
+        f1 = (x) => x.toFixed(1),
+        tot = !isNaN(G0.capTot) && G0.capTot > 0 ? G0.capTot : soc > 0 && !isNaN(G0.rem) ? (G0.rem / soc) * 100 : NaN,
+        pct = tot > 0 && !isNaN(G0.rem) ? clamp((G0.rem / tot) * 100, 0, 100) : soc,
+        rn = Math.ceil(pct / 5),
+        Lc = mn_(245, rn * 12.25);
+      T("v", fmt(G0.V, 2) + "V");
+      T("a", fmt(G0.I, 1) + "A");
+      T("soc", fmt(G0.soc, 0) + "%");
+      T("np", String(grp ? grp.order.length : 1));
+      T("pn", String(grp ? this._sel || 0 : 0));
+
+      const full = 1.75 * Math.exp(-mx_(0, G0.I - 30) / 60),
+        rst = String(Math.round(mx_(30, (full * 1000) / 20)));
+      {
+        const n1 = Math.max(0, rn);
+        if (st.getPropertyValue("--rn") !== String(n1)) st.setProperty("--rn", n1);
+        if (st.getPropertyValue("--rst") !== rst) st.setProperty("--rst", rst);
+      } // ring: sectors to draw / ms per step (drawn by _ringTick)
+      // Bat-Capacity = number.<bms>_total_battery_capacity (estimated from remaining / SoC only when that entity is missing)
+      T(
+        "cap",
+        !isNaN(G0.capTot)
+          ? G0.capTot.toFixed(1)
+          : G0.soc > 0 && !isNaN(G0.rem)
+            ? ((G0.rem / G0.soc) * 100).toFixed(1)
+            : "–",
+      );
+      T("rem", fmt(G0.rem, 1));
+      T("mx", fmt(G0.mx, 3) + "V");
+      T("mn", fmt(G0.mn, 3) + "V");
+      T("tp", isNaN(G0.mos) ? "–" : Math.round(G0.mos) + " °C");
+      T("pw", fmt(Math.abs(G0.P) / 1000, 1));
+      T("alm", G0.err ? tt("scr_alarmv") : tt("scr_normal"), G0.err ? "#ff4d4d" : GRN);
+      T("chg", b.sw.charging ? tt("scr_on") : tt("scr_off"), b.sw.charging ? GRN : "#e0705f");
+      T("dch", b.sw.discharging ? tt("scr_on") : tt("scr_off"), b.sw.discharging ? GRN : "#e0705f");
+      T(
+        "cap2",
+        (!isNaN(b.capTot)
+          ? b.capTot.toFixed(1)
+          : b.soc > 0 && !isNaN(b.rem)
+            ? ((b.rem / b.soc) * 100).toFixed(1)
+            : "–") + "AH",
+      );
+      T("rem2", fmt(b.rem, 1) + "AH");
+      T("pct2", fmt(b.soc, 0) + "%");
+      T("vd", fmt(b.mx - b.mn, 3) + "V");
+      T("a2", fmt(b.I, 1) + "A");
+      T("tp2", isNaN(b.mos) ? "–" : Math.round(b.mos) + " °C");
+      b.temps.forEach((t, k) => T("ts" + k, isNaN(t) ? "–" : fmt(t, 1) + "°C"));
+      {
+        // balancing current: positive = the LOWEST cell receives energy (red), negative = the HIGHEST cell gives energy away (blue);
+        // the line always joins the two cells, the cell that is charged / discharged is outlined and filled by a moving band
+        const I = b.balI,
+          on = don >= 0 && rec >= 0,
+          pos = I > 0.005,
+          neg = I < -0.005,
+          col = isNaN(I) ? GRN : pos ? "#ff5a4d" : neg ? "#4da3ff" : GRN,
+          ln = D("bal");
+        T("bal2", isNaN(I) ? "–" : (I > 0 ? "+" : "") + fmt(I, 2) + "A", col);
+        if (ln) {
+          const g0 = +ln.dataset.g0,
+            gp = +ln.dataset.gp,
+            cx = (k) => 115 + (k % 4) * 78 + 44,
+            ty = (k) => g0 + Math.floor(k / 4) * gp, // baseline of the voltage text
+            gy = (r) => g0 + r * gp + gp / 2 - 3; // the free band under row r
+          let d = "";
+          if (on) {
+            // between the highest and the lowest cell (the highlighted cell tells which one gives and which one receives)
+            // the line runs in the free bands between the texts: it never crosses a number and never doubles back
+            const a = don,
+              z = rec,
+              ra = Math.floor(a / 4),
+              rb = Math.floor(z / 4),
+              xa = cx(a),
+              xb = cx(z),
+              down = ra < rb,
+              y0 = down || ra === rb ? ty(a) + 3 : ty(a) - 10, // leaves the cell by its bottom / top edge
+              y1 = down ? ty(z) - 10 : ty(z) + 3, // and arrives at the facing edge of the other one
+              bandA = down || ra === rb ? gy(ra) : gy(ra - 1),
+              bandB = ra === rb ? gy(ra) : down ? gy(rb - 1) : gy(rb);
+            if (bandA === bandB) d = `M${xa} ${y0} V${bandA} H${xb} V${y1}`;
+            else {
+              // rows further apart: go down a vertical lane between two columns (the one with the smallest detour)
+              const xv = [116, 190, 268, 346].reduce((p, q) =>
+                Math.abs(q - xa) + Math.abs(q - xb) < Math.abs(p - xa) + Math.abs(p - xb) ? q : p,
+              );
+              d = `M${xa} ${y0} V${bandA} H${xv} V${bandB} H${xb} V${y1}`;
+            }
+          }
+          const sign = pos ? "pos" : neg ? "neg" : "unk",
+            set = (el, k, v) => {
+              if (el && el.getAttribute(k) !== String(v)) el.setAttribute(k, v);
+            };
+          [
+            ["bal", "balline"],
+            ["balt", "baltail"],
+            ["balh", "balhead"],
+          ].forEach(([k, base]) => {
+            const p = D(k);
+            if (!p) return;
+            set(p, "d", d);
+            set(p, "class", base + (on ? " on " : " ") + sign);
+          });
+        }
+      }
+      T("chg2", b.sw.charging ? tt("scr_on") : tt("scr_off"), b.sw.charging ? GRN : "#e0705f");
+      T("dch2", b.sw.discharging ? tt("scr_on") : tt("scr_off"), b.sw.discharging ? GRN : "#e0705f");
+      {
+        const totB =
+            !isNaN(b.capTot) && b.capTot > 0 ? b.capTot : b.soc > 0 && !isNaN(b.rem) ? (b.rem / b.soc) * 100 : NaN,
+          pctB = totB > 0 && !isNaN(b.rem) ? clamp((b.rem / totB) * 100, 0, 100) : clamp(b.soc || 0, 0, 100),
+          bn = Math.ceil(pctB / 20);
+        if (dsp._bk !== bn) {
+          dsp._bk = bn;
+          const bcol = bn <= 2 ? "#e0302f" : bn <= 4 ? "#2f8cff" : "#2fd24a";
+          dsp.querySelectorAll(".bb").forEach((e, k) => e.setAttribute("fill", k < bn ? bcol : "#1a0d0d"));
+          dsp
+            .querySelectorAll(".bo")
+            .forEach((e) => e.setAttribute(e.classList.contains("bcap") ? "fill" : "stroke", bcol));
+        }
+      } // battery icon of the pack page (Rem-Capacity / Bat-Capacity in fifths); it flashes through CSS while charging
+      b.cells.forEach((v, k) =>
+        T("cv" + k, isNaN(v) ? "–" : fmt(v, 3) + "V", k === imx ? "#6f8cff" : k === imn ? "#ff4d4d" : GRN),
+      );
+    }
+  }
+  // "screen" view: nothing but the JK display (no BMS, cells, tiles or texts); view_page chooses its page
+  _buildScreens(root) {
+    const c = this._cfg,
+      grp = this._groupInfo(),
+      list = grp ? [c.batteries[grp.mi]] : c.batteries;
+    root.innerHTML = `<style>${CSS}</style><ha-card class="scronly"><div class="scrnote" data-k="note"><span>${tt("scr_note_narrow")}</span><button type="button" data-s="width">${tt("scr_note_btn")}</button><span class="stgm" data-s="wmsg"></span></div>${list
+      .map(
+        () => `<div class="scrbox">
+        ${grp ? `<select class="pksel scrsel" data-k="pksel" title="${tt("pick_battery")}"></select>` : ""}
+        <div class="pk2 scrmini" data-k="bccells"></div>${c.screen_cells ? '<div class="pk2 scrmini scrmini2"></div>' : ""}</div>`,
+      )
+      .join("")}</ha-card>`;
+    if (!root._mc) {
+      root._mc = 1;
+      root.addEventListener("change", (e) => {
+        const sl = e.target.closest(".pksel");
+        if (sl) {
+          this._sel = +sl.value;
+          this._vOff = false;
+          if (this._data) this._updSimple(this._data);
+        }
+      });
+      root.addEventListener("click", (e) => {
+        const m = e.target.closest("[data-m]");
+        if (m) this._more(m.dataset.m);
+      });
+    }
+    this._built = true;
+    if (this._hass) this._update();
+  }
+  _updScreens(d) {
+    const r = this.shadowRoot,
+      grp = (this._grp = this._groupInfo()),
+      two = !!this._cfg.screen_cells; // the cells screen under the main one: then there is no PACKS page
+    if (grp) this._sel = Math.min(this._sel || 0, grp.order.length - 1);
+    const view = grp
+      ? [{ b: d.bats[grp.order[this._sel || 0]], ci: grp.order[this._sel || 0] }]
+      : d.bats.map((b, ci) => ({ b, ci }));
+    view.forEach(({ b, ci }, i) => {
+      const box = r.querySelectorAll(".scrbox")[i];
+      if (!box) return;
+      const G0 = grp
+          ? this._aggr(
+              grp.order.map((x) => d.bats[x]),
+              grp,
+            )
+          : b,
+        bcfg = this._cfg.batteries[ci],
+        n = this._nOf(bcfg);
+      const sl = box.querySelector(".pksel");
+      if (grp && sl) {
+        const html2 = grp.order
+          .map((x, k) => `<option value="${k}">${k === 0 ? "Master" : "Slave " + k} · ${d.bats[x].name}</option>`)
+          .join("");
+        if (sl._h !== html2) {
+          sl._h = html2;
+          sl.innerHTML = html2;
+        }
+        sl.value = String(this._sel || 0);
+      }
+      const okV = b.cells.filter((x) => !isNaN(x)),
+        vmax = Math.max(...okV),
+        vmin = Math.min(...okV),
+        sIdx = (x) => (!isNaN(x) && x >= 1 && x <= b.cells.length ? x - 1 : -1),
+        imx = sIdx(b.mxI) >= 0 ? sIdx(b.mxI) : vmax > vmin ? b.cells.indexOf(vmax) : -1,
+        imn = sIdx(b.mnI) >= 0 ? sIdx(b.mnI) : vmax > vmin ? b.cells.indexOf(vmin) : -1;
+      let don = -1,
+        rec = -1;
+      if (b.balMask) {
+        don = imx >= 0 ? imx : b.cells.indexOf(vmax);
+        rec = imn >= 0 ? imn : b.cells.indexOf(vmin);
+      }
+      if (don === rec) don = rec = -1;
+      [box.querySelector(".scrmini"), box.querySelector(".scrmini2")].forEach((strip, si) => {
+        if (!strip) return;
+        const page = si === 1 ? "cells" : two ? "group" : this._cfg.view_page === "cells" ? "cells" : "group",
+          sg = n + "/" + (grp ? grp.order.length : 1) + "/" + this._tOf(bcfg) + "/" + page + "/" + si + "/" + two;
+        if (strip._n !== sg) {
+          strip._n = sg;
+          strip.innerHTML = packSvg(n, i * 2 + si, grp ? grp.order.length : 1, "top-left", 2, this._tOf(bcfg), true);
+          const svg = strip.querySelector("svg");
+          svg.querySelectorAll("title").forEach((t) => !t.closest(".pwr") && t.remove());
+          svg.querySelectorAll("clipPath rect, .dsp > rect:first-of-type").forEach((e) => {
+            e.setAttribute("rx", 15);
+            e.setAttribute("ry", 15);
+          });
+          const dsp0 = svg.querySelector(".dsp");
+          dsp0.setAttribute("data-pg", page);
+          if (two) dsp0.classList.add("nopacks");
+          svg.querySelectorAll("[data-mw]").forEach(fitLabel);
+          strip.addEventListener("click", (e) => {
+            if (e.target.closest(".pwr")) return this._toggleDisp(ci);
+            const go = e.target.closest("[data-go]"),
+              lm = strip.querySelector(".lmenu");
+            if (lm && !e.target.closest(".lmenu") && !(go && go.dataset.go === "lang")) lm.remove();
+            if (!go) return;
+            if (go.dataset.go === "lang") return this._langMenu(strip);
+            if (two && (go.dataset.go === "packs" || go.dataset.pk !== undefined)) return;
+            if (go.dataset.pk !== undefined) {
+              this._sel = +go.dataset.pk;
+              this._vOff = false;
+              if (this._data) this._updSimple(this._data);
+            }
+            strip.querySelector(".dsp").setAttribute("data-pg", go.dataset.go);
+          });
+        }
+        const nm = strip.querySelector(".scrname"),
+          label = si === 0 ? bcfg.name || bcfg.entity_base || "" : "";
+        if (nm && nm.textContent !== label) nm.textContent = label;
+        this._paintScreen(strip.querySelector(".dsp"), { ci, b, G0, grp, imx, imn, don, rec });
+      });
+    });
+    this._widthHint();
+    this._ringTick();
+  }
+  // a width saved in the dashboard (grid_options.columns: 12, what Home Assistant keeps from the first placement) keeps the card
+  // narrow in a wide section: the card offers to switch it to the full width with one click, no YAML to edit
+  _widthHint() {
+    const note = this.shadowRoot.querySelector(".scrnote");
+    if (!note) return;
+    const go = this._raw && this._raw.grid_options;
+    let sec = null,
+      n = this;
+    for (let i = 0; n && i < 14 && !sec; i++) {
+      n = n.parentNode || n.host;
+      if (n && n.localName && n.localName.indexOf("hui-grid-section") === 0) sec = n;
+    }
+    const w = this.getBoundingClientRect().width,
+      sw = sec ? sec.getBoundingClientRect().width : 0,
+      show = !!(go && typeof go.columns === "number" && sw > w * 1.35 && w > 0);
+    note.classList.toggle("on", show);
+  }
+  async _widthSave(btn) {
+    const msg = this.shadowRoot.querySelector('.scrnote [data-s="wmsg"]'),
+      say = (k, cls, p) => {
+        msg.className = "stgm " + (cls || "");
+        msg.textContent = k ? tt(k, p) : "";
+      },
+      old = this._raw,
+      next = JSON.parse(JSON.stringify(old));
+    next.grid_options = { ...(next.grid_options || {}), columns: "full" };
+    btn.disabled = true;
+    say("scr_st_saving");
+    try {
+      await this._dashSave(old, next);
+      say("scr_st_ok", "ok");
+      this.setConfig(next);
+    } catch (e) {
+      const k = e && e.message && e.message.startsWith("scr_st_err") ? e.message : "scr_st_err_save";
+      say(k, "err", { e: (e && (e.message || e.code)) || "" });
+    }
+    btn.disabled = false;
+  }
+  // ---- SETTINGS page of the screen: a part of the editor; the changes are saved in the dashboard configuration
+  _wireSettings(root) {
+    if (root._sw) return;
+    root._sw = 1;
+    const on = (e) => {
+      const s = e.target.closest && e.target.closest("[data-s]");
+      if (!s || s.dataset.s === "save" || s.dataset.s === "msg") return;
+      const v = this._stgv || (this._stgv = {}),
+        k = s.dataset.s;
+      v[k] = s.type === "checkbox" ? s.checked : k === "name" || k === "view" ? s.value : +s.value;
+      this.shadowRoot.querySelectorAll(".dsp").forEach((d) => this._stgFill(d));
+    };
+    root.addEventListener("input", on);
+    root.addEventListener("change", on);
+    root.addEventListener("click", (e) => {
+      const b = e.target.closest && e.target.closest('button[data-s="save"]');
+      if (b) this._stgSave(b);
+      const w = e.target.closest && e.target.closest('button[data-s="width"]');
+      if (w) this._widthSave(w);
+    });
+    // keys typed in the settings must not reach the dashboard shortcuts
+    root.addEventListener("keydown", (e) => {
+      if (e.target.closest && e.target.closest(".stg")) e.stopPropagation();
+    });
+  }
+  _stgFill(dsp) {
+    const f = dsp.querySelector(".stg");
+    if (!f || dsp._ci === undefined) return;
+    const raw = this._raw || {},
+      bc = (raw.batteries || [])[dsp._ci] || {},
+      p = this._stgv || {},
+      v = (k, d) => (k in p ? p[k] : d),
+      act = f.getRootNode().activeElement,
+      set = (k, val) => {
+        const e = f.querySelector(`[data-s="${k}"]`);
+        if (!e || e === act) return;
+        if (e.type === "checkbox") e.checked = !!val;
+        else if (e.value !== String(val)) e.value = String(val);
+      },
+      view = v("view", raw.view === "screen" ? "screen" : "full"),
+      cells = +v("cells", this._nOf(bc));
+    set("view", view);
+    set("name", v("name", bc.name || ""));
+    set("cells", cells);
+    set("rows", v("rows", bc.rows === 1 ? 1 : 2));
+    set("btn", v("btn", raw.button_all_pages !== false));
+    set("cells2", v("cells2", !!raw.screen_cells));
+    f.querySelector('[data-s-row="cells2"]').style.display = view === "screen" ? "" : "none";
+    f.querySelector('[data-s-row="rows"]').style.display = cells === 8 && view !== "screen" ? "" : "none";
+  }
+  async _stgSave(btn) {
+    const f = btn.closest(".stg"),
+      ci = btn.closest(".dsp")._ci,
+      say = (k, cls, p) => {
+        const m = f.querySelector('[data-s="msg"]');
+        m.className = "stgm " + (cls || "");
+        m.textContent = k ? tt(k, p) : "";
+      },
+      reset = () => {
+        clearTimeout(btn._ct);
+        btn._confirm = false;
+        btn.classList.remove("confirm");
+        btn.textContent = tt("scr_st_save");
+      };
+    // two clicks: the dashboard is only written after a confirmation (auto-cancels after 8 s)
+    if (!btn._confirm) {
+      btn._confirm = true;
+      btn.classList.add("confirm");
+      btn.textContent = tt("scr_st_confirm");
+      btn._ct = setTimeout(reset, 8000);
+      say("");
+      return;
+    }
+    reset();
+    const old = this._raw,
+      next = JSON.parse(JSON.stringify(old)),
+      p = this._stgv || {};
+    if ("view" in p) {
+      if (p.view === "screen") next.view = "screen";
+      else {
+        delete next.view;
+        delete next.view_page;
+      }
+    }
+    if (next.view !== "screen") delete next.screen_cells;
+    else if ("cells2" in p) {
+      if (p.cells2) next.screen_cells = true;
+      else delete next.screen_cells;
+    }
+    if ("btn" in p) {
+      if (p.btn) delete next.button_all_pages;
+      else next.button_all_pages = false;
+    }
+    const bc = (next.batteries || [])[ci];
+    if (bc) {
+      if ("name" in p) {
+        if (p.name) bc.name = p.name;
+        else delete bc.name;
+      }
+      if ("cells" in p) bc.cells = p.cells;
+      if ("rows" in p || "cells" in p) {
+        const rows = "rows" in p ? p.rows : bc.rows === 1 ? 1 : 2;
+        if (+bc.cells === 8 && rows === 1) bc.rows = 1;
+        else delete bc.rows;
+      }
+    } else if (["name", "cells", "rows"].some((k) => k in p)) return say("scr_st_err_auto", "err");
+    if (canon(next) === canon(old)) return say("scr_st_nochg");
+    say("scr_st_saving");
+    try {
+      await this._dashSave(old, next);
+      this._stgv = null;
+      say("scr_st_ok", "ok");
+      this.setConfig(next);
+    } catch (e) {
+      const k = e && e.message && e.message.startsWith("scr_st_err") ? e.message : "scr_st_err_save";
+      say(k, "err", { e: (e && (e.message || e.code)) || "" });
+    }
+  }
+  // finds this card (by its configuration) in the dashboard that is open and saves the changed copy
+  async _dashSave(old, next) {
+    const h = this._hass;
+    if (!h || typeof h.callWS !== "function") throw new Error("scr_st_err_ws");
+    const seg = location.pathname.split("/")[1] || "lovelace",
+      url_path = seg === "lovelace" ? null : seg;
+    let cfg;
+    try {
+      cfg = await h.callWS({ type: "lovelace/config", url_path, force: false });
+    } catch (e) {
+      throw new Error("scr_st_err_yaml");
+    }
+    const key = canon(old),
+      hits = [],
+      walk = (o) => {
+        if (Array.isArray(o)) o.forEach(walk);
+        else if (o && typeof o === "object") {
+          if (o.type === old.type && canon(o) === key) hits.push(o);
+          else Object.values(o).forEach(walk);
+        }
+      };
+    walk(cfg);
+    if (hits.length !== 1) throw new Error(hits.length ? "scr_st_err_many" : "scr_st_err_nf");
+    Object.keys(hits[0]).forEach((k) => delete hits[0][k]);
+    Object.assign(hits[0], next);
+    await h.callWS({ type: "lovelace/config/save", url_path, config: cfg });
+  }
   _elInit(strip) {
     const NS2 = "http://www.w3.org/2000/svg",
       svg = strip.querySelector("svg"),
@@ -1215,7 +1597,7 @@ export class JkBatteryCard extends HTMLElement {
     const svg = bk.querySelector("svg");
     svg.innerHTML = src.outerHTML;
     svg.firstChild.removeAttribute("transform");
-    svg.querySelectorAll("title").forEach((t) => t.remove());
+    svg.querySelectorAll("title").forEach((t) => !t.closest(".pwr") && t.remove());
     {
       const cp = svg.querySelector("clipPath"),
         gl = svg.querySelector(".gl");
@@ -1304,6 +1686,13 @@ export class JkBatteryCard extends HTMLElement {
     if (!p) return;
     const dst = p.el.querySelector(".dsp");
     if (!dst) return;
+    dst._ci = src._ci;
+    {
+      const a = src.querySelector(".pwr title"),
+        b = dst.querySelector(".pwr title");
+      if (a && b && b.textContent !== a.textContent) b.textContent = a.textContent;
+    }
+    this._stgFill(dst);
     ["class", "style"].forEach((a) => {
       const v = src.getAttribute(a) || "";
       if (dst.getAttribute(a) !== v) dst.setAttribute(a, v);
@@ -1324,7 +1713,10 @@ export class JkBatteryCard extends HTMLElement {
       const d = dst.querySelector(`[data-d="${e.dataset.d}"]`);
       if (!d) return;
       if (d.textContent !== e.textContent) d.textContent = e.textContent;
-      ["fill", "stroke", "stroke-dasharray"].forEach((a) => {
+      (/^bal[th]?$/.test(e.dataset.d)
+        ? ["fill", "stroke", "stroke-dasharray", "d", "class", "x", "y", "transform"]
+        : ["fill", "stroke", "stroke-dasharray"]
+      ).forEach((a) => {
         const v = e.getAttribute(a);
         if (v !== null && v !== d.getAttribute(a)) d.setAttribute(a, v);
       });

@@ -14,6 +14,16 @@ Balancing: the highest cell gives to the lowest one and the two are joined by a 
 
 <p align="center"><img src="docs/balancing.gif" alt="Balancing between several pairs of cells" width="720"></p>
 
+## What's new in 1.0.3
+
+- **Screen-only mode**: the card can show nothing but the JK display, with the main screen, the cells screen, or both one under the other (see *Screen-only mode*).
+- **SETTING page on the screen**: change the display mode, the battery name, the number of cells, the cell layout and the round button, and save it into the dashboard.
+- **Balancing on the cells screen**: a moving line (a snake) goes from the highest cell to the lowest one through the free space between the numbers; red when the balancing current is positive, blue when it is negative.
+- **Row of temperature sensors (T1…T4) and the MOS temperature with its unit** on the cells screen.
+- **Labels and values aligned in every language**: the labels of the screen shrink to fit their column.
+- **Tooltip on the round button** of the display: *Turn the display off* / *Turn the display on*.
+- **Sections dashboards**: the card asks for the whole width of its section and the screens follow it (columns); if a saved width keeps it narrow, a notice with one button, *Use the full width*, fixes it. The *Language* label of the screen also works in screen-only mode.
+
 > **Tested only with the JK BMS PB2A16S20P v19.** Using the card with another BMS (other model or firmware, different entity names or values) is your own responsibility: expect that things may not work as shown.
 >
 > **This card is distributed "as is"**, without any warranty of any kind and without any promise of support or fixes. You use it at your own risk.
@@ -23,6 +33,9 @@ Balancing: the highest cell gives to the lowest one and the two are joined by a 
 - **Pack drawing** (2 rows of cells, 8 or 16 cells per battery): cell voltage and internal resistance, liquid level = SoC, highest cell (MAX) and lowest cell (MIN) marked from the BMS sensors `max_voltage_cell` / `min_voltage_cell`, busbars and cables, electrons moving in the real direction of the current.
 - **Balancing**: the lightning between the highest and the lowest cell, and the status chip *balancing* while the balancer works.
 - **BMS screen replica**: click it to enlarge. GROUP / PACKS / cells pages like the real display, the round button switches the `display_always_on` switch, the *Language* label changes the language of the whole card (see *Translations*).
+- **SETTING page on the screen**: display mode (full card / screen only), battery name, number of cells, cell layout (8 cells) and the round button on every page. *Save to dashboard* (asks for a second click) writes the change into the dashboard configuration, so it needs a dashboard in the UI editor (not YAML mode) and an administrator account; otherwise use the card editor.
+- **Balancing on the cells page of the screen**: a moving line goes from the highest cell to the lowest one, through the free space between the numbers; red for a positive balancing current, blue for a negative one.
+- **Screen-only mode**: only the JK display, the main screen, the cells screen or both, for dashboards that just want the screen (see *Screen-only mode*).
 - **Master / slave groups** (declared in the card, the integration sees every BMS separately): one card, a selector chooses the pack, the screen shows the group totals.
 - **Safe switches**: charging / discharging / balancing / heating ask for confirmation.
 - **Every value opens its entity** (more-info).
@@ -78,11 +91,69 @@ batteries:
 | `batteries[].rows` | `2` | Only for 8 cells: `1` = one row of 8, `2` (default) = two rows of 4, see *8 cells* below |
 | `batteries[].heating` | `true` | `false` hides the Heating button (for a BMS without heating plates). Without this option the button is shown when the BMS has the heating switch |
 | `batteries[].role` | – | `master` for one battery, `slave` for the others: one card with a pack selector |
+| `view` | `full` | `full` (the whole card) or `screen` (only the JK display: no BMS, cells, numbers or texts) |
+| `view_page` | `group` | With `view: screen`: `group` (main screen) or `cells` (screen with the cell voltages). Add the card twice to show both |
+| `screen_cells` | `false` | With `view: screen`: also draws the cells screen under the main screen (one card instead of two); the PACKS page is then switched off |
+| `button_all_pages` | `true` | `false` draws the round display button only on the main page of the screen (not on the cells page) |
 | `glare` | `true` | Light reflection on the BMS screen |
 | `language` | `auto` | `auto` (Home Assistant language) or `en` `fr` `de` `it` `es` `ro` |
 | `performance` | `auto` | `auto` (light on touch / weak devices), `full`, `lite` |
 | `translations_path` | next to the card | Optional: URL of a folder with `translations/<code>.json` for a language that is not bundled |
 | `victron` | – | Optional SmartShunt / MultiPlus entities, see below |
+
+### Screen-only mode
+
+For a dashboard that only needs the display, set `view: screen`: no BMS, no cells, no numbers or texts around it, just the JK screen with the name of the battery in grey above it. You choose the page of the screen:
+
+```yaml
+type: custom:jk-bms-battery-card
+view: screen
+view_page: group        # group = main screen (default), cells = screen with the cell voltages
+batteries:
+  - name: Battery 1
+    entity_base: jk_bms_bms0
+```
+
+To show the main screen and the cells screen one under the other, in the same card, add `screen_cells: true`:
+
+```yaml
+type: custom:jk-bms-battery-card
+view: screen
+screen_cells: true
+batteries:
+  - name: Battery 1
+    entity_base: jk_bms_bms0
+```
+
+<p align="center"><img src="docs/screen-only.png" alt="Screen-only mode: the main screen and the cells screen" width="440"></p>
+
+- With `screen_cells` the **PACKS page is off** (the tab is greyed out and the back arrow of the cells page is hidden): every battery has its own two screens. With a master / slave group a selector above the screens chooses the pack.
+- The round button still switches the display on and off; its tooltip says what a click will do. `button_all_pages: false` draws it only on the main screen.
+- The **SETTING** tab opens a page with the display mode (full card / screen only), the name of the battery, the number of cells, the cell layout (8 cells, full card), the button option and the cells screen under the main one. **Save to dashboard** asks for a second click and then writes the change into the dashboard configuration: it needs a dashboard edited in the user interface (not YAML mode) and an administrator account; otherwise use the card editor. The name and the cells can only be saved for a battery that is written in the card (not an auto-detected one).
+
+#### Layout in a sections dashboard
+
+With several batteries the screens follow the **width of the section** the card is in (*Section configuration → Appearance → Width*); each screen needs about 340 px:
+
+| Section width | Screens |
+|---|---|
+| **Single** | one under the other |
+| **Double** | two columns |
+| **Triple** | three columns |
+| **Full width** | side by side over the whole width (one column per battery; the rest wrap to the next row) |
+
+In a sections dashboard the card takes the **whole width of its section** by default (`columns: full`); to make it narrower use the *Layout* tab of the card (or `grid_options` in YAML).
+
+> If the card stays narrow in a wide section (Home Assistant keeps the width it saved when the card was first placed, `grid_options: { columns: 12 }`, and a saved width wins over what the card asks for), the screen-only card shows a notice with a button **Use the full width**. One click writes the full width into the dashboard (it needs an administrator account); no YAML to edit. By hand: `grid_options: { columns: full, rows: auto }` in the card's YAML, or the *Layout* tab.
+ A narrow screen (a phone) always stacks the screens. The full card (`view: full`) puts at most two batteries in a row.
+
+#### Balancing on the cells screen
+
+While the balancer works, a moving line runs from the highest cell, which gives energy, to the lowest one, which receives it. The sensor `balancing_current` only sets the colour: **red** when it is positive, **blue** when it is negative.
+
+The line between the two cells follows the free space between the numbers and never crosses one.
+
+<p align="center"><img src="docs/screen-balancing-snake.gif" alt="Balancing on the cells screen, with a positive and a negative current" width="560"></p>
 
 ### 8 cells: two rows of 4 or one row of 8
 
@@ -106,7 +177,7 @@ The animations below show both layouts while the battery is charging and then di
 
 ### Entities used
 
-For each battery (`<base>` = `entity_base`): `sensor.<base>_cell_voltage_1..16`, `_cell_resistance_1..16`, `_total_voltage`, `_current`, `_power`, `_state_of_charge`, `_state_of_health`, `_capacity_remaining`, `_charging_cycles`, `_min_cell_voltage`, `_max_cell_voltage`, `_min_voltage_cell`, `_max_voltage_cell`, `_delta_cell_voltage`, `_balancing`, `_temperature_sensor_1..4`, `_power_tube_temperature`, `_errors`, `_hardware_version`, `_software_version`, `_total_runtime_formatted`; `switch.<base>_charging|discharging|balancer|heating|display_always_on`; `number.<base>_balance_starting_voltage|balance_trigger_voltage|total_battery_capacity`; `binary_sensor.<base>_online_status`. Missing entities simply show `–`.
+For each battery (`<base>` = `entity_base`): `sensor.<base>_cell_voltage_1..16`, `_cell_resistance_1..16`, `_total_voltage`, `_current`, `_power`, `_state_of_charge`, `_state_of_health`, `_capacity_remaining`, `_charging_cycles`, `_min_cell_voltage`, `_max_cell_voltage`, `_min_voltage_cell`, `_max_voltage_cell`, `_delta_cell_voltage`, `_balancing`, `_balancing_current`, `_temperature_sensor_1..4`, `_power_tube_temperature`, `_errors`, `_hardware_version`, `_software_version`, `_total_runtime_formatted`; `switch.<base>_charging|discharging|balancer|heating|display_always_on`; `number.<base>_balance_starting_voltage|balance_trigger_voltage|total_battery_capacity`; `binary_sensor.<base>_online_status`. Missing entities simply show `–`.
 
 ### Custom entity names
 

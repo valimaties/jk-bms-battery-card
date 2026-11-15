@@ -1,6 +1,6 @@
 (() => {
   // src/version.js
-  var VERSION = true ? "1.0.1" : "dev";
+  var VERSION = true ? "1.0.3" : "dev";
 
   // src/state.js
   var ST = { lang: "en", editing: 0, langList: null };
@@ -17,6 +17,8 @@
     pick_battery: "Batterie w\xE4hlen",
     screen_tip: "BMS-Display \xB7 Klick: vergr\xF6\xDFern",
     pwr_tip: "BMS-Display: ein / aus (display_always_on)",
+    pwr_off: "Display ausschalten",
+    pwr_on: "Display einschalten",
     st_charging: "l\xE4dt",
     st_discharging: "entl\xE4dt",
     st_idle: "Ruhe",
@@ -139,6 +141,7 @@
     ek_charge_status: "Ladestatus",
     ek_operation_status: "Betriebsstatus",
     lbl_glare: "Lichtreflexion auf dem BMS-Display",
+    lbl_btnall: "Runden Display-Knopf auf allen Seiten des Bildschirms zeigen (sonst nur auf der Hauptseite)",
     ed_advanced: "Erweiterte Einstellungen",
     lbl_language: "Sprache",
     lang_auto: "Automatisch (Home Assistant)",
@@ -152,12 +155,32 @@
     scr_temp: "Temp",
     scr_pwr: "Leist.(kW)",
     scr_alarm: "Alarm",
+    scr_balcur: "Bal.-Strom",
     scr_packs: "Packs",
     scr_chg: "LAD",
     scr_dch: "ENT",
     scr_tab_group: "GRUPPE",
     scr_tab_packs: "PACKS",
     scr_tab_setting: "EINSTELL.",
+    scr_st_view: "Anzeigemodus",
+    scr_st_name: "Batteriename",
+    scr_st_cells: "Zellen",
+    scr_st_rows: "Zellenanordnung",
+    scr_st_btn: "Knopf auf allen Seiten",
+    scr_st_cells2: "Zellenbildschirm darunter",
+    scr_st_save: "Im Dashboard speichern",
+    scr_st_confirm: "Speichern best\xE4tigen",
+    scr_st_saving: "Speichern\u2026",
+    scr_st_ok: "Gespeichert",
+    scr_st_nochg: "Nichts ge\xE4ndert",
+    scr_st_err_ws: "Speichern geht nur in Home Assistant",
+    scr_st_err_yaml: "Dashboard nicht \xE4nderbar (YAML-Modus oder keine Rechte): Karteneditor benutzen",
+    scr_st_err_nf: "Diese Karte wurde im Dashboard nicht gefunden",
+    scr_st_err_many: "Mehrere gleiche Karten: diese im Editor \xE4ndern",
+    scr_st_err_save: "Speichern fehlgeschlagen: {e}",
+    scr_st_err_auto: "Name und Zellen brauchen eine in der Karte eingetragene Batterie (nicht automatisch erkannt)",
+    scr_note_narrow: "Die Karte nutzt nur einen Teil der Breite ihres Abschnitts.",
+    scr_note_btn: "Volle Breite nutzen",
     scr_batcap2: "Bat.-Kapazit\xE4t",
     scr_remcap2: "Restkapazit\xE4t",
     scr_voldiff: "Spg.-Diff.",
@@ -174,7 +197,14 @@
     lbl_perf: "Leistung",
     perf_auto: "Automatisch (schlanker auf Handy/Tablet)",
     perf_full: "Alle Effekte",
-    perf_lite: "Leicht (ohne Blasen, Wellen und Leuchten)"
+    perf_lite: "Leicht (ohne Blasen, Wellen und Leuchten)",
+    lbl_view: "Ansicht",
+    view_full: "Komplette Karte",
+    view_screen: "Nur JK-Bildschirm",
+    lbl_vpage: "Bildschirmseite",
+    vpage_group: "Hauptbildschirm",
+    vpage_cells: "Zellenbildschirm",
+    lbl_scells: "Zellenbildschirm unter dem Hauptbildschirm (die Seite PACKS ist dann aus)"
   };
 
   // translations/en.json
@@ -189,6 +219,8 @@
     pick_battery: "Choose battery",
     screen_tip: "BMS screen \xB7 click: enlarge",
     pwr_tip: "BMS screen: on / off (display_always_on)",
+    pwr_off: "Turn the display off",
+    pwr_on: "Turn the display on",
     st_charging: "charging",
     st_discharging: "discharging",
     st_idle: "idle",
@@ -311,6 +343,7 @@
     ek_charge_status: "Charge status",
     ek_operation_status: "Operation status",
     lbl_glare: "Light reflection on the BMS screen",
+    lbl_btnall: "Show the round display button on every page of the screen (otherwise only on the main page)",
     ed_advanced: "Advanced settings",
     lbl_language: "Language",
     lang_auto: "Automatic (Home Assistant)",
@@ -324,12 +357,32 @@
     scr_temp: "Temp",
     scr_pwr: "Pwr(kW)",
     scr_alarm: "Alarm",
+    scr_balcur: "Bal.cur.",
     scr_packs: "Packs",
     scr_chg: "CHG",
     scr_dch: "DCH",
     scr_tab_group: "GROUP",
     scr_tab_packs: "PACKS",
     scr_tab_setting: "SETTING",
+    scr_st_view: "Display mode",
+    scr_st_name: "Battery name",
+    scr_st_cells: "Cells",
+    scr_st_rows: "Cell layout",
+    scr_st_btn: "Button on every page",
+    scr_st_cells2: "Cells screen below",
+    scr_st_save: "Save to dashboard",
+    scr_st_confirm: "Confirm save",
+    scr_st_saving: "Saving\u2026",
+    scr_st_ok: "Saved",
+    scr_st_nochg: "Nothing changed",
+    scr_st_err_ws: "Saving works only inside Home Assistant",
+    scr_st_err_yaml: "Cannot edit this dashboard (YAML mode or no permission): use the card editor",
+    scr_st_err_nf: "This card was not found in the dashboard",
+    scr_st_err_many: "Several identical cards: change this one in the editor",
+    scr_st_err_save: "Could not save: {e}",
+    scr_st_err_auto: "Name and cells need a battery listed in the card (not auto-detected)",
+    scr_note_narrow: "The card uses only part of the width of its section.",
+    scr_note_btn: "Use the full width",
     scr_batcap2: "Bat-Capacity",
     scr_remcap2: "Rem-Capacity",
     scr_voldiff: "Vol.diff",
@@ -346,7 +399,14 @@
     lbl_perf: "Performance",
     perf_auto: "Automatic (lighter on phones/tablets)",
     perf_full: "Full effects",
-    perf_lite: "Light (no bubbles, waves or glows)"
+    perf_lite: "Light (no bubbles, waves or glows)",
+    lbl_view: "View",
+    view_full: "Full card",
+    view_screen: "JK screen only",
+    lbl_vpage: "Screen page",
+    vpage_group: "Main screen",
+    vpage_cells: "Cells screen",
+    lbl_scells: "Cells screen under the main screen (the PACKS page is then off)"
   };
 
   // translations/es.json
@@ -361,6 +421,8 @@
     pick_battery: "Elegir bater\xEDa",
     screen_tip: "Pantalla BMS \xB7 clic: ampliar",
     pwr_tip: "Pantalla BMS: encendida / apagada (display_always_on)",
+    pwr_off: "Apagar la pantalla",
+    pwr_on: "Encender la pantalla",
     st_charging: "cargando",
     st_discharging: "descargando",
     st_idle: "en reposo",
@@ -483,6 +545,7 @@
     ek_charge_status: "Estado de carga (estado)",
     ek_operation_status: "Estado de funcionamiento",
     lbl_glare: "Reflejo de luz en la pantalla BMS",
+    lbl_btnall: "Mostrar el bot\xF3n redondo de la pantalla en todas las p\xE1ginas (si no, solo en la principal)",
     ed_advanced: "Ajustes avanzados",
     lbl_language: "Idioma",
     lang_auto: "Autom\xE1tico (Home Assistant)",
@@ -496,12 +559,32 @@
     scr_temp: "Temp",
     scr_pwr: "Pot.(kW)",
     scr_alarm: "Alarma",
+    scr_balcur: "Corr.equil.",
     scr_packs: "Packs",
     scr_chg: "CAR",
     scr_dch: "DES",
     scr_tab_group: "GRUPO",
     scr_tab_packs: "PACKS",
     scr_tab_setting: "AJUSTES",
+    scr_st_view: "Modo de visualizaci\xF3n",
+    scr_st_name: "Nombre de la bater\xEDa",
+    scr_st_cells: "Celdas",
+    scr_st_rows: "Disposici\xF3n de las celdas",
+    scr_st_btn: "Bot\xF3n en todas las p\xE1ginas",
+    scr_st_cells2: "Pantalla de celdas debajo",
+    scr_st_save: "Guardar en el panel",
+    scr_st_confirm: "Confirmar guardado",
+    scr_st_saving: "Guardando\u2026",
+    scr_st_ok: "Guardado",
+    scr_st_nochg: "Nada que guardar",
+    scr_st_err_ws: "Guardar solo funciona dentro de Home Assistant",
+    scr_st_err_yaml: "No se puede editar este panel (modo YAML o permisos): usa el editor de la tarjeta",
+    scr_st_err_nf: "No se encontr\xF3 esta tarjeta en el panel",
+    scr_st_err_many: "Varias tarjetas id\xE9nticas: c\xE1mbiala en el editor",
+    scr_st_err_save: "No se pudo guardar: {e}",
+    scr_st_err_auto: "El nombre y las celdas requieren una bater\xEDa escrita en la tarjeta (no detectada autom\xE1ticamente)",
+    scr_note_narrow: "La tarjeta solo usa una parte del ancho de su secci\xF3n.",
+    scr_note_btn: "Usar todo el ancho",
     scr_batcap2: "Cap. bater\xEDa",
     scr_remcap2: "Cap. restante",
     scr_voldiff: "Dif. tens.",
@@ -518,7 +601,14 @@
     lbl_perf: "Rendimiento",
     perf_auto: "Autom\xE1tico (m\xE1s ligero en m\xF3vil/tablet)",
     perf_full: "Efectos completos",
-    perf_lite: "Ligero (sin burbujas, olas ni brillos)"
+    perf_lite: "Ligero (sin burbujas, olas ni brillos)",
+    lbl_view: "Vista",
+    view_full: "Tarjeta completa",
+    view_screen: "Solo pantalla JK",
+    lbl_vpage: "P\xE1gina de la pantalla",
+    vpage_group: "Pantalla principal",
+    vpage_cells: "Pantalla de celdas",
+    lbl_scells: "Pantalla de celdas bajo la principal (la p\xE1gina PACKS se desactiva)"
   };
 
   // translations/fr.json
@@ -533,6 +623,8 @@
     pick_battery: "Choisir la batterie",
     screen_tip: "\xC9cran BMS \xB7 clic : agrandir",
     pwr_tip: "\xC9cran BMS : allum\xE9 / \xE9teint (display_always_on)",
+    pwr_off: "\xC9teindre l'\xE9cran",
+    pwr_on: "Allumer l'\xE9cran",
     st_charging: "en charge",
     st_discharging: "en d\xE9charge",
     st_idle: "au repos",
@@ -655,6 +747,7 @@
     ek_charge_status: "\xC9tat de charge (statut)",
     ek_operation_status: "\xC9tat de fonctionnement",
     lbl_glare: "Reflet de lumi\xE8re sur l'\xE9cran BMS",
+    lbl_btnall: "Afficher le bouton rond de l'\xE9cran sur toutes les pages (sinon seulement sur la page principale)",
     ed_advanced: "R\xE9glages avanc\xE9s",
     lbl_language: "Langue",
     lang_auto: "Automatique (Home Assistant)",
@@ -668,12 +761,32 @@
     scr_temp: "Temp",
     scr_pwr: "Puiss.(kW)",
     scr_alarm: "Alarme",
+    scr_balcur: "Cour.\xE9quil.",
     scr_packs: "Packs",
     scr_chg: "CHG",
     scr_dch: "DCH",
     scr_tab_group: "GROUPE",
     scr_tab_packs: "PACKS",
     scr_tab_setting: "R\xC9GLAGES",
+    scr_st_view: "Mode d'affichage",
+    scr_st_name: "Nom de la batterie",
+    scr_st_cells: "Cellules",
+    scr_st_rows: "Disposition des cellules",
+    scr_st_btn: "Bouton sur toutes les pages",
+    scr_st_cells2: "\xC9cran des cellules dessous",
+    scr_st_save: "Enregistrer dans le tableau de bord",
+    scr_st_confirm: "Confirmer l'enregistrement",
+    scr_st_saving: "Enregistrement\u2026",
+    scr_st_ok: "Enregistr\xE9",
+    scr_st_nochg: "Rien \xE0 enregistrer",
+    scr_st_err_ws: "L'enregistrement ne marche que dans Home Assistant",
+    scr_st_err_yaml: "Ce tableau de bord n'est pas modifiable (mode YAML ou droits): utilisez l'\xE9diteur de la carte",
+    scr_st_err_nf: "Cette carte est introuvable dans le tableau de bord",
+    scr_st_err_many: "Plusieurs cartes identiques: modifiez celle-ci dans l'\xE9diteur",
+    scr_st_err_save: "\xC9chec de l'enregistrement: {e}",
+    scr_st_err_auto: "Le nom et les cellules demandent une batterie list\xE9e dans la carte (non d\xE9tect\xE9e automatiquement)",
+    scr_note_narrow: "La carte n'utilise qu'une partie de la largeur de sa section.",
+    scr_note_btn: "Utiliser toute la largeur",
     scr_batcap2: "Capacit\xE9 bat.",
     scr_remcap2: "Capacit\xE9 rest.",
     scr_voldiff: "\xC9cart V",
@@ -690,7 +803,14 @@
     lbl_perf: "Performances",
     perf_auto: "Automatique (plus l\xE9ger sur t\xE9l\xE9phone/tablette)",
     perf_full: "Effets complets",
-    perf_lite: "L\xE9ger (sans bulles, vagues ni halos)"
+    perf_lite: "L\xE9ger (sans bulles, vagues ni halos)",
+    lbl_view: "Affichage",
+    view_full: "Carte compl\xE8te",
+    view_screen: "\xC9cran JK seulement",
+    lbl_vpage: "Page de l'\xE9cran",
+    vpage_group: "\xC9cran principal",
+    vpage_cells: "\xC9cran des cellules",
+    lbl_scells: "\xC9cran des cellules sous l'\xE9cran principal (la page PACKS est alors d\xE9sactiv\xE9e)"
   };
 
   // translations/it.json
@@ -705,6 +825,8 @@
     pick_battery: "Scegli la batteria",
     screen_tip: "Schermo BMS \xB7 clic: ingrandisci",
     pwr_tip: "Schermo BMS: acceso / spento (display_always_on)",
+    pwr_off: "Spegni il display",
+    pwr_on: "Accendi il display",
     st_charging: "in carica",
     st_discharging: "in scarica",
     st_idle: "a riposo",
@@ -827,6 +949,7 @@
     ek_charge_status: "Stato di carica (stato)",
     ek_operation_status: "Stato di funzionamento",
     lbl_glare: "Riflesso di luce sullo schermo BMS",
+    lbl_btnall: "Mostra il pulsante rotondo dello schermo in tutte le pagine (altrimenti solo nella principale)",
     ed_advanced: "Impostazioni avanzate",
     lbl_language: "Lingua",
     lang_auto: "Automatica (Home Assistant)",
@@ -840,12 +963,32 @@
     scr_temp: "Temp",
     scr_pwr: "Pot.(kW)",
     scr_alarm: "Allarme",
+    scr_balcur: "Corr.bil.",
     scr_packs: "Pack",
     scr_chg: "CAR",
     scr_dch: "SCA",
     scr_tab_group: "GRUPPO",
     scr_tab_packs: "PACK",
     scr_tab_setting: "IMPOST.",
+    scr_st_view: "Modalit\xE0 di visualizzazione",
+    scr_st_name: "Nome della batteria",
+    scr_st_cells: "Celle",
+    scr_st_rows: "Disposizione delle celle",
+    scr_st_btn: "Pulsante su tutte le pagine",
+    scr_st_cells2: "Schermata celle sotto",
+    scr_st_save: "Salva nella dashboard",
+    scr_st_confirm: "Conferma il salvataggio",
+    scr_st_saving: "Salvataggio\u2026",
+    scr_st_ok: "Salvato",
+    scr_st_nochg: "Nessuna modifica",
+    scr_st_err_ws: "Il salvataggio funziona solo in Home Assistant",
+    scr_st_err_yaml: "Dashboard non modificabile (modalit\xE0 YAML o permessi): usa l'editor della scheda",
+    scr_st_err_nf: "Scheda non trovata nella dashboard",
+    scr_st_err_many: "Pi\xF9 schede identiche: modifica questa nell'editor",
+    scr_st_err_save: "Salvataggio non riuscito: {e}",
+    scr_st_err_auto: "Nome e celle richiedono una batteria elencata nella scheda (non rilevata automaticamente)",
+    scr_note_narrow: "La scheda usa solo una parte della larghezza della sezione.",
+    scr_note_btn: "Usa tutta la larghezza",
     scr_batcap2: "Cap. batteria",
     scr_remcap2: "Cap. residua",
     scr_voldiff: "Diff. tens.",
@@ -862,7 +1005,14 @@
     lbl_perf: "Prestazioni",
     perf_auto: "Automatico (pi\xF9 leggero su telefono/tablet)",
     perf_full: "Effetti completi",
-    perf_lite: "Leggero (senza bolle, onde e aloni)"
+    perf_lite: "Leggero (senza bolle, onde e aloni)",
+    lbl_view: "Visualizzazione",
+    view_full: "Scheda completa",
+    view_screen: "Solo schermo JK",
+    lbl_vpage: "Pagina dello schermo",
+    vpage_group: "Schermata principale",
+    vpage_cells: "Schermata celle",
+    lbl_scells: "Schermata celle sotto la principale (la pagina PACKS viene disattivata)"
   };
 
   // translations/ro.json
@@ -877,6 +1027,8 @@
     pick_battery: "Alege bateria",
     screen_tip: "Ecranul BMS \xB7 click: m\u0103re\u0219te",
     pwr_tip: "Ecran BMS: aprins / stins (display_always_on)",
+    pwr_off: "Stinge display-ul",
+    pwr_on: "Aprinde display-ul",
     st_charging: "\xEEncarc\u0103",
     st_discharging: "descarc\u0103",
     st_idle: "repaus",
@@ -999,6 +1151,7 @@
     ek_charge_status: "Stare \xEEnc\u0103rcare",
     ek_operation_status: "Stare func\u021Bionare",
     lbl_glare: "Reflexia de lumin\u0103 pe ecranul BMS",
+    lbl_btnall: "Arat\u0103 butonul rotund al display-ului pe toate paginile ecranului (altfel doar pe pagina principal\u0103)",
     ed_advanced: "Set\u0103ri avansate",
     lbl_language: "Limb\u0103",
     lang_auto: "Automat (Home Assistant)",
@@ -1012,12 +1165,32 @@
     scr_temp: "Temp",
     scr_pwr: "Put.(kW)",
     scr_alarm: "Alarm\u0103",
+    scr_balcur: "Cur.echil.",
     scr_packs: "Pachete",
     scr_chg: "\xCENC",
     scr_dch: "DES",
     scr_tab_group: "GRUP",
     scr_tab_packs: "PACHETE",
     scr_tab_setting: "SET\u0102RI",
+    scr_st_view: "Mod de afi\u0219are",
+    scr_st_name: "Numele bateriei",
+    scr_st_cells: "Celule",
+    scr_st_rows: "Aranjarea celulelor",
+    scr_st_btn: "Buton pe toate paginile",
+    scr_st_cells2: "Ecran cu celule dedesubt",
+    scr_st_save: "Salveaz\u0103 \xEEn dashboard",
+    scr_st_confirm: "Confirm\u0103 salvarea",
+    scr_st_saving: "Se salveaz\u0103\u2026",
+    scr_st_ok: "Salvat",
+    scr_st_nochg: "Nimic de salvat",
+    scr_st_err_ws: "Salvarea merge doar \xEEn Home Assistant",
+    scr_st_err_yaml: "Dashboardul nu poate fi modificat (mod YAML sau f\u0103r\u0103 drepturi): folose\u0219te editorul cardului",
+    scr_st_err_nf: "Cardul nu a fost g\u0103sit \xEEn dashboard",
+    scr_st_err_many: "Mai multe carduri identice: schimb\u0103 acest card din editor",
+    scr_st_err_save: "Nu s-a putut salva: {e}",
+    scr_st_err_auto: "Numele \u0219i celulele cer o baterie scris\u0103 \xEEn card (nu detectat\u0103 automat)",
+    scr_note_narrow: "Cardul folose\u0219te doar o parte din l\u0103\u021Bimea sec\u021Biunii.",
+    scr_note_btn: "Folose\u0219te toat\u0103 l\u0103\u021Bimea",
     scr_batcap2: "Cap. baterie",
     scr_remcap2: "Cap. r\u0103mas\u0103",
     scr_voldiff: "Dif. tens.",
@@ -1034,7 +1207,14 @@
     lbl_perf: "Performan\u021B\u0103",
     perf_auto: "Automat (mai u\u0219or pe telefon/tablet\u0103)",
     perf_full: "Efecte complete",
-    perf_lite: "U\u0219or (f\u0103r\u0103 bule, valuri \u0219i str\u0103luciri)"
+    perf_lite: "U\u0219or (f\u0103r\u0103 bule, valuri \u0219i str\u0103luciri)",
+    lbl_view: "Afi\u0219are",
+    view_full: "Card complet",
+    view_screen: "Doar ecranul JK",
+    lbl_vpage: "Pagina ecranului",
+    vpage_group: "Ecranul principal",
+    vpage_cells: "Ecranul cu celule",
+    lbl_scells: "Ecranul cu celule sub ecranul principal (pagina PACHETE se dezactiveaz\u0103)"
   };
 
   // src/i18n.js
@@ -1107,7 +1287,7 @@
   </div>
   </div>`;
   }
-  function packSvg(n, id, np = 1, layout = "top-left", rows = 2) {
+  function packSvg(n, id, np = 1, layout = "top-left", rows = 2, nt = 0, screenOnly = false) {
     const { W, H, wh } = PK, per = rows === 1 ? n : Math.ceil(n / 2), xl = 236, xr = 834, slot = (xr - xl) / Math.max(8, per), xe = xl + per * slot, cw = slot * 0.9, ch = 165, dep = 40, f = 0.94, vx = (xl + xe) / 2, rowY = rows === 1 ? [H / 2 - (ch + 33 - dep) / 2] : [58, 314];
     const startRow = rows === 1 ? 0 : /^bottom/.test(layout) ? 1 : 0, fromLeft = rows === 1 || !/right$/.test(layout);
     const kOf = (row, j) => row === startRow ? fromLeft ? j : per - 1 - j : per + (fromLeft ? per - 1 - j : j);
@@ -1211,7 +1391,8 @@
     <circle cx="${e[0]}" cy="${e[1]}" r="1.6" fill="#2b2f36"/>`
     ).join("")}`;
     const BLK = "#1b1e23", RED = "#a8453c";
-    for (let row = 0; row < rows; row++) for (let j = 0; j < per - 1; j++) cables += bar(row, j, mirrored(j) ? FRONT : BACK);
+    for (let row = 0; row < rows; row++)
+      for (let j = 0; j < per - 1; j++) cables += bar(row, j, mirrored(j) ? FRONT : BACK);
     const PERS = [0.93, -0.07, 0.075, 1];
     const bs = 0.75, K = bs / (270 / 490), bcx = 112, bcy = H / 2, bt = (px, py) => [bcx - (px - 80) * bs, bcy - (py - 245) * bs];
     const cellSide = [bt(17.5, 191.5), bt(17.5, 225)], outSide = [bt(123.5, 185), bt(123.5, 224)], led = [bt(35, 147.5), bt(70, 147.5), bt(105, 147.5)], hb = bt(120, 22);
@@ -1284,7 +1465,8 @@
     <text x="${pt[0] - 4}" y="${pt[1] - 13}" font-size="16" font-weight="700" fill="${plus ? "#b5594f" : "var(--dim)"}">${plus ? "+" : "\u2212"}</text>`;
     const lcd = bt(146, 333), dsc = (l, x, y, fs, fill, extra = "") => `<text x="${x}" y="${y}" font-size="${fs}" fill="${fill}" ${extra}>${l}</text>`, dt = (key, suf, x, y, fs, fill, extra = "") => dsc(tt(key) + suf, x, y, fs, fill, `data-tr="${key}|${suf}" ${extra}`), GR = "#5cf08a", WT = "#e6ece8";
     const dv = (k, x, y, fs, anchor = "start") => `<text data-d="${k}" x="${x}" y="${y}" font-size="${fs}" font-weight="700" fill="${GR}" text-anchor="${anchor}">\u2013</text>`;
-    const tab = (c, key, dark, go) => `<polygon points="${c - 52},221 ${c + 52},221 ${c + 44},238.6 ${c - 44},238.6" fill="${dark ? "#03060a" : "#f2f4f5"}"/>${dt(key, "", c, 234.4, 11, dark ? "#fff" : "#111", 'font-weight="700" text-anchor="middle"')}${go ? `<polygon class="hit" data-go="${go}" points="${c - 52},221 ${c + 52},221 ${c + 44},238.6 ${c - 44},238.6" fill="#000" fill-opacity="0"/>` : ""}`;
+    const row2 = (key, vk, x, xe2, y, mw, vfs = 14, lfs = 12) => dt(key, ":", x, y, lfs, WT, `data-mw="${mw}" data-fs="${lfs}"`) + dv(vk, xe2, y, vfs, "end");
+    const tab = (c, key, dark, go) => `<g class="tab" data-tab="${go || ""}"><polygon points="${c - 52},221 ${c + 52},221 ${c + 44},238.6 ${c - 44},238.6" fill="${dark ? "#03060a" : "#f2f4f5"}"/>${dt(key, "", c, 234.4, 11, dark ? "#fff" : "#111", 'font-weight="700" text-anchor="middle"')}${go ? `<polygon class="hit" data-go="${go}" points="${c - 52},221 ${c + 52},221 ${c + 44},238.6 ${c - 44},238.6" fill="#000" fill-opacity="0"/>` : ""}</g>`;
     const outline = "M4 4 H429 V221 H" + [355, 216, 76].map((c) => `${c + 52} L${c + 44} 238.6 H${c - 44} L${c - 52} 221`).join(" H") + " H4 Z";
     const ico = (cx, ch2) => `<circle cx="${cx}" cy="46" r="10" fill="none" stroke="${GR}" stroke-width="2"/>${dsc(ch2, cx, 50.5, 12, GR, 'text-anchor="middle" font-weight="700"')}`;
     const logo = `<image href="${LOGO}" x="6" y="9" width="38" height="22"/>${dsc("\u6781\u7A7A", 50, 26, 17, "#f2f6fa", 'font-weight="700"')}${dsc("JIKONG", 51, 33, 5.4, "#9fd2f2", 'letter-spacing="1.4"')}`;
@@ -1296,7 +1478,7 @@
       <path d="M${cx + 2} ${top + 9} L${cx - 7} ${top + 24} H${cx - 1} L${cx - 3} ${top + 36} L${cx + 7} ${top + 19} H${cx + 1} Z" fill="#fff"/>
       <circle cx="${cx}" cy="${top + 57}" r="7" fill="none" stroke="#e6ece8" stroke-width="1"/>${dsc(i, cx, top + 60.5, 9, WT, 'text-anchor="middle"')}${on ? `<rect x="${cx - 18}" y="${top - 2}" width="36" height="72" fill="#000" fill-opacity="0"/>` : ""}</g>`;
     };
-    const packsPage = `<path d="${outline}" fill="#03060a" stroke="#8d9aa3" stroke-width="1.3" stroke-linejoin="round"/>${logo}${[0, 1, 2, 3].map((k) => `<path class="chv chv${k}" d="M${201 + k * 12} 11 L${207 + k * 12} 17.5 L${201 + k * 12} 24"/>`).join("")}${Array.from({ length: 16 }, (_, i) => pkIco(i)).join("")}${tab(76, "scr_tab_group", false, "group")}${tab(216, "scr_tab_packs", true)}${tab(355, "scr_tab_setting", false)}`;
+    const packsPage = `<path d="${outline}" fill="#03060a" stroke="#8d9aa3" stroke-width="1.3" stroke-linejoin="round"/>${logo}${[0, 1, 2, 3].map((k) => `<path class="chv chv${k}" d="M${201 + k * 12} 11 L${207 + k * 12} 17.5 L${201 + k * 12} 24"/>`).join("")}${Array.from({ length: 16 }, (_, i) => pkIco(i)).join("")}${tab(76, "scr_tab_group", false, "group")}${tab(216, "scr_tab_packs", true)}${tab(355, "scr_tab_setting", false, "settings")}`;
     const cl = "#e6ece8", gic = (cy, ch2) => `<circle cx="121" cy="${cy}" r="7" fill="none" stroke="${GR}" stroke-width="1.4"/>${dsc(ch2, 121, cy + 3.6, 9.5, GR, 'text-anchor="middle" font-weight="700"')}`;
     const cellsPage = `<rect width="433" height="243" fill="#03060a"/>
   <g data-go="packs">
@@ -1311,14 +1493,47 @@
     <g class="batg">
       <rect class="bo bcap" x="42" y="152" width="16" height="5" rx="1" fill="#e0302f"/>
       <rect class="bo" x="28" y="156" width="44" height="76" rx="5" fill="none" stroke="#e0302f" stroke-width="2.2"/>${[0, 1, 2, 3, 4].map((k) => `<rect class="bb" x="33" y="${(215.8 - 13.4 * k).toFixed(1)}" width="34" height="10" fill="#2a0d0d"/>`).join("")}</g>
-    <rect x="105" y="34" width="318" height="62" rx="8" fill="none" stroke="#8d9aa3" stroke-width="1"/>${gic(52, "\u25D4")}${dt("scr_voldiff", ":", 133, 56, 11, cl)}${dv("vd", 177, 56, 12.5)}${dt("scr_chg", ":", 250, 56, 11, cl)}${dv("chg2", 279, 56, 12)}${dt("scr_temp", ":", 340, 56, 11, cl)}${dv("tp2", 372, 56, 12)}
-    ${gic(78, "A")}${dt("scr_cur", ":", 133, 82, 11, cl)}${dv("a2", 160, 82, 12.5)}${dt("scr_dch", ":", 250, 82, 11, cl)}${dv("dch2", 279, 82, 12)}${dt("scr_alarm", ":", 340, 82, 11, cl)}${dv("alm2", 376, 82, 11)}
-    <rect x="105" y="108" width="318" height="128" rx="8" fill="none" stroke="#8d9aa3" stroke-width="1"/>
-    <rect x="226" y="102" width="76" height="12" fill="#03060a"/>${dt("scr_cellsv", "", 264, 112, 10.5, cl, 'text-anchor="middle"')}
-    ${Array.from({ length: n }, (_, k) => {
-      const x = 115 + k % 4 * 78, y = 135 + Math.floor(k / 4) * 26;
-      return `${dsc(k + 1, x + 15, y, 11, cl, 'text-anchor="end"')}${dv("cv" + k, x + 21, y, 12.5)}`;
-    }).join("")}`;
+    ${(() => {
+      const three = nt > 0, ry = three ? [49, 71, 93] : [56, 82], by = three ? 30 : 34, bh = three ? 76 : 62, cy0 = three ? 114 : 108, ch0 = three ? 124 : 128, g0 = three ? 140 : 135, gp = three ? 24 : 26, p2 = (key, vk, x, xe2, y, mw, vfs = 12) => dt(key, ":", x, y, 11, cl, `data-mw="${mw}" data-fs="11"`) + dv(vk, xe2, y, vfs, "end");
+      let o = `<rect x="105" y="${by}" width="318" height="${bh}" rx="8" fill="none" stroke="#8d9aa3" stroke-width="1"/>`;
+      o += gic(ry[0] - 4, "\u25D4") + p2("scr_voldiff", "vd", 133, 238, ry[0], 57, 12.5) + p2("scr_chg", "chg2", 250, 326, ry[0], 46) + p2("scr_temp", "tp2", 334, 419, ry[0], 43);
+      o += gic(ry[1] - 4, "A") + p2("scr_cur", "a2", 133, 238, ry[1], 57, 12.5) + p2("scr_dch", "dch2", 250, 326, ry[1], 46) + p2("scr_balcur", "bal2", 334, 419, ry[1], 43, 11);
+      if (three) {
+        o += gic(ry[2] - 4, "T");
+        const sw = 286 / nt;
+        for (let i = 0; i < nt; i++)
+          o += dsc("T" + (i + 1), 133 + i * sw, ry[2], 11, cl) + dv("ts" + i, 133 + (i + 1) * sw - 12, ry[2], 11.5, "end");
+      }
+      o += `<rect x="105" y="${cy0}" width="318" height="${ch0}" rx="8" fill="none" stroke="#8d9aa3" stroke-width="1"/>`;
+      o += `<rect x="226" y="${cy0 - 6}" width="76" height="12" fill="#03060a"/>` + dt("scr_cellsv", "", 264, cy0 + 4, 10.5, cl, 'text-anchor="middle"');
+      o += `<g fill="none" stroke-linecap="round" stroke-linejoin="round" pathLength="100">
+        <path class="balline" data-d="bal" data-g0="${g0}" data-gp="${gp}" d="" pathLength="100" stroke-width="1.6"/>
+        <path class="baltail" data-d="balt" d="" pathLength="100" stroke-width="3"/>
+        <path class="balhead" data-d="balh" d="" pathLength="100" stroke-width="4.2"/>
+      </g>`;
+      o += Array.from({ length: n }, (_, k) => {
+        const x = 115 + k % 4 * 78, y = g0 + Math.floor(k / 4) * gp;
+        return dsc(k + 1, x + 15, y, 11, cl, 'text-anchor="end"') + dv("cv" + k, x + 21, y, 12.5);
+      }).join("");
+      return o;
+    })()}`;
+    const settingsPage = `<rect width="433" height="243" fill="#03060a"/>
+  <g data-go="group">
+    <circle cx="22" cy="21" r="9" fill="none" stroke="${cl}" stroke-width="1.4"/>
+    <path d="M27 21 H17 M20.5 17 L16.5 21 L20.5 25" fill="none" stroke="${cl}" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="22" cy="21" r="12" fill="#000" fill-opacity="0"/>
+  </g>${dt("scr_tab_setting", "", 216, 26, 14, WT, 'font-weight="700" text-anchor="middle"')}
+  <foreignObject x="10" y="38" width="413" height="200">
+    <div class="stg">
+      <label><span data-tr="scr_st_view|">${tt("scr_st_view")}</span><select data-s="view"><option value="full">${tt("view_full")}</option><option value="screen">${tt("view_screen")}</option></select></label>
+      <label><span data-tr="scr_st_name|">${tt("scr_st_name")}</span><input data-s="name" type="text"></label>
+      <label><span data-tr="scr_st_cells|">${tt("scr_st_cells")}</span><select data-s="cells"><option value="16">16</option><option value="8">8</option></select></label>
+      <label data-s-row="rows"><span data-tr="scr_st_rows|">${tt("scr_st_rows")}</span><select data-s="rows"><option value="2">${tt("ed_rows_2")}</option><option value="1">${tt("ed_rows_1")}</option></select></label>
+      <label class="stgc"><input data-s="btn" type="checkbox"><span data-tr="scr_st_btn|">${tt("scr_st_btn")}</span></label>
+      <label class="stgc" data-s-row="cells2"><input data-s="cells2" type="checkbox"><span data-tr="scr_st_cells2|">${tt("scr_st_cells2")}</span></label>
+      <div class="stgb"><button data-s="save" type="button" data-tr="scr_st_save|">${tt("scr_st_save")}</button><span class="stgm" data-s="msg"></span></div>
+    </div>
+  </foreignObject>`;
     const dsp = `<g class="dsp" data-d="dsp" transform="translate(-246 44) scale(.4)">
     <title>${tt("screen_tip")}</title><clipPath id="dc${id}">
       <rect x="1.5" y="1.5" width="607" height="420" rx="34.5"/>
@@ -1329,7 +1544,7 @@
     <g class="pg pg-group">
       <path d="${outline}" fill="#03060a" stroke="#8d9aa3" stroke-width="1.3" stroke-linejoin="round"/>
       <image href="${LOGO}" x="6" y="9" width="38" height="22"/>${dsc("\u6781\u7A7A", 50, 26, 17, "#f2f6fa", 'font-weight="700"')}${dsc("JIKONG", 51, 33, 5.4, "#9fd2f2", 'letter-spacing="1.4"')}${[0, 1, 2, 3].map((k) => `<path class="chv chv${k}" d="M${201 + k * 12} 11 L${207 + k * 12} 17.5 L${201 + k * 12} 24"/>`).join("")}${dt("scr_language", " \u25BE", 352, 21, 12, "#fff")}<rect class="hit" data-go="lang" x="338" y="4" width="92" height="24" fill="#000" fill-opacity="0"/>
-    ${ico(49, "V")}${dt("scr_vtg", ":", 66, 53, 15, WT)}${dv("v", 111, 53, 22)}${ico(266, "A")}${dt("scr_cur", ":", 283, 53, 15, WT)}${dv("a", 327, 53, 22)}
+    ${ico(49, "V")}${dt("scr_vtg", ":", 66, 53, 15, WT, 'data-mw="64" data-fs="15"')}${dv("v", 135, 53, 22)}${ico(266, "A")}${dt("scr_cur", ":", 283, 53, 15, WT, 'data-mw="55" data-fs="15"')}${dv("a", 343, 53, 22)}
     <circle cx="87" cy="114" r="47" fill="none" stroke="#4ee07e" stroke-width="1.6"/>
     <circle cx="87" cy="114" r="39" fill="none" stroke="#1d3a2a" stroke-width="11"/>
     <circle class="rng" cx="87" cy="114" r="39" fill="none" stroke="#4ee07e" stroke-width="11" stroke-dasharray="0 245" transform="rotate(-90 87 114)"/>
@@ -1340,12 +1555,13 @@
     <circle cx="87" cy="114" r="31" fill="none" stroke="#4ee07e" stroke-width="1.6"/>
     <text data-d="soc" x="87" y="121" font-size="20" font-weight="700" fill="#fff" text-anchor="middle">\u2013</text>
     ${dv("cap", 235, 115, 25, "middle")}${dt("scr_batcap", "", 235, 131, 9.5, WT, 'text-anchor="middle"')}${dv("rem", 363, 115, 25, "middle")}${dt("scr_remcap", "", 363, 131, 9.5, WT, 'text-anchor="middle"')}
-    ${dt("scr_maxcell", ":", 13, 189, 12, WT)}${dv("mx", 79, 189, 14)}${dt("scr_mincell", ":", 13, 211, 12, WT)}${dv("mn", 79, 211, 14)}
-    ${dt("scr_temp", ":", 150, 189, 12, WT)}${dv("tp", 193, 189, 14)}${dt("scr_pwr", ":", 150, 211, 12, WT)}${dv("pw", 219, 211, 14)}
-    ${dt("scr_alarm", ":", 266, 189, 12, WT)}${dv("alm", 316, 189, 12)}${dt("scr_packs", ":", 266, 211, 12, WT)}${dv("np", 308, 211, 14)}
-    ${dt("scr_chg", ":", 364, 189, 12, WT)}${dv("chg", 396, 189, 13)}${dt("scr_dch", ":", 364, 211, 12, WT)}${dv("dch", 396, 211, 13)}${tab(76, "scr_tab_group", true)}${tab(216, "scr_tab_packs", false, "packs")}${tab(355, "scr_tab_setting", false)}</g>
+    ${row2("scr_maxcell", "mx", 13, 135, 189, 72)}${row2("scr_mincell", "mn", 13, 135, 211, 72)}
+    ${row2("scr_temp", "tp", 150, 256, 189, 60)}${row2("scr_pwr", "pw", 150, 256, 211, 60)}
+    ${row2("scr_alarm", "alm", 262, 354, 189, 44, 11)}${row2("scr_packs", "np", 262, 354, 211, 44)}
+    ${row2("scr_chg", "chg", 360, 424, 189, 36)}${row2("scr_dch", "dch", 360, 424, 211, 36)}${tab(76, "scr_tab_group", true)}${tab(216, "scr_tab_packs", false, "packs")}${tab(355, "scr_tab_setting", false, "settings")}</g>
     <g class="pg pg-packs">${packsPage}</g>
     <g class="pg pg-cells">${cellsPage}</g>
+    <g class="pg pg-settings">${settingsPage}</g>
     </g>
   <g class="pwr">
     <title>${tt("pwr_tip")}</title>
@@ -1389,11 +1605,14 @@
   <path d="${wire}" fill="none" stroke="#9aa3b0" stroke-opacity=".5" stroke-width=".9" stroke-linecap="round" transform="translate(-.8 -.8)"/>
   <rect x="-47" y="209" width="14" height="5" rx="1.2" fill="#e4e6ea" stroke="#7a7f88" stroke-width=".6"/>
   <rect x="${(lcd[0] - 5).toFixed(1)}" y="${(lcd[1] - 3).toFixed(1)}" width="9" height="6" rx="1.2" fill="#e4e6ea" stroke="#7a7f88" stroke-width=".6"/>`;
-    const defs = `<linearGradient id="gg${id}" gradientUnits="userSpaceOnUse" x1="295" y1="211" x2="610" y2="423">
+    const gg = `<linearGradient id="gg${id}" gradientUnits="userSpaceOnUse" x1="295" y1="211" x2="610" y2="423">
     <stop offset="0" stop-color="#fff" stop-opacity=".11"/>
     <stop offset=".55" stop-color="#fff" stop-opacity=".03"/>
     <stop offset="1" stop-color="#fff" stop-opacity=".005"/>
-  </linearGradient><filter id="sh${id}" x="-20%" y="-20%" width="140%" height="140%">
+  </linearGradient>`;
+    if (screenOnly)
+      return `<svg class="dpsvg" viewBox="0 0 610 423"><defs>${gg}</defs>${dsp.replace(' transform="translate(-246 44) scale(.4)"', "")}<text class="scrname" x="305" y="62" text-anchor="middle" font-size="24" letter-spacing="1.2" fill="#69727d" font-family="Roboto,Arial,sans-serif"></text></svg>`;
+    const defs = gg + `<filter id="sh${id}" x="-20%" y="-20%" width="140%" height="140%">
     <feGaussianBlur stdDeviation="5"/>
   </filter><filter id="zg${id}" x="-30%" y="-80%" width="160%" height="260%">
     <feGaussianBlur stdDeviation="2.6"/>
@@ -3747,6 +3966,93 @@
   .pk2 .dsp .gl {
     pointer-events: none;
   }
+  :host(.screenview) ha-card {
+    background: none;
+    border: 0;
+    box-shadow: none;
+    padding: 0;
+    overflow: visible;
+  }
+  .scronly {
+    /* the screens follow the width of the card (so of the dashboard section): one column in a narrow section, two in a
+       double one, three in a triple one, as many as there are batteries in a full-width one */
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr));
+    gap: 12px;
+    align-items: start;
+  }
+  .scrnote {
+    display: none;
+    grid-column: 1 / -1;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    padding: 8px 12px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 179, 71, 0.5);
+    background: rgba(255, 179, 71, 0.08);
+    color: var(--txt);
+    font-size: 13px;
+  }
+  .scrnote.on {
+    display: flex;
+  }
+  .scrnote button {
+    background: #1f4d35;
+    color: #e6ffee;
+    border: 1px solid #5cf08a;
+    border-radius: 8px;
+    padding: 4px 12px;
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .scrnote button:disabled {
+    opacity: 0.5;
+  }
+  .scrnote .stgm.err {
+    color: #ff8a7a;
+  }
+  .scrnote .stgm.ok {
+    color: #5cf08a;
+  }
+  .scrbox {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .pk2 .dsp.nopacks .tab[data-tab="packs"] {
+    opacity: 0.3;
+    pointer-events: none;
+  }
+  .pk2 .dsp.nopacks [data-go="packs"] {
+    pointer-events: none;
+  }
+  .pk2 .dsp.nopacks .pg-cells g[data-go="packs"] {
+    display: none;
+  }
+  .scrbox .scrmini {
+    position: relative;
+    width: 100%;
+    background: none;
+    border: 0;
+    padding: 0;
+    container-type: normal;
+  }
+  .scrbox .scrsel {
+    margin: 0 0 8px;
+    width: 100%;
+    padding: 8px 10px;
+    border-radius: 10px;
+    border: 1px solid var(--line);
+    background: var(--glass);
+    color: var(--txt);
+    font: inherit;
+  }
+  :host(.btnmain) .pk2 .dsp[data-pg="cells"] .pwr,
+  :host(.btnmain) .pk2 .dsp[data-pg="packs"] .pwr {
+    display: none;
+  }
   .dpopbk {
     position: fixed;
     inset: 0;
@@ -3946,6 +4252,64 @@
       opacity: 0.12;
     }
   }
+  .balline,
+  .baltail,
+  .balhead {
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.35s;
+  }
+  .balline.on {
+    opacity: 0.3;
+  }
+  .baltail.on {
+    opacity: 0.5;
+    stroke-dasharray: 40 300;
+    animation: balsnake-t 1s linear infinite;
+  }
+  .balhead.on {
+    opacity: 1;
+    stroke-dasharray: 12 300;
+    animation: balsnake-h 1s linear infinite;
+  }
+  .balline.pos,
+  .baltail.pos,
+  .balhead.pos {
+    stroke: #ff5a4d;
+  }
+  .balline.neg,
+  .baltail.neg,
+  .balhead.neg {
+    stroke: #4da3ff;
+  }
+  .balline.unk,
+  .baltail.unk,
+  .balhead.unk {
+    stroke: #5cf08a;
+  }
+  @keyframes balsnake-t {
+    from {
+      stroke-dashoffset: 40;
+    }
+    to {
+      stroke-dashoffset: -100;
+    }
+  }
+  @keyframes balsnake-h {
+    from {
+      stroke-dashoffset: 12;
+    }
+    to {
+      stroke-dashoffset: -128;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .baltail.on,
+    .balhead.on {
+      animation: none;
+      stroke-dasharray: none;
+    }
+  }
   .pk2 .dsp.off .dsc {
     display: none;
   }
@@ -3955,8 +4319,72 @@
   .pk2 .dsp:not([data-pg]) .pg-group,
   .pk2 .dsp[data-pg="group"] .pg-group,
   .pk2 .dsp[data-pg="packs"] .pg-packs,
-  .pk2 .dsp[data-pg="cells"] .pg-cells {
+  .pk2 .dsp[data-pg="cells"] .pg-cells,
+  .pk2 .dsp[data-pg="settings"] .pg-settings {
     display: inline;
+  }
+  .pk2 .dsp .stg {
+    display: grid;
+    gap: 4px;
+    font-family: Roboto, Arial, sans-serif;
+    font-size: 12px;
+    color: #e6ece8;
+    padding: 2px 6px;
+  }
+  .pk2 .dsp .stg label {
+    display: grid;
+    grid-template-columns: 150px 1fr;
+    align-items: center;
+    gap: 8px;
+  }
+  .pk2 .dsp .stg label.stgc {
+    grid-template-columns: 18px 1fr;
+  }
+  .pk2 .dsp .stg select,
+  .pk2 .dsp .stg input[type="text"] {
+    background: #0b1420;
+    color: #e6ece8;
+    border: 1px solid #5a6672;
+    border-radius: 5px;
+    padding: 3px 6px;
+    font: inherit;
+    min-width: 0;
+  }
+  .pk2 .dsp .stg input[type="checkbox"] {
+    width: 14px;
+    height: 14px;
+    accent-color: #5cf08a;
+  }
+  .pk2 .dsp .stg .stgb {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 2px;
+  }
+  .pk2 .dsp .stg button {
+    background: #1f4d35;
+    color: #e6ffee;
+    border: 1px solid #5cf08a;
+    border-radius: 6px;
+    padding: 4px 12px;
+    font: inherit;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .pk2 .dsp .stg button.confirm {
+    background: #7a3a14;
+    border-color: #ffb347;
+    color: #fff;
+  }
+  .pk2 .dsp .stg .stgm {
+    font-size: 11px;
+    color: #9fb3c8;
+  }
+  .pk2 .dsp .stg .stgm.err {
+    color: #ff8a7a;
+  }
+  .pk2 .dsp .stg .stgm.ok {
+    color: #5cf08a;
   }
   .dpopbk [data-go] {
     cursor: pointer;
@@ -3984,6 +4412,22 @@
       ...bs.map((_, i) => i).filter((i) => i !== mi).sort((a, b) => (bs[a].slave || 999) - (bs[b].slave || 999) || a - b)
     ];
   }
+  var measure = null;
+  var fitLabel = (el) => {
+    const mw = +el.getAttribute("data-mw");
+    if (!mw) return;
+    const fs = +el.getAttribute("data-fs") || 12;
+    measure = measure || document.createElement("canvas").getContext("2d");
+    measure.font = `${fs}px Roboto, Arial, sans-serif`;
+    const w = measure.measureText(el.textContent).width;
+    el.setAttribute("font-size", w > mw ? Math.max(fs * 0.6, fs * mw / w).toFixed(2) : String(fs));
+  };
+  var canon = (o) => JSON.stringify(
+    o,
+    (k, v) => v && typeof v === "object" && !Array.isArray(v) ? Object.fromEntries(
+      Object.keys(v).sort().map((x) => [x, v[x]])
+    ) : v
+  );
 
   // src/victron.js
   var VIC_TILES = [
@@ -4147,13 +4591,14 @@
       return 12;
     }
     getGridOptions() {
-      return { columns: 12, min_columns: 6 };
+      return { columns: "full", min_columns: 6 };
     }
     setConfig(config) {
       const key = JSON.stringify(config);
       if (this._built && key === this._cfgKey) return;
       this._cfgKey = key;
       if (this._built) this.style.minHeight = this.offsetHeight + "px";
+      this._raw = JSON.parse(JSON.stringify(config));
       this._cfg = { cells: 16, temps: 4, batteries: [], victron: {}, ...config };
       this._lang = null;
       this._setLang(this._wantLang(this._hass));
@@ -4269,7 +4714,7 @@
         const b = e.target.closest("[data-lc]");
         if (b) this._pickLang(b.dataset.lc);
       };
-      const host = bk.querySelector(".dp");
+      const host = bk.querySelector(".dp") || (bk.classList.contains("scrmini") ? bk : null);
       if (host) host.appendChild(m);
     }
     _rebuild() {
@@ -4310,6 +4755,7 @@
         const [k, suf] = el.getAttribute("data-tr").split("|");
         const t = tt(k) + (suf || "");
         if (el.textContent !== t) el.textContent = t;
+        fitLabel(el);
       });
     }
     _afterClose() {
@@ -4349,11 +4795,19 @@
       this._closeDisp();
       this._closePack(true);
       this.classList.toggle("noglare", c.glare === false);
+      this.classList.toggle("btnmain", c.button_all_pages === false);
       this.classList.toggle("lite", this._isLite());
       this._dsig = null;
       clearTimeout(this._tm);
       this._selB = c.batteries.map(() => -1);
       this._sel = 0;
+      this._wireSettings(root);
+      this._screenView = c.view === "screen";
+      root.host.classList.toggle("screenview", this._screenView);
+      if (this._screenView) {
+        this._buildScreens(root);
+        return;
+      }
       const card = (b) => `<div class="bc">
     <div class="pkw">
       <div class="pk2" data-k="bccells">
@@ -4502,6 +4956,7 @@
           mx,
           mn,
           mxI: g("max_voltage_cell"),
+          balI: g("balancing_current"),
           mnI: g("min_voltage_cell"),
           av: g("average_cell_voltage"),
           cells,
@@ -4541,6 +4996,7 @@
       return { bats, flow, inv };
     }
     _updSimple(d) {
+      if (this._screenView) return this._updScreens(d);
       const r = this.shadowRoot, $ = (k) => r.querySelector(`.main [data-k="${k}"]`), V = this._cfg.victron || {};
       const alerts = [];
       const grp = this._grp = this._groupInfo();
@@ -4564,11 +5020,12 @@
           if (el && !el.dataset.m) el.dataset.m = this._id(bcfg, key, dom);
         };
         {
-          const s0 = q("bccells") || (this._pp && this._pp.i === i ? this._pp.strip : null), sg0 = n + "/" + (grp ? grp.order.length : 1) + "/" + lay + "/" + rw;
+          const s0 = q("bccells") || (this._pp && this._pp.i === i ? this._pp.strip : null), sg0 = n + "/" + (grp ? grp.order.length : 1) + "/" + lay + "/" + rw + "/" + this._tOf(bcfg);
           if (s0 && s0._n !== sg0) {
             s0._n = sg0;
-            s0.innerHTML = packSvg(n, i, grp ? grp.order.length : 1, lay, rw) + packOverlay(!!grp, bcfg.name || bcfg.entity_base);
+            s0.innerHTML = packSvg(n, i, grp ? grp.order.length : 1, lay, rw, this._tOf(bcfg)) + packOverlay(!!grp, bcfg.name || bcfg.entity_base);
             this._elInit(s0);
+            s0.querySelectorAll("[data-mw]").forEach(fitLabel);
             s0.addEventListener("click", (e) => {
               if (e.target.closest(".dsp")) {
                 if (e.target.closest(".pwr")) this._toggleDisp(i);
@@ -4614,11 +5071,12 @@
         setH(q("bcd"), fmt(dmv, 0) + "<small>mV</small>");
         q("bcd").style.color = dmv < 15 ? "var(--grn)" : dmv < 45 ? "var(--gold)" : "var(--red)";
         const strip = q("bccells") || (this._pp && this._pp.i === i ? this._pp.strip : null), st = b.state === "offline" ? "idle" : b.state;
-        const sig = n + "/" + (grp ? grp.order.length : 1) + "/" + lay + "/" + rw;
+        const sig = n + "/" + (grp ? grp.order.length : 1) + "/" + lay + "/" + rw + "/" + this._tOf(bcfg);
         if (strip._n !== sig) {
           strip._n = sig;
-          strip.innerHTML = packSvg(n, i, grp ? grp.order.length : 1, lay, rw) + packOverlay(!!grp, bcfg.name || bcfg.entity_base);
+          strip.innerHTML = packSvg(n, i, grp ? grp.order.length : 1, lay, rw, this._tOf(bcfg)) + packOverlay(!!grp, bcfg.name || bcfg.entity_base);
           this._elInit(strip);
+          strip.querySelectorAll("[data-mw]").forEach(fitLabel);
           strip.addEventListener("click", (e) => {
             if (e.target.closest(".dsp")) {
               if (e.target.closest(".pwr")) this._toggleDisp(i);
@@ -4669,64 +5127,8 @@
         }
         strip._id = i;
         strip._zp = don >= 0 ? { a: [+cls[don].dataset.lx, +cls[don].dataset.ly], b: [+cls[rec].dataset.lx, +cls[rec].dataset.ly] } : null;
-        const dsp = strip.querySelector(".dsp"), D = (k) => dsp.querySelector(`[data-d="${k}"]`), swOff = this._dpv(ci, b.dsp) === "off", dOn = grp ? !this._vOff : !swOff;
-        dsp.classList.toggle("off", !dOn);
-        dsp.classList.toggle("pwroff", swOff);
-        dsp.classList.toggle("act", G0.I > 0.04);
-        if (dOn) {
-          const T = (k, s, col) => {
-            const e = D(k);
-            if (e.textContent !== s) e.textContent = s;
-            if (col) e.setAttribute("fill", col);
-          }, soc = clamp(G0.soc || 0, 0, 100), L = soc * 2.4504, mn_ = Math.min, mx_ = Math.max, red = soc <= 10, st2 = dsp.style, f1 = (x) => x.toFixed(1), tot = !isNaN(G0.capTot) && G0.capTot > 0 ? G0.capTot : soc > 0 && !isNaN(G0.rem) ? G0.rem / soc * 100 : NaN, pct = tot > 0 && !isNaN(G0.rem) ? clamp(G0.rem / tot * 100, 0, 100) : soc, rn = Math.ceil(pct / 5), Lc = mn_(245, rn * 12.25);
-          T("v", fmt(G0.V, 2) + "V");
-          T("a", fmt(G0.I, 1) + "A");
-          T("soc", fmt(G0.soc, 0) + "%");
-          T("np", String(grp ? grp.order.length : 1));
-          T("pn", String(grp ? this._sel || 0 : 0));
-          const full = 1.75 * Math.exp(-mx_(0, G0.I - 30) / 60), rst = String(Math.round(mx_(30, full * 1e3 / 20)));
-          {
-            const n1 = Math.max(0, rn);
-            if (st2.getPropertyValue("--rn") !== String(n1)) st2.setProperty("--rn", n1);
-            if (st2.getPropertyValue("--rst") !== rst) st2.setProperty("--rst", rst);
-          }
-          T(
-            "cap",
-            !isNaN(G0.capTot) ? G0.capTot.toFixed(1) : G0.soc > 0 && !isNaN(G0.rem) ? (G0.rem / G0.soc * 100).toFixed(1) : "\u2013"
-          );
-          T("rem", fmt(G0.rem, 1));
-          T("mx", fmt(G0.mx, 3) + "V");
-          T("mn", fmt(G0.mn, 3) + "V");
-          T("tp", isNaN(G0.mos) ? "\u2013" : Math.round(G0.mos) + " \xB0C");
-          T("pw", fmt(Math.abs(G0.P) / 1e3, 1));
-          T("alm", G0.err ? tt("scr_alarmv") : tt("scr_normal"), G0.err ? "#ff4d4d" : GRN);
-          T("chg", b.sw.charging ? tt("scr_on") : tt("scr_off"), b.sw.charging ? GRN : "#e0705f");
-          T("dch", b.sw.discharging ? tt("scr_on") : tt("scr_off"), b.sw.discharging ? GRN : "#e0705f");
-          T(
-            "cap2",
-            (!isNaN(b.capTot) ? b.capTot.toFixed(1) : b.soc > 0 && !isNaN(b.rem) ? (b.rem / b.soc * 100).toFixed(1) : "\u2013") + "AH"
-          );
-          T("rem2", fmt(b.rem, 1) + "AH");
-          T("pct2", fmt(b.soc, 0) + "%");
-          T("vd", fmt(b.mx - b.mn, 3) + "V");
-          T("a2", fmt(b.I, 1) + "A");
-          T("tp2", isNaN(b.mos) ? "\u2013" : String(Math.round(b.mos)));
-          T("alm2", b.err ? tt("scr_alarmv") : tt("scr_normal"), b.err ? "#ff4d4d" : GRN);
-          T("chg2", b.sw.charging ? tt("scr_on") : tt("scr_off"), b.sw.charging ? GRN : "#e0705f");
-          T("dch2", b.sw.discharging ? tt("scr_on") : tt("scr_off"), b.sw.discharging ? GRN : "#e0705f");
-          {
-            const totB = !isNaN(b.capTot) && b.capTot > 0 ? b.capTot : b.soc > 0 && !isNaN(b.rem) ? b.rem / b.soc * 100 : NaN, pctB = totB > 0 && !isNaN(b.rem) ? clamp(b.rem / totB * 100, 0, 100) : clamp(b.soc || 0, 0, 100), bn = Math.ceil(pctB / 20);
-            if (dsp._bk !== bn) {
-              dsp._bk = bn;
-              const bcol = bn <= 2 ? "#e0302f" : bn <= 4 ? "#2f8cff" : "#2fd24a";
-              dsp.querySelectorAll(".bb").forEach((e, k) => e.setAttribute("fill", k < bn ? bcol : "#1a0d0d"));
-              dsp.querySelectorAll(".bo").forEach((e) => e.setAttribute(e.classList.contains("bcap") ? "fill" : "stroke", bcol));
-            }
-          }
-          b.cells.forEach(
-            (v, k) => T("cv" + k, isNaN(v) ? "\u2013" : fmt(v, 3) + "V", k === imx ? "#6f8cff" : k === imn ? "#ff4d4d" : GRN)
-          );
-        }
+        const dsp = strip.querySelector(".dsp");
+        this._paintScreen(dsp, { ci, b, G0, grp, imx, imn, don, rec });
         if (this._pop && this._pop.i === i) this._syncPop(dsp);
         const avgV = okV.reduce((a, x) => a + x, 0) / (okV.length || 1), rv = b.res.filter((x) => !isNaN(x)), ravg = rv.length ? rv.reduce((a, x) => a + x, 0) / rv.length : NaN;
         const tr = tv.length ? Math.round(Math.min(...tv)) === Math.round(Math.max(...tv)) ? Math.round(Math.min(...tv)) + " \xB0C" : Math.round(Math.min(...tv)) + "\u2013" + Math.round(Math.max(...tv)) + " \xB0C" : "\u2013";
@@ -4803,6 +5205,355 @@
     /* ------------------------------------------------------------ electrons along the conductors */
     // every conductor already carries a hidden path (class "fl") drawn in the direction of the series string, B- -> B+. Electrons run along it with a
     // little random wobble: B- -> B+ while charging, B+ -> B- while discharging (opposite to the conventional current).
+    // paints the values of one JK display (the live one of the card, or the only thing of the "screen" view)
+    _paintScreen(dsp, { ci, b, G0, grp, imx, imn, don, rec }) {
+      dsp._ci = ci;
+      this._stgFill(dsp);
+      const D = (k) => dsp.querySelector(`[data-d="${k}"]`), swOff = this._dpv(ci, b.dsp) === "off", dOn = grp ? !this._vOff : !swOff;
+      dsp.classList.toggle("off", !dOn);
+      dsp.classList.toggle("pwroff", swOff);
+      {
+        const tip = dsp.querySelector(".pwr title");
+        if (tip && tip.textContent !== tt(dOn ? "pwr_off" : "pwr_on")) tip.textContent = tt(dOn ? "pwr_off" : "pwr_on");
+      }
+      dsp.classList.toggle("act", G0.I > 0.04);
+      if (dOn) {
+        const T = (k, s, col) => {
+          const e = D(k);
+          if (e.textContent !== s) e.textContent = s;
+          if (col) e.setAttribute("fill", col);
+        }, soc = clamp(G0.soc || 0, 0, 100), L = soc * 2.4504, mn_ = Math.min, mx_ = Math.max, red = soc <= 10, st = dsp.style, f1 = (x) => x.toFixed(1), tot = !isNaN(G0.capTot) && G0.capTot > 0 ? G0.capTot : soc > 0 && !isNaN(G0.rem) ? G0.rem / soc * 100 : NaN, pct = tot > 0 && !isNaN(G0.rem) ? clamp(G0.rem / tot * 100, 0, 100) : soc, rn = Math.ceil(pct / 5), Lc = mn_(245, rn * 12.25);
+        T("v", fmt(G0.V, 2) + "V");
+        T("a", fmt(G0.I, 1) + "A");
+        T("soc", fmt(G0.soc, 0) + "%");
+        T("np", String(grp ? grp.order.length : 1));
+        T("pn", String(grp ? this._sel || 0 : 0));
+        const full = 1.75 * Math.exp(-mx_(0, G0.I - 30) / 60), rst = String(Math.round(mx_(30, full * 1e3 / 20)));
+        {
+          const n1 = Math.max(0, rn);
+          if (st.getPropertyValue("--rn") !== String(n1)) st.setProperty("--rn", n1);
+          if (st.getPropertyValue("--rst") !== rst) st.setProperty("--rst", rst);
+        }
+        T(
+          "cap",
+          !isNaN(G0.capTot) ? G0.capTot.toFixed(1) : G0.soc > 0 && !isNaN(G0.rem) ? (G0.rem / G0.soc * 100).toFixed(1) : "\u2013"
+        );
+        T("rem", fmt(G0.rem, 1));
+        T("mx", fmt(G0.mx, 3) + "V");
+        T("mn", fmt(G0.mn, 3) + "V");
+        T("tp", isNaN(G0.mos) ? "\u2013" : Math.round(G0.mos) + " \xB0C");
+        T("pw", fmt(Math.abs(G0.P) / 1e3, 1));
+        T("alm", G0.err ? tt("scr_alarmv") : tt("scr_normal"), G0.err ? "#ff4d4d" : GRN);
+        T("chg", b.sw.charging ? tt("scr_on") : tt("scr_off"), b.sw.charging ? GRN : "#e0705f");
+        T("dch", b.sw.discharging ? tt("scr_on") : tt("scr_off"), b.sw.discharging ? GRN : "#e0705f");
+        T(
+          "cap2",
+          (!isNaN(b.capTot) ? b.capTot.toFixed(1) : b.soc > 0 && !isNaN(b.rem) ? (b.rem / b.soc * 100).toFixed(1) : "\u2013") + "AH"
+        );
+        T("rem2", fmt(b.rem, 1) + "AH");
+        T("pct2", fmt(b.soc, 0) + "%");
+        T("vd", fmt(b.mx - b.mn, 3) + "V");
+        T("a2", fmt(b.I, 1) + "A");
+        T("tp2", isNaN(b.mos) ? "\u2013" : Math.round(b.mos) + " \xB0C");
+        b.temps.forEach((t, k) => T("ts" + k, isNaN(t) ? "\u2013" : fmt(t, 1) + "\xB0C"));
+        {
+          const I = b.balI, on = don >= 0 && rec >= 0, pos = I > 5e-3, neg = I < -5e-3, col = isNaN(I) ? GRN : pos ? "#ff5a4d" : neg ? "#4da3ff" : GRN, ln = D("bal");
+          T("bal2", isNaN(I) ? "\u2013" : (I > 0 ? "+" : "") + fmt(I, 2) + "A", col);
+          if (ln) {
+            const g0 = +ln.dataset.g0, gp = +ln.dataset.gp, cx = (k) => 115 + k % 4 * 78 + 44, ty = (k) => g0 + Math.floor(k / 4) * gp, gy = (r) => g0 + r * gp + gp / 2 - 3;
+            let d = "";
+            if (on) {
+              const a = don, z = rec, ra = Math.floor(a / 4), rb = Math.floor(z / 4), xa = cx(a), xb = cx(z), down = ra < rb, y0 = down || ra === rb ? ty(a) + 3 : ty(a) - 10, y1 = down ? ty(z) - 10 : ty(z) + 3, bandA = down || ra === rb ? gy(ra) : gy(ra - 1), bandB = ra === rb ? gy(ra) : down ? gy(rb - 1) : gy(rb);
+              if (bandA === bandB) d = `M${xa} ${y0} V${bandA} H${xb} V${y1}`;
+              else {
+                const xv = [116, 190, 268, 346].reduce(
+                  (p, q) => Math.abs(q - xa) + Math.abs(q - xb) < Math.abs(p - xa) + Math.abs(p - xb) ? q : p
+                );
+                d = `M${xa} ${y0} V${bandA} H${xv} V${bandB} H${xb} V${y1}`;
+              }
+            }
+            const sign = pos ? "pos" : neg ? "neg" : "unk", set = (el, k, v) => {
+              if (el && el.getAttribute(k) !== String(v)) el.setAttribute(k, v);
+            };
+            [
+              ["bal", "balline"],
+              ["balt", "baltail"],
+              ["balh", "balhead"]
+            ].forEach(([k, base]) => {
+              const p = D(k);
+              if (!p) return;
+              set(p, "d", d);
+              set(p, "class", base + (on ? " on " : " ") + sign);
+            });
+          }
+        }
+        T("chg2", b.sw.charging ? tt("scr_on") : tt("scr_off"), b.sw.charging ? GRN : "#e0705f");
+        T("dch2", b.sw.discharging ? tt("scr_on") : tt("scr_off"), b.sw.discharging ? GRN : "#e0705f");
+        {
+          const totB = !isNaN(b.capTot) && b.capTot > 0 ? b.capTot : b.soc > 0 && !isNaN(b.rem) ? b.rem / b.soc * 100 : NaN, pctB = totB > 0 && !isNaN(b.rem) ? clamp(b.rem / totB * 100, 0, 100) : clamp(b.soc || 0, 0, 100), bn = Math.ceil(pctB / 20);
+          if (dsp._bk !== bn) {
+            dsp._bk = bn;
+            const bcol = bn <= 2 ? "#e0302f" : bn <= 4 ? "#2f8cff" : "#2fd24a";
+            dsp.querySelectorAll(".bb").forEach((e, k) => e.setAttribute("fill", k < bn ? bcol : "#1a0d0d"));
+            dsp.querySelectorAll(".bo").forEach((e) => e.setAttribute(e.classList.contains("bcap") ? "fill" : "stroke", bcol));
+          }
+        }
+        b.cells.forEach(
+          (v, k) => T("cv" + k, isNaN(v) ? "\u2013" : fmt(v, 3) + "V", k === imx ? "#6f8cff" : k === imn ? "#ff4d4d" : GRN)
+        );
+      }
+    }
+    // "screen" view: nothing but the JK display (no BMS, cells, tiles or texts); view_page chooses its page
+    _buildScreens(root) {
+      const c = this._cfg, grp = this._groupInfo(), list = grp ? [c.batteries[grp.mi]] : c.batteries;
+      root.innerHTML = `<style>${CSS}</style><ha-card class="scronly"><div class="scrnote" data-k="note"><span>${tt("scr_note_narrow")}</span><button type="button" data-s="width">${tt("scr_note_btn")}</button><span class="stgm" data-s="wmsg"></span></div>${list.map(
+        () => `<div class="scrbox">
+        ${grp ? `<select class="pksel scrsel" data-k="pksel" title="${tt("pick_battery")}"></select>` : ""}
+        <div class="pk2 scrmini" data-k="bccells"></div>${c.screen_cells ? '<div class="pk2 scrmini scrmini2"></div>' : ""}</div>`
+      ).join("")}</ha-card>`;
+      if (!root._mc) {
+        root._mc = 1;
+        root.addEventListener("change", (e) => {
+          const sl = e.target.closest(".pksel");
+          if (sl) {
+            this._sel = +sl.value;
+            this._vOff = false;
+            if (this._data) this._updSimple(this._data);
+          }
+        });
+        root.addEventListener("click", (e) => {
+          const m = e.target.closest("[data-m]");
+          if (m) this._more(m.dataset.m);
+        });
+      }
+      this._built = true;
+      if (this._hass) this._update();
+    }
+    _updScreens(d) {
+      const r = this.shadowRoot, grp = this._grp = this._groupInfo(), two = !!this._cfg.screen_cells;
+      if (grp) this._sel = Math.min(this._sel || 0, grp.order.length - 1);
+      const view = grp ? [{ b: d.bats[grp.order[this._sel || 0]], ci: grp.order[this._sel || 0] }] : d.bats.map((b, ci) => ({ b, ci }));
+      view.forEach(({ b, ci }, i) => {
+        const box = r.querySelectorAll(".scrbox")[i];
+        if (!box) return;
+        const G0 = grp ? this._aggr(
+          grp.order.map((x) => d.bats[x]),
+          grp
+        ) : b, bcfg = this._cfg.batteries[ci], n = this._nOf(bcfg);
+        const sl = box.querySelector(".pksel");
+        if (grp && sl) {
+          const html2 = grp.order.map((x, k) => `<option value="${k}">${k === 0 ? "Master" : "Slave " + k} \xB7 ${d.bats[x].name}</option>`).join("");
+          if (sl._h !== html2) {
+            sl._h = html2;
+            sl.innerHTML = html2;
+          }
+          sl.value = String(this._sel || 0);
+        }
+        const okV = b.cells.filter((x) => !isNaN(x)), vmax = Math.max(...okV), vmin = Math.min(...okV), sIdx = (x) => !isNaN(x) && x >= 1 && x <= b.cells.length ? x - 1 : -1, imx = sIdx(b.mxI) >= 0 ? sIdx(b.mxI) : vmax > vmin ? b.cells.indexOf(vmax) : -1, imn = sIdx(b.mnI) >= 0 ? sIdx(b.mnI) : vmax > vmin ? b.cells.indexOf(vmin) : -1;
+        let don = -1, rec = -1;
+        if (b.balMask) {
+          don = imx >= 0 ? imx : b.cells.indexOf(vmax);
+          rec = imn >= 0 ? imn : b.cells.indexOf(vmin);
+        }
+        if (don === rec) don = rec = -1;
+        [box.querySelector(".scrmini"), box.querySelector(".scrmini2")].forEach((strip, si) => {
+          if (!strip) return;
+          const page = si === 1 ? "cells" : two ? "group" : this._cfg.view_page === "cells" ? "cells" : "group", sg = n + "/" + (grp ? grp.order.length : 1) + "/" + this._tOf(bcfg) + "/" + page + "/" + si + "/" + two;
+          if (strip._n !== sg) {
+            strip._n = sg;
+            strip.innerHTML = packSvg(n, i * 2 + si, grp ? grp.order.length : 1, "top-left", 2, this._tOf(bcfg), true);
+            const svg = strip.querySelector("svg");
+            svg.querySelectorAll("title").forEach((t) => !t.closest(".pwr") && t.remove());
+            svg.querySelectorAll("clipPath rect, .dsp > rect:first-of-type").forEach((e) => {
+              e.setAttribute("rx", 15);
+              e.setAttribute("ry", 15);
+            });
+            const dsp0 = svg.querySelector(".dsp");
+            dsp0.setAttribute("data-pg", page);
+            if (two) dsp0.classList.add("nopacks");
+            svg.querySelectorAll("[data-mw]").forEach(fitLabel);
+            strip.addEventListener("click", (e) => {
+              if (e.target.closest(".pwr")) return this._toggleDisp(ci);
+              const go = e.target.closest("[data-go]"), lm = strip.querySelector(".lmenu");
+              if (lm && !e.target.closest(".lmenu") && !(go && go.dataset.go === "lang")) lm.remove();
+              if (!go) return;
+              if (go.dataset.go === "lang") return this._langMenu(strip);
+              if (two && (go.dataset.go === "packs" || go.dataset.pk !== void 0)) return;
+              if (go.dataset.pk !== void 0) {
+                this._sel = +go.dataset.pk;
+                this._vOff = false;
+                if (this._data) this._updSimple(this._data);
+              }
+              strip.querySelector(".dsp").setAttribute("data-pg", go.dataset.go);
+            });
+          }
+          const nm = strip.querySelector(".scrname"), label = si === 0 ? bcfg.name || bcfg.entity_base || "" : "";
+          if (nm && nm.textContent !== label) nm.textContent = label;
+          this._paintScreen(strip.querySelector(".dsp"), { ci, b, G0, grp, imx, imn, don, rec });
+        });
+      });
+      this._widthHint();
+      this._ringTick();
+    }
+    // a width saved in the dashboard (grid_options.columns: 12, what Home Assistant keeps from the first placement) keeps the card
+    // narrow in a wide section: the card offers to switch it to the full width with one click, no YAML to edit
+    _widthHint() {
+      const note = this.shadowRoot.querySelector(".scrnote");
+      if (!note) return;
+      const go = this._raw && this._raw.grid_options;
+      let sec = null, n = this;
+      for (let i = 0; n && i < 14 && !sec; i++) {
+        n = n.parentNode || n.host;
+        if (n && n.localName && n.localName.indexOf("hui-grid-section") === 0) sec = n;
+      }
+      const w = this.getBoundingClientRect().width, sw = sec ? sec.getBoundingClientRect().width : 0, show = !!(go && typeof go.columns === "number" && sw > w * 1.35 && w > 0);
+      note.classList.toggle("on", show);
+    }
+    async _widthSave(btn) {
+      const msg = this.shadowRoot.querySelector('.scrnote [data-s="wmsg"]'), say = (k, cls, p) => {
+        msg.className = "stgm " + (cls || "");
+        msg.textContent = k ? tt(k, p) : "";
+      }, old = this._raw, next = JSON.parse(JSON.stringify(old));
+      next.grid_options = { ...next.grid_options || {}, columns: "full" };
+      btn.disabled = true;
+      say("scr_st_saving");
+      try {
+        await this._dashSave(old, next);
+        say("scr_st_ok", "ok");
+        this.setConfig(next);
+      } catch (e) {
+        const k = e && e.message && e.message.startsWith("scr_st_err") ? e.message : "scr_st_err_save";
+        say(k, "err", { e: e && (e.message || e.code) || "" });
+      }
+      btn.disabled = false;
+    }
+    // ---- SETTINGS page of the screen: a part of the editor; the changes are saved in the dashboard configuration
+    _wireSettings(root) {
+      if (root._sw) return;
+      root._sw = 1;
+      const on = (e) => {
+        const s = e.target.closest && e.target.closest("[data-s]");
+        if (!s || s.dataset.s === "save" || s.dataset.s === "msg") return;
+        const v = this._stgv || (this._stgv = {}), k = s.dataset.s;
+        v[k] = s.type === "checkbox" ? s.checked : k === "name" || k === "view" ? s.value : +s.value;
+        this.shadowRoot.querySelectorAll(".dsp").forEach((d) => this._stgFill(d));
+      };
+      root.addEventListener("input", on);
+      root.addEventListener("change", on);
+      root.addEventListener("click", (e) => {
+        const b = e.target.closest && e.target.closest('button[data-s="save"]');
+        if (b) this._stgSave(b);
+        const w = e.target.closest && e.target.closest('button[data-s="width"]');
+        if (w) this._widthSave(w);
+      });
+      root.addEventListener("keydown", (e) => {
+        if (e.target.closest && e.target.closest(".stg")) e.stopPropagation();
+      });
+    }
+    _stgFill(dsp) {
+      const f = dsp.querySelector(".stg");
+      if (!f || dsp._ci === void 0) return;
+      const raw = this._raw || {}, bc = (raw.batteries || [])[dsp._ci] || {}, p = this._stgv || {}, v = (k, d) => k in p ? p[k] : d, act = f.getRootNode().activeElement, set = (k, val) => {
+        const e = f.querySelector(`[data-s="${k}"]`);
+        if (!e || e === act) return;
+        if (e.type === "checkbox") e.checked = !!val;
+        else if (e.value !== String(val)) e.value = String(val);
+      }, view = v("view", raw.view === "screen" ? "screen" : "full"), cells = +v("cells", this._nOf(bc));
+      set("view", view);
+      set("name", v("name", bc.name || ""));
+      set("cells", cells);
+      set("rows", v("rows", bc.rows === 1 ? 1 : 2));
+      set("btn", v("btn", raw.button_all_pages !== false));
+      set("cells2", v("cells2", !!raw.screen_cells));
+      f.querySelector('[data-s-row="cells2"]').style.display = view === "screen" ? "" : "none";
+      f.querySelector('[data-s-row="rows"]').style.display = cells === 8 && view !== "screen" ? "" : "none";
+    }
+    async _stgSave(btn) {
+      const f = btn.closest(".stg"), ci = btn.closest(".dsp")._ci, say = (k, cls, p2) => {
+        const m = f.querySelector('[data-s="msg"]');
+        m.className = "stgm " + (cls || "");
+        m.textContent = k ? tt(k, p2) : "";
+      }, reset = () => {
+        clearTimeout(btn._ct);
+        btn._confirm = false;
+        btn.classList.remove("confirm");
+        btn.textContent = tt("scr_st_save");
+      };
+      if (!btn._confirm) {
+        btn._confirm = true;
+        btn.classList.add("confirm");
+        btn.textContent = tt("scr_st_confirm");
+        btn._ct = setTimeout(reset, 8e3);
+        say("");
+        return;
+      }
+      reset();
+      const old = this._raw, next = JSON.parse(JSON.stringify(old)), p = this._stgv || {};
+      if ("view" in p) {
+        if (p.view === "screen") next.view = "screen";
+        else {
+          delete next.view;
+          delete next.view_page;
+        }
+      }
+      if (next.view !== "screen") delete next.screen_cells;
+      else if ("cells2" in p) {
+        if (p.cells2) next.screen_cells = true;
+        else delete next.screen_cells;
+      }
+      if ("btn" in p) {
+        if (p.btn) delete next.button_all_pages;
+        else next.button_all_pages = false;
+      }
+      const bc = (next.batteries || [])[ci];
+      if (bc) {
+        if ("name" in p) {
+          if (p.name) bc.name = p.name;
+          else delete bc.name;
+        }
+        if ("cells" in p) bc.cells = p.cells;
+        if ("rows" in p || "cells" in p) {
+          const rows = "rows" in p ? p.rows : bc.rows === 1 ? 1 : 2;
+          if (+bc.cells === 8 && rows === 1) bc.rows = 1;
+          else delete bc.rows;
+        }
+      } else if (["name", "cells", "rows"].some((k) => k in p)) return say("scr_st_err_auto", "err");
+      if (canon(next) === canon(old)) return say("scr_st_nochg");
+      say("scr_st_saving");
+      try {
+        await this._dashSave(old, next);
+        this._stgv = null;
+        say("scr_st_ok", "ok");
+        this.setConfig(next);
+      } catch (e) {
+        const k = e && e.message && e.message.startsWith("scr_st_err") ? e.message : "scr_st_err_save";
+        say(k, "err", { e: e && (e.message || e.code) || "" });
+      }
+    }
+    // finds this card (by its configuration) in the dashboard that is open and saves the changed copy
+    async _dashSave(old, next) {
+      const h = this._hass;
+      if (!h || typeof h.callWS !== "function") throw new Error("scr_st_err_ws");
+      const seg = location.pathname.split("/")[1] || "lovelace", url_path = seg === "lovelace" ? null : seg;
+      let cfg;
+      try {
+        cfg = await h.callWS({ type: "lovelace/config", url_path, force: false });
+      } catch (e) {
+        throw new Error("scr_st_err_yaml");
+      }
+      const key = canon(old), hits = [], walk = (o) => {
+        if (Array.isArray(o)) o.forEach(walk);
+        else if (o && typeof o === "object") {
+          if (o.type === old.type && canon(o) === key) hits.push(o);
+          else Object.values(o).forEach(walk);
+        }
+      };
+      walk(cfg);
+      if (hits.length !== 1) throw new Error(hits.length ? "scr_st_err_many" : "scr_st_err_nf");
+      Object.keys(hits[0]).forEach((k) => delete hits[0][k]);
+      Object.assign(hits[0], next);
+      await h.callWS({ type: "lovelace/config/save", url_path, config: cfg });
+    }
     _elInit(strip) {
       const NS2 = "http://www.w3.org/2000/svg", svg = strip.querySelector("svg"), layer = document.createElementNS(NS2, "g"), und = svg.querySelector(".und"), layerUnder = document.createElementNS(NS2, "g");
       strip._el = [];
@@ -5089,7 +5840,7 @@
       const svg = bk.querySelector("svg");
       svg.innerHTML = src.outerHTML;
       svg.firstChild.removeAttribute("transform");
-      svg.querySelectorAll("title").forEach((t) => t.remove());
+      svg.querySelectorAll("title").forEach((t) => !t.closest(".pwr") && t.remove());
       {
         const cp = svg.querySelector("clipPath"), gl = svg.querySelector(".gl");
         if (cp && gl) {
@@ -5168,6 +5919,12 @@
       if (!p) return;
       const dst = p.el.querySelector(".dsp");
       if (!dst) return;
+      dst._ci = src._ci;
+      {
+        const a = src.querySelector(".pwr title"), b = dst.querySelector(".pwr title");
+        if (a && b && b.textContent !== a.textContent) b.textContent = a.textContent;
+      }
+      this._stgFill(dst);
       ["class", "style"].forEach((a) => {
         const v = src.getAttribute(a) || "";
         if (dst.getAttribute(a) !== v) dst.setAttribute(a, v);
@@ -5188,7 +5945,7 @@
         const d = dst.querySelector(`[data-d="${e.dataset.d}"]`);
         if (!d) return;
         if (d.textContent !== e.textContent) d.textContent = e.textContent;
-        ["fill", "stroke", "stroke-dasharray"].forEach((a) => {
+        (/^bal[th]?$/.test(e.dataset.d) ? ["fill", "stroke", "stroke-dasharray", "d", "class", "x", "y", "transform"] : ["fill", "stroke", "stroke-dasharray"]).forEach((a) => {
           const v = e.getAttribute(a);
           if (v !== null && v !== d.getAttribute(a)) d.setAttribute(a, v);
         });
@@ -5456,13 +6213,49 @@
   var batDom = (k) => BAT_DOM[k] || "sensor";
   var batSel = (k) => ({ entity: { domain: BAT_DOM[k] ? [BAT_DOM[k]] : NUMD } });
   var batGroups = (n, t) => [
-    ["eg_main", ["total_voltage", "current", "power", "state_of_charge", "state_of_health", "capacity_remaining", "total_battery_capacity", "charging_cycles"]],
-    ["eg_cellsum", ["max_cell_voltage", "min_cell_voltage", "max_voltage_cell", "min_voltage_cell", "delta_cell_voltage", "average_cell_voltage", "balancer_bitmask"]],
+    [
+      "eg_main",
+      [
+        "total_voltage",
+        "current",
+        "power",
+        "state_of_charge",
+        "state_of_health",
+        "capacity_remaining",
+        "total_battery_capacity",
+        "charging_cycles"
+      ]
+    ],
+    [
+      "eg_cellsum",
+      [
+        "max_cell_voltage",
+        "min_cell_voltage",
+        "max_voltage_cell",
+        "min_voltage_cell",
+        "delta_cell_voltage",
+        "average_cell_voltage",
+        "balancer_bitmask"
+      ]
+    ],
     ["eg_temps", [...Array.from({ length: t }, (_, i) => "temperature_sensor_" + (i + 1)), "power_tube_temperature"]],
     ["eg_cellv", Array.from({ length: n }, (_, i) => "cell_voltage_" + (i + 1))],
     ["eg_cellr", Array.from({ length: n }, (_, i) => "cell_resistance_" + (i + 1))],
     ["eg_switches", ["charging", "discharging", "balancer", "heating"]],
-    ["eg_other", ["balance_starting_voltage", "balance_trigger_voltage", "online_status", "errors", "hardware_version", "software_version", "total_runtime_formatted", "charge_status", "operation_status"]]
+    [
+      "eg_other",
+      [
+        "balance_starting_voltage",
+        "balance_trigger_voltage",
+        "online_status",
+        "errors",
+        "hardware_version",
+        "software_version",
+        "total_runtime_formatted",
+        "charge_status",
+        "operation_status"
+      ]
+    ]
   ];
   var batLabel = (k) => {
     const m = /^(cell_voltage|cell_resistance|temperature_sensor)_(\d+)$/.exec(k);
@@ -5612,7 +6405,9 @@
       let all = {};
       const plainFields = (box, keys) => {
         const ids = this._hass ? Object.keys(this._hass.states) : [], list = (k) => batDom(k) === "switch" ? "s" : batDom(k) === "binary_sensor" ? "b" : "n", dl = (id, pre) => `<datalist id="${id}">${ids.filter((x) => pre.some((p) => x.startsWith(p))).map((x) => `<option value="${x}">`).join("")}</datalist>`;
-        box.innerHTML = dl(`bl${i}n`, ["sensor.", "number."]) + dl(`bl${i}s`, ["switch."]) + dl(`bl${i}b`, ["binary_sensor."]) + keys.map((k) => `<label class="fld"><span>${batLabel(k)}</span><input class="bsi" data-k="${k}" list="bl${i}${list(k)}" placeholder="${dflt(k)}"></label>`).join("");
+        box.innerHTML = dl(`bl${i}n`, ["sensor.", "number."]) + dl(`bl${i}s`, ["switch."]) + dl(`bl${i}b`, ["binary_sensor."]) + keys.map(
+          (k) => `<label class="fld"><span>${batLabel(k)}</span><input class="bsi" data-k="${k}" list="bl${i}${list(k)}" placeholder="${dflt(k)}"></label>`
+        ).join("");
         box.querySelectorAll(".bsi").forEach((inp) => {
           inp.value = all[inp.dataset.k] || "";
           inp.onchange = () => {
@@ -5622,7 +6417,9 @@
         });
       };
       const build = (usePlain) => {
-        all = Object.fromEntries(dims().flatMap((g) => g[1]).map((k) => [k, cur(k)]));
+        all = Object.fromEntries(
+          dims().flatMap((g) => g[1]).map((k) => [k, cur(k)])
+        );
         slot().innerHTML = "";
         dims().forEach(([t, keys]) => {
           const g = document.createElement("details");
@@ -5676,7 +6473,8 @@
         try {
           if (!customElements.get("ha-form") && window.loadCardHelpers) {
             const h = await Promise.race([window.loadCardHelpers(), sleep(3e3)]);
-            if (h && h.createCardElement) await Promise.race([h.createCardElement({ type: "entities", entities: [] }), sleep(3e3)]);
+            if (h && h.createCardElement)
+              await Promise.race([h.createCardElement({ type: "entities", entities: [] }), sleep(3e3)]);
           }
           if (customElements.get("ha-form")) await Promise.race([customElements.whenDefined("ha-form"), sleep(1e3)]);
         } catch (e) {
@@ -5732,9 +6530,7 @@
           <option value="">${tt("ed_choose")}</option>${opts.map((d) => `<option value="${d.entity_base}">${d.entity_base}</option>`).join("")}</select>
       </label>
       </div>
-      <div class="fg"><label class="fld"><span>${tt("lbl_cells")}</span><select class="b-cells">${[
-          .../* @__PURE__ */ new Set([8, 16])
-        ].sort((x, y) => x - y).map((v) => `<option value="${v}">${v}</option>`).join("")}</select>
+      <div class="fg"><label class="fld"><span>${tt("lbl_cells")}</span><select class="b-cells">${[.../* @__PURE__ */ new Set([8, 16])].sort((x, y) => x - y).map((v) => `<option value="${v}">${v}</option>`).join("")}</select>
         </label>
         <label class="fld"><span>${tt("lbl_temps")}</span>
           <select class="b-temps">${[0, 1, 2, 3, 4].map((v) => `<option value="${v}">${v}</option>`).join("")}</select>
@@ -5883,7 +6679,17 @@
     <label class="fld"><span>${tt("lbl_language")}</span><select class="f-lang"><option value="auto">${tt("lang_auto")}</option>${Object.entries(
         ST.langList || { en: "English", fr: "Fran\xE7ais", de: "Deutsch", it: "Italiano", es: "Espa\xF1ol", ro: "Rom\xE2n\u0103" }
       ).map(([v, l]) => `<option value="${v}">${l}</option>`).join("")}</select></label></div>
-    
+    <label class="fld"><span>${tt("lbl_view")}</span>
+      <select class="f-view">
+        <option value="full">${tt("view_full")}</option>
+        <option value="screen">${tt("view_screen")}</option>
+      </select>
+    </label>${c0.view === "screen" ? `<label class="chk"><input class="f-scells" type="checkbox"> ${tt("lbl_scells")}</label>` + (c0.screen_cells ? "" : `<label class="fld"><span>${tt("lbl_vpage")}</span>
+      <select class="f-vpage">
+        <option value="group">${tt("vpage_group")}</option>
+        <option value="cells">${tt("vpage_cells")}</option>
+      </select>
+    </label>`) : ""}
     <label class="fld"><span>${tt("lbl_perf")}</span>
       <select class="f-perf">
         <option value="auto">${tt("perf_auto")}</option>
@@ -5891,12 +6697,47 @@
         <option value="lite">${tt("perf_lite")}</option>
       </select>
     </label>
-    <label class="chk"><input class="f-glare" type="checkbox"> ${tt("lbl_glare")}</label>`;
+    <label class="chk"><input class="f-glare" type="checkbox"> ${tt("lbl_glare")}</label>
+    <label class="chk"><input class="f-btnall" type="checkbox"> ${tt("lbl_btnall")}</label>`;
       const q2 = (k) => slot.querySelector(k);
       q2(".f-title").value = c0.title || "";
       q2(".f-lang").value = c0.language || "auto";
       q2(".f-glare").checked = c0.glare !== false;
+      q2(".f-btnall").checked = c0.button_all_pages !== false;
+      q2(".f-btnall").onchange = (ev) => {
+        if (ev.target.checked) delete this._config.button_all_pages;
+        else this._config.button_all_pages = false;
+        this._emit();
+      };
       q2(".f-perf").value = c0.performance || "auto";
+      q2(".f-view").value = c0.view === "screen" ? "screen" : "full";
+      q2(".f-view").onchange = (e) => {
+        if (e.target.value === "screen") this._config.view = "screen";
+        else {
+          delete this._config.view;
+          delete this._config.view_page;
+          delete this._config.screen_cells;
+        }
+        this._emit();
+        this._render();
+      };
+      if (q2(".f-scells")) {
+        q2(".f-scells").checked = !!c0.screen_cells;
+        q2(".f-scells").onchange = (ev) => {
+          if (ev.target.checked) this._config.screen_cells = true;
+          else delete this._config.screen_cells;
+          this._emit();
+          this._render();
+        };
+      }
+      if (q2(".f-vpage")) {
+        q2(".f-vpage").value = c0.view_page === "cells" ? "cells" : "group";
+        q2(".f-vpage").onchange = (e) => {
+          if (e.target.value === "cells") this._config.view_page = "cells";
+          else delete this._config.view_page;
+          this._emit();
+        };
+      }
       q2(".f-perf").onchange = (e) => {
         if (e.target.value === "auto") delete this._config.performance;
         else this._config.performance = e.target.value;
