@@ -1,6 +1,6 @@
 (() => {
   // src/version.js
-  var VERSION = true ? "1.0.1" : "dev";
+  var VERSION = true ? "1.0.2" : "dev";
 
   // src/state.js
   var ST = { lang: "en", editing: 0, langList: null };
