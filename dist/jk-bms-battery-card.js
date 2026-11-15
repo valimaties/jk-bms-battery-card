@@ -1501,7 +1501,9 @@
       </g>
       <clipPath id="bfc${id}"><rect width="72" height="17" rx="5"/></clipPath>
       <g class="balfx" data-d="balfx" transform="translate(0 0)" clip-path="url(#bfc${id})"><rect class="balband" data-d="balband" width="72" height="9"/></g>
-      <rect class="balhl" data-d="balhl" x="0" y="0" width="72" height="17" rx="5" fill="none"/>`;
+      <rect class="balhl" data-d="balhl" x="0" y="0" width="72" height="17" rx="5" fill="none"/>
+      <g class="balfx" data-d="balfx2" transform="translate(0 0)" clip-path="url(#bfc${id})"><rect class="balband" width="72" height="9"/></g>
+      <rect class="balhl" data-d="balhl2" x="0" y="0" width="72" height="17" rx="5" fill="none"/>`;
       o += Array.from({ length: n }, (_, k) => {
         const x = 115 + k % 4 * 78, y = g0 + Math.floor(k / 4) * gp;
         return dsc(k + 1, x + 15, y, 11, cl, 'text-anchor="end"') + dv("cv" + k, x + 21, y, 12.5);
@@ -4274,13 +4276,20 @@
   .balband {
     fill-opacity: 0.5;
   }
+  .balfx.rise .balband {
+    animation: balrise 1.2s linear infinite;
+  }
+  .balfx.fall .balband {
+    animation: balfall 1.2s linear infinite;
+  }
   .balfx.pos .balband {
     fill: #ff5a4d;
-    animation: balrise 1.2s linear infinite;
   }
   .balfx.neg .balband {
     fill: #4da3ff;
-    animation: balfall 1.2s linear infinite;
+  }
+  .balfx.unk .balband {
+    fill: #5cf08a;
   }
   @keyframes balrise {
     from {
@@ -4303,6 +4312,9 @@
   }
   .balhl.neg {
     stroke: #4da3ff;
+  }
+  .balhl.unk {
+    stroke: #5cf08a;
   }
   @keyframes balpulse {
     0%,
@@ -5301,17 +5313,23 @@
               set(p, "d", d);
               set(p, "class", base + (on ? " on " : " ") + sign);
             });
-            const hl = D("balhl"), fx = D("balfx"), tgt = on && (pos || neg) ? pos ? rec : don : -1;
-            if (hl && fx) {
-              if (tgt >= 0) {
-                const x0 = 115 + tgt % 4 * 78 - 1, y0 = ty(tgt) - 13;
+            [
+              ["balhl", "balfx", rec, "rise"],
+              // receives
+              ["balhl2", "balfx2", don, "fall"]
+              // gives
+            ].forEach(([h, f, cell, way]) => {
+              const hl = D(h), fx = D(f), show = on && cell >= 0;
+              if (!hl || !fx) return;
+              if (show) {
+                const x0 = 115 + cell % 4 * 78 - 1, y0 = ty(cell) - 13;
                 set(hl, "x", x0);
                 set(hl, "y", y0);
                 set(fx, "transform", `translate(${x0} ${y0})`);
               }
-              set(hl, "class", "balhl" + (tgt >= 0 ? " on " : " ") + sign);
-              set(fx, "class", "balfx" + (tgt >= 0 ? " on " : " ") + sign);
-            }
+              set(hl, "class", "balhl" + (show ? " on " : " ") + sign);
+              set(fx, "class", "balfx " + way + (show ? " on " : " ") + sign);
+            });
           }
         }
         T("chg2", b.sw.charging ? tt("scr_on") : tt("scr_off"), b.sw.charging ? GRN : "#e0705f");
@@ -5935,7 +5953,7 @@
         const d = dst.querySelector(`[data-d="${e.dataset.d}"]`);
         if (!d) return;
         if (d.textContent !== e.textContent) d.textContent = e.textContent;
-        (/^bal(hl|fx|band|[th])?$/.test(e.dataset.d) ? ["fill", "stroke", "stroke-dasharray", "d", "class", "x", "y", "transform"] : ["fill", "stroke", "stroke-dasharray"]).forEach((a) => {
+        (/^bal(hl|fx)2?$|^bal(band|[th])?$/.test(e.dataset.d) ? ["fill", "stroke", "stroke-dasharray", "d", "class", "x", "y", "transform"] : ["fill", "stroke", "stroke-dasharray"]).forEach((a) => {
           const v = e.getAttribute(a);
           if (v !== null && v !== d.getAttribute(a)) d.setAttribute(a, v);
         });

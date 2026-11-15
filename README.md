@@ -18,7 +18,7 @@ Balancing: the highest cell gives to the lowest one and the two are joined by a 
 
 - **Screen-only mode**: the card can show nothing but the JK display, with the main screen, the cells screen, or both one under the other (see *Screen-only mode*).
 - **SETTING page on the screen**: change the display mode, the battery name, the number of cells, the cell layout and the round button, and save it into the dashboard.
-- **Balancing current on the cells screen**: red for a positive current (the lowest cell is charged), blue for a negative one (the highest cell is discharged); the two cells are joined by a moving line and the charged / discharged cell is outlined and filled by a moving band.
+- **Balancing on the cells screen**: a moving line goes from the highest cell (it gives: a band falls in it) to the lowest one (it receives: a band rises in it); the balancing current only sets the colour, red when positive, blue when negative.
 - **Row of temperature sensors (T1…T4) and the MOS temperature with its unit** on the cells screen.
 - **Labels and values aligned in every language**: the labels of the screen shrink to fit their column.
 - **Tooltip on the round button** of the display: *Turn the display off* / *Turn the display on*.
@@ -33,7 +33,7 @@ Balancing: the highest cell gives to the lowest one and the two are joined by a 
 - **Balancing**: the lightning between the highest and the lowest cell, and the status chip *balancing* while the balancer works.
 - **BMS screen replica**: click it to enlarge. GROUP / PACKS / cells pages like the real display, the round button switches the `display_always_on` switch, the *Language* label changes the language of the whole card (see *Translations*).
 - **SETTING page on the screen**: display mode (full card / screen only), battery name, number of cells, cell layout (8 cells) and the round button on every page. *Save to dashboard* (asks for a second click) writes the change into the dashboard configuration, so it needs a dashboard in the UI editor (not YAML mode) and an administrator account; otherwise use the card editor.
-- **Balancing current on the cells page of the screen**: positive (red): the lowest cell receives energy; negative (blue): the highest cell gives energy away. The two cells are joined by a moving line, from the highest to the lowest one, and the cell that is charged or discharged is outlined and filled by a band that rises (charging) or falls (discharging).
+- **Balancing on the cells page of the screen**: a moving line goes from the highest cell (it gives: a band falls in it) to the lowest one (it receives: a band rises in it), through the free space between the numbers; red for a positive balancing current, blue for a negative one.
 - **Screen-only mode**: only the JK display, the main screen, the cells screen or both, for dashboards that just want the screen (see *Screen-only mode*).
 - **Master / slave groups** (declared in the card, the integration sees every BMS separately): one card, a selector chooses the pack, the screen shows the group totals.
 - **Safe switches**: charging / discharging / balancing / heating ask for confirmation.
@@ -132,22 +132,11 @@ batteries:
 
 #### Balancing on the cells screen
 
-The sensor `balancing_current` tells what the balancer does:
+While the balancer works, the highest cell **gives** energy to the lowest one: the two cells are outlined, a band falls in the highest cell and a band rises in the lowest one, and a moving line runs from the first to the second. The sensor `balancing_current` only sets the colour: **red** when it is positive, **blue** when it is negative.
 
-- **positive** (red): the cell with the **lowest** voltage receives energy; the cell is outlined in red and a band rises in it;
-- **negative** (blue): the cell with the **highest** voltage gives energy away; the cell is outlined in blue and a band falls in it.
+The line between the two cells follows the free space between the numbers and never crosses one. The recording below is one continuous run: the BMS picks the pair of cells at random, balances for a random time with a random current (positive, red, or negative, blue), the voltages move by themselves and the highest and the lowest cell change from one pair to the next, so every direction shows up (left to right, right to left, up, down, neighbouring and far-away cells). The battery is at 99 %.
 
-The line between the two cells follows the free space between the numbers and never crosses one. The recordings below show many routes (the current alternates + and − from one pair to the next, the cells with the highest and the lowest voltage change like on a real pack, the battery is at 99 %):
-
-<details>
-<summary>Balancing routes (4 recordings)</summary>
-
-<p align="center"><b>Same row</b> (column 1→4, 4→1, 1→3, 4→2, …)<br><img src="docs/screen-balancing-rows.gif" alt="Balancing between cells of the same row" width="560"></p>
-<p align="center"><b>Same column</b> (top to bottom, bottom to top, …)<br><img src="docs/screen-balancing-columns.gif" alt="Balancing between cells of the same column" width="560"></p>
-<p align="center"><b>Next row, another column</b><br><img src="docs/screen-balancing-nextrow.gif" alt="Balancing between cells of neighbouring rows" width="560"></p>
-<p align="center"><b>Far diagonals</b><br><img src="docs/screen-balancing-diagonals.gif" alt="Balancing between cells far apart" width="560"></p>
-
-</details>
+<p align="center"><img src="docs/screen-balancing.gif" alt="Balancing between random pairs of cells, with a positive and a negative current" width="560"></p>
 
 ### 8 cells: two rows of 4 or one row of 8
 

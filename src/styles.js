@@ -2653,13 +2653,20 @@ export const CSS = `
   .balband {
     fill-opacity: 0.5;
   }
+  .balfx.rise .balband {
+    animation: balrise 1.2s linear infinite;
+  }
+  .balfx.fall .balband {
+    animation: balfall 1.2s linear infinite;
+  }
   .balfx.pos .balband {
     fill: #ff5a4d;
-    animation: balrise 1.2s linear infinite;
   }
   .balfx.neg .balband {
     fill: #4da3ff;
-    animation: balfall 1.2s linear infinite;
+  }
+  .balfx.unk .balband {
+    fill: #5cf08a;
   }
   @keyframes balrise {
     from {
@@ -2682,6 +2689,9 @@ export const CSS = `
   }
   .balhl.neg {
     stroke: #4da3ff;
+  }
+  .balhl.unk {
+    stroke: #5cf08a;
   }
   @keyframes balpulse {
     0%,
