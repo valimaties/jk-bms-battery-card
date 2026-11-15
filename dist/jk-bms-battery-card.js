@@ -164,7 +164,6 @@
     scr_tab_setting: "EINSTELL.",
     scr_st_view: "Anzeigemodus",
     scr_st_name: "Batteriename",
-    scr_st_lang: "Sprache",
     scr_st_cells: "Zellen",
     scr_st_rows: "Zellenanordnung",
     scr_st_btn: "Knopf auf allen Seiten",
@@ -367,7 +366,6 @@
     scr_tab_setting: "SETTING",
     scr_st_view: "Display mode",
     scr_st_name: "Battery name",
-    scr_st_lang: "Language",
     scr_st_cells: "Cells",
     scr_st_rows: "Cell layout",
     scr_st_btn: "Button on every page",
@@ -570,7 +568,6 @@
     scr_tab_setting: "AJUSTES",
     scr_st_view: "Modo de visualizaci\xF3n",
     scr_st_name: "Nombre de la bater\xEDa",
-    scr_st_lang: "Idioma",
     scr_st_cells: "Celdas",
     scr_st_rows: "Disposici\xF3n de las celdas",
     scr_st_btn: "Bot\xF3n en todas las p\xE1ginas",
@@ -773,7 +770,6 @@
     scr_tab_setting: "R\xC9GLAGES",
     scr_st_view: "Mode d'affichage",
     scr_st_name: "Nom de la batterie",
-    scr_st_lang: "Langue",
     scr_st_cells: "Cellules",
     scr_st_rows: "Disposition des cellules",
     scr_st_btn: "Bouton sur toutes les pages",
@@ -976,7 +972,6 @@
     scr_tab_setting: "IMPOST.",
     scr_st_view: "Modalit\xE0 di visualizzazione",
     scr_st_name: "Nome della batteria",
-    scr_st_lang: "Lingua",
     scr_st_cells: "Celle",
     scr_st_rows: "Disposizione delle celle",
     scr_st_btn: "Pulsante su tutte le pagine",
@@ -1179,7 +1174,6 @@
     scr_tab_setting: "SET\u0102RI",
     scr_st_view: "Mod de afi\u0219are",
     scr_st_name: "Numele bateriei",
-    scr_st_lang: "Limba",
     scr_st_cells: "Celule",
     scr_st_rows: "Aranjarea celulelor",
     scr_st_btn: "Buton pe toate paginile",
@@ -1537,9 +1531,6 @@
   <foreignObject x="10" y="38" width="413" height="200">
     <div class="stg">
       <label><span data-tr="scr_st_view|">${tt("scr_st_view")}</span><select data-s="view"><option value="full">${tt("view_full")}</option><option value="screen">${tt("view_screen")}</option></select></label>
-      <label><span data-tr="scr_st_lang|">${tt("scr_st_lang")}</span><select data-s="lang"><option value="auto">${tt("lang_auto")}</option>${Object.entries(
-      LANGS
-    ).map(([k, n2]) => `<option value="${k}">${n2}</option>`).join("")}</select></label>
       <label><span data-tr="scr_st_name|">${tt("scr_st_name")}</span><input data-s="name" type="text"></label>
       <label><span data-tr="scr_st_cells|">${tt("scr_st_cells")}</span><select data-s="cells"><option value="16">16</option><option value="8">8</option></select></label>
       <label data-s-row="rows"><span data-tr="scr_st_rows|">${tt("scr_st_rows")}</span><select data-s="rows"><option value="2">${tt("ed_rows_2")}</option><option value="1">${tt("ed_rows_1")}</option></select></label>
@@ -5540,7 +5531,7 @@
         const s = e.target.closest && e.target.closest("[data-s]");
         if (!s || s.dataset.s === "save" || s.dataset.s === "msg") return;
         const v = this._stgv || (this._stgv = {}), k = s.dataset.s;
-        v[k] = s.type === "checkbox" ? s.checked : k === "name" || k === "view" || k === "lang" ? s.value : +s.value;
+        v[k] = s.type === "checkbox" ? s.checked : k === "name" || k === "view" ? s.value : +s.value;
         this.shadowRoot.querySelectorAll(".dsp").forEach((d) => this._stgFill(d));
       };
       root.addEventListener("input", on);
@@ -5569,7 +5560,6 @@
       set("cells", cells);
       set("rows", v("rows", bc.rows === 1 ? 1 : 2));
       set("btn", v("btn", raw.button_all_pages !== false));
-      set("lang", v("lang", raw.language || "auto"));
       set("cells2", v("cells2", !!raw.screen_cells));
       f.querySelector('[data-s-row="cells2"]').style.display = view === "screen" ? "" : "none";
       f.querySelector('[data-s-row="rows"]').style.display = cells === 8 && view !== "screen" ? "" : "none";
@@ -5607,10 +5597,6 @@
         if (p.cells2) next.screen_cells = true;
         else delete next.screen_cells;
       }
-      if ("lang" in p) {
-        if (p.lang === "auto") delete next.language;
-        else next.language = p.lang;
-      }
       if ("btn" in p) {
         if (p.btn) delete next.button_all_pages;
         else next.button_all_pages = false;
@@ -5632,13 +5618,6 @@
       say("scr_st_saving");
       try {
         await this._dashSave(old, next);
-        if ("lang" in p) {
-          this._langOverride = null;
-          try {
-            localStorage.removeItem("jk-bms-lang");
-          } catch (e2) {
-          }
-        }
         this._stgv = null;
         say("scr_st_ok", "ok");
         this.setConfig(next);

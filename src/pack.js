@@ -1,4 +1,4 @@
-import { LANGS, tt } from "./i18n.js";
+import { tt } from "./i18n.js";
 import { IMG } from "./images.js";
 
 export const GRN = "#5cf08a";
@@ -437,11 +437,6 @@ export function packSvg(n, id, np = 1, layout = "top-left", rows = 2, nt = 0, sc
   <foreignObject x="10" y="38" width="413" height="200">
     <div class="stg">
       <label><span data-tr="scr_st_view|">${tt("scr_st_view")}</span><select data-s="view"><option value="full">${tt("view_full")}</option><option value="screen">${tt("view_screen")}</option></select></label>
-      <label><span data-tr="scr_st_lang|">${tt("scr_st_lang")}</span><select data-s="lang"><option value="auto">${tt("lang_auto")}</option>${Object.entries(
-        LANGS,
-      )
-        .map(([k, n]) => `<option value="${k}">${n}</option>`)
-        .join("")}</select></label>
       <label><span data-tr="scr_st_name|">${tt("scr_st_name")}</span><input data-s="name" type="text"></label>
       <label><span data-tr="scr_st_cells|">${tt("scr_st_cells")}</span><select data-s="cells"><option value="16">16</option><option value="8">8</option></select></label>
       <label data-s-row="rows"><span data-tr="scr_st_rows|">${tt("scr_st_rows")}</span><select data-s="rows"><option value="2">${tt("ed_rows_2")}</option><option value="1">${tt("ed_rows_1")}</option></select></label>
