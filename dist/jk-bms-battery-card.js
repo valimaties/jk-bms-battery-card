@@ -4622,7 +4622,7 @@
       return 12;
     }
     getGridOptions() {
-      return { columns: 12, min_columns: 6 };
+      return { columns: "full", min_columns: 6 };
     }
     setConfig(config) {
       const key = JSON.stringify(config);

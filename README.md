@@ -141,7 +141,7 @@ With several batteries the screens follow the **width of the section** the card 
 | **Triple** | three columns |
 | **Full width** | side by side over the whole width (one column per battery; the rest wrap to the next row) |
 
-A narrow screen (a phone) always stacks them. The full card (`view: full`) puts at most two batteries in a row.
+In a sections dashboard the card takes the **whole width of its section** by default (`columns: full`); to make it narrower use the *Layout* tab of the card (or `grid_options` in YAML). A narrow screen (a phone) always stacks the screens. The full card (`view: full`) puts at most two batteries in a row.
 
 #### Balancing on the cells screen
 

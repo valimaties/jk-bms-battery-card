@@ -40,7 +40,8 @@ export class JkBatteryCard extends HTMLElement {
     return 12;
   }
   getGridOptions() {
-    return { columns: 12, min_columns: 6 };
+    // sections dashboard: the whole width of the section (12 columns would be only half of a Double section)
+    return { columns: "full", min_columns: 6 };
   }
 
   setConfig(config) {
